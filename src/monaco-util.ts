@@ -12,15 +12,15 @@ export const useEditor = (): [EditorDidMount, any] => {
   return [handleEditorMount, editor];
 };
 
-export const useEditorValue = (): [EditorDidMount, string?] => {
-  const [value, setValue] = React.useState();
-  const [handleEditorMount, editor] = useEditor();
-  React.useEffect(() => {
-    if (editor) {
-      editor.onDidChangeModelContent(() => {
-        setValue(editor.getValue());
-      });
-    }
-  }, [editor]);
-  return [handleEditorMount, value];
-};
+// export const useEditorValue = (): [EditorDidMount, string?] => {
+//   const [value, setValue] = React.useState();
+//   const [handleEditorMount, editor] = useEditor();
+//   React.useEffect(() => {
+//     if (editor) {
+//       editor.onDidChangeModelContent(() => {
+//         setValue(editor.getValue());
+//       });
+//     }
+//   }, [editor]);
+//   return [handleEditorMount, value];
+// };
