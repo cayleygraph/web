@@ -4,9 +4,13 @@
   background: #eee;
   box-sizing: border-box;
   overflow: hidden;
-  padding: 16px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+}
+
+.App > main {
+  flex: 1;
+  padding: 16px;
 }
 
 .Run {
