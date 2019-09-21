@@ -4,7 +4,7 @@ import { EditorDidMount } from "@monaco-editor/react";
 
 export const useEditor = (): [
   EditorDidMount,
-  monaco.editor.ICodeEditor | null
+  monaco.editor.IStandaloneCodeEditor | null
 ] => {
   const [editor, setEditor] = React.useState();
   const handleEditorMount = React.useCallback(

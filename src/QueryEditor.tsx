@@ -28,14 +28,14 @@ const queryLanguageToMonacoLanguage = (language: Language): string => {
   }
 };
 
-const getGizmoDefinitions = async (): [string, string] => {
+const getGizmoDefinitions = async (): Promise<[string, string]> => {
   const gizmoPath = `${process.env.PUBLIC_URL}/gizmo.d.ts`;
   const res = await fetch(gizmoPath);
   const content = await res.text();
   return [content, gizmoPath];
 };
 
-async function initMonaco() {
+async function initMonaco(): Promise<void> {
   const [content, path] = await getGizmoDefinitions();
   const monacoInstance = await monacoInit.init();
   const {
@@ -50,7 +50,29 @@ async function initMonaco() {
   javascriptDefaults.addExtraLib(content, path);
 }
 
-initMonaco();
+async function registerRunShortcut(
+  editor: monaco.editor.IStandaloneCodeEditor,
+  run: () => void
+): Promise<void> {
+  if (!editor) {
+    return;
+  }
+  const monacoInstance = await monacoInit.init();
+  editor.addAction({
+    // An unique identifier of the contributed action.
+    id: "cayley-run",
+
+    // A label of the action that will be presented to the user.
+    label: "Run",
+
+    // An optional array of keybindings for the action.
+    keybindings: [monacoInstance.KeyMod.CtrlCmd | monacoInstance.KeyCode.Enter],
+
+    run: () => {
+      run();
+    }
+  });
+}
 
 const QueryEditor = ({
   onRun
@@ -70,11 +92,21 @@ const QueryEditor = ({
     [setLanguage]
   );
 
-  const handleRunButtonClick = useCallback(() => {
+  const run = useCallback(() => {
     if (editor) {
       onRun(editor.getValue(), language);
     }
   }, [editor, language, onRun]);
+
+  useEffect(() => {
+    initMonaco();
+  }, []);
+
+  useEffect(() => {
+    if (editor) {
+      registerRunShortcut(editor, run);
+    }
+  }, [editor, run]);
 
   return (
     <div className="QueryEditor">
@@ -86,7 +118,7 @@ const QueryEditor = ({
         options={options}
       />
       <div className="actions">
-        <RunButton onClick={handleRunButtonClick} />
+        <RunButton onClick={run} />
         <Select
           outlined
           options={languageOptions}
