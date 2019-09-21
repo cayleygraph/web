@@ -1,3 +1,9 @@
+.QueryEditor .mdc-typography--headline6 {
+  margin: 0 30px;
+  padding: 12px 0;
+  display: block;
+}
+
 .QueryEditor .actions {
   background: white;
   padding: 8px 24px;
