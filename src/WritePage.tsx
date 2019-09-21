@@ -32,6 +32,9 @@ const WritePage = ({ serverURL }: Props) => {
   const [mode, setMode] = useState(options[0].value);
   const [handleEditorMount, editor] = useEditor();
   const handleRunButtonClick = useCallback(() => {
+    if (!editor) {
+      return;
+    }
     const value = editor.getValue();
     switch (mode) {
       case "write": {

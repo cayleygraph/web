@@ -46,7 +46,9 @@ const QueryEditor = ({
   );
 
   const handleRunButtonClick = useCallback(() => {
-    onRun(editor.getValue(), language);
+    if (editor) {
+      onRun(editor.getValue(), language);
+    }
   }, [editor, language, onRun]);
 
   return (
