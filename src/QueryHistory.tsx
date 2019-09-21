@@ -4,9 +4,10 @@ import "@material/list/dist/mdc.list.css";
 import { Icon } from "@rmwc/icon";
 import "@rmwc/icon/icon.css";
 import { Query } from "./types";
+import "./QueryHistory.css";
 
 const QueryHistory = ({ queries }: { queries: Query[] }) => (
-  <List>
+  <List className="QueryHistory">
     {[...queries].reverse().map(query => (
       <ListItem>
         {query.time.toLocaleString()}{" "}
