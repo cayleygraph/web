@@ -1,13 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import QueryEditor from "./QueryEditor";
-import {
-  forceCenter,
-  forceLink,
-  forceManyBody,
-  forceSimulation
-} from "d3-force";
-import { Graph } from "@vx/network";
-import useDimensions from "react-use-dimensions";
+import ForceGraph from "./ForceGraph";
 import { runQuery, QueryResult } from "./queries";
 import "./VisualizePage.css";
 
@@ -57,8 +50,6 @@ const Node = ({ node }) => (
 
 const VisualizePage = ({ serverURL }: Props) => {
   const [result, setResult] = useState<QueryResult>(null);
-  const [graphData, setGraphData] = useState(INITIAL_GRAPH_DATA_STATE);
-  const [ref, { width, height }] = useDimensions();
   const handleRun = useCallback(
     (query, language) => {
       runQuery(serverURL, language, query).then(result => {
@@ -67,32 +58,16 @@ const VisualizePage = ({ serverURL }: Props) => {
     },
     [serverURL]
   );
-  useEffect(() => {
-    if (result && "result" in result) {
-      const data = resultToGraph(result.result);
-      const force = forceSimulation(data.nodes)
-        .force(
-          "link",
-          forceLink()
-            .id((d: { id: string }) => d.id)
-            .links(data.links)
-            .distance(100)
-        )
-        .force("charge", forceManyBody())
-        .force("center", forceCenter(width / 2, height / 2));
-
-      // Force-update the component on each force tick
-      force.on("tick", () => {
-        setGraphData({ ...data });
-      });
-    }
-  }, [result]);
   return (
     <main>
       <QueryEditor onRun={handleRun} />
-      <svg className="graph" ref={ref}>
-        <Graph graph={graphData} linkComponent={Link} nodeComponent={Node} />
-      </svg>
+      <ForceGraph
+        data={
+          result && "result" in result ? resultToGraph(result.result) : null
+        }
+        nodeComponent={Node}
+        linkComponent={Link}
+      />
     </main>
   );
 };
