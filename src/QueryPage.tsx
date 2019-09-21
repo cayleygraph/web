@@ -9,6 +9,10 @@ import "@material/tab-scroller/dist/mdc.tab-scroller.css";
 import "@material/tab-indicator/dist/mdc.tab-indicator.css";
 import "@material/tab-bar/dist/mdc.tab-bar.css";
 import "@material/tab/dist/mdc.tab.css";
+import { Icon } from "@rmwc/icon";
+import "@rmwc/icon/icon.css";
+import { List, ListItem } from "@rmwc/list";
+import "@material/list/dist/mdc.list.css";
 import MonacoEditor from "@monaco-editor/react";
 import { useEditor } from "./monaco-util";
 import "./QueryPage.css";
@@ -16,7 +20,7 @@ import "./QueryPage.css";
 type Query = {
   id: number;
   text: string;
-  result: string | null;
+  result: { result: any } | { error: object } | null;
   time: Date;
 };
 
@@ -33,18 +37,11 @@ const Result = ({ result }: { result: string | null }) => {
     minimap: { enabled: false },
     scrollBeyondLastLine: false
   };
-  let formattedResult = result;
-
-  if (result) {
-    try {
-      formattedResult = JSON.stringify(JSON.parse(result), null, 4);
-    } catch {}
-  }
 
   return (
     <MonacoEditor
       height={300}
-      value={formattedResult}
+      value={result ? JSON.stringify(result, null, 4) : ""}
       language="json"
       options={options}
     />
@@ -52,13 +49,20 @@ const Result = ({ result }: { result: string | null }) => {
 };
 
 const QueryHistory = ({ queries }: { queries: Query[] }) => (
-  <>
+  <List>
     {[...queries].reverse().map(query => (
-      <div>
-        {query.time.toLocaleString()} result? {query.result ? "yes" : "no"}
-      </div>
+      <ListItem>
+        {query.time.toLocaleString()}{" "}
+        {query.result ? (
+          "error" in query.result ? (
+            <Icon icon="error" />
+          ) : (
+            <Icon icon="check_circle" />
+          )
+        ) : null}
+      </ListItem>
     ))}
-  </>
+  </List>
 );
 
 function QueryPage({ serverURL }: Props) {
@@ -80,7 +84,7 @@ function QueryPage({ serverURL }: Props) {
       method: "POST",
       body: query
     })
-      .then(res => res.text())
+      .then(res => res.json())
       .then(result => {
         setQueries(queries =>
           queries.map(query => {

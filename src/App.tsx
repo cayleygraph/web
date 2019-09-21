@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import QueryPage from "./QueryPage";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem } from "@rmwc/list";
-import "@material/drawer/dist/mdc.drawer.css";
 import "@material/list/dist/mdc.list.css";
+import "@material/drawer/dist/mdc.drawer.css";
 import "./App.css";
 
 const SERVER_URL = "http://localhost:64210";
