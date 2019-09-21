@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { useEditor } from "./monaco-util";
-import { editor } from "monaco-editor";
+import MonacoEditor from "@monaco-editor/react";
 import { languageOptions, Language } from "./queries";
 import { Typography } from "@rmwc/typography";
 import "@material/typography/dist/mdc.typography.css";
@@ -8,7 +7,7 @@ import { Select } from "@rmwc/select";
 import "@material/select/dist/mdc.select.css";
 import { Button } from "@rmwc/button";
 import "@material/button/dist/mdc.button.css";
-import MonacoEditor from "@monaco-editor/react";
+import { useEditor } from "./monaco-util";
 
 const queryLanguageToMonacoLanguage = (language: Language): string => {
   switch (language) {

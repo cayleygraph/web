@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { editor } from "monaco-editor";
 import { Card } from "@rmwc/card";
 import "@material/card/dist/mdc.card.css";
 import { TabBar, Tab } from "@rmwc/tabs";
@@ -54,7 +53,7 @@ function QueryPage({ serverURL }: Props) {
           alert(error);
         });
     },
-    [editor, queries]
+    [queries, serverURL]
   );
 
   const currentQuery = queries.find(query => query.id === activeQuery);
