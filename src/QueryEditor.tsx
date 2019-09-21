@@ -10,6 +10,7 @@ import "@material/select/dist/mdc.select.css";
 import { Button } from "@rmwc/button";
 import "@material/button/dist/mdc.button.css";
 import { useEditor } from "./monaco-util";
+import "./QueryEditor.css";
 
 const queryLanguageToMonacoLanguage = (language: Language): string => {
   switch (language) {
@@ -51,7 +52,7 @@ const QueryEditor = ({
   }, [editor, language, onRun]);
 
   return (
-    <>
+    <div className="QueryEditor">
       <Typography use="headline6">Query Editor</Typography>
       <MonacoEditor
         height={300}
@@ -73,7 +74,7 @@ const QueryEditor = ({
           onChange={handleLanguageChange}
         />
       </div>
-    </>
+    </div>
   );
 };
 
