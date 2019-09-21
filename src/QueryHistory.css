@@ -18,6 +18,7 @@
   flex-shrink: 0;
 }
 
+.QueryHistory .language,
 .QueryHistory .status {
   margin: 0 16px;
 }
