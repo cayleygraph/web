@@ -8,6 +8,6 @@
 }
 
 .Run .mdc-button {
-  align-self: flex-end;
+  align-self: flex-start;
   margin: 16px;
 }

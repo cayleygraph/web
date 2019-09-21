@@ -30,7 +30,8 @@ type Props = {
 const Result = ({ result }: { result: string | null }) => {
   const options: editor.IDiffEditorConstructionOptions = {
     readOnly: true,
-    minimap: { enabled: false }
+    minimap: { enabled: false },
+    scrollBeyondLastLine: false
   };
   let formattedResult = result;
 
@@ -112,7 +113,12 @@ function QueryPage({ serverURL }: Props) {
           language="javascript"
           options={options}
         />
-        <Button label="Run" onClick={handleClick} />
+        <Button
+          icon="play_circle_filled"
+          unelevated
+          label="Run"
+          onClick={handleClick}
+        />
       </Card>
       <Card>
         <TabBar
