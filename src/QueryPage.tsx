@@ -10,7 +10,6 @@ import QueryEditor from "./QueryEditor";
 import Result from "./Result";
 import QueryHistory from "./QueryHistory";
 import { Query, runQuery } from "./queries";
-import "./QueryPage.css";
 
 const ACTIVE_QUERY_INITIAL_STATE: number | null = null;
 const QUERIES_INITIAL_STATE: Query[] = [];
