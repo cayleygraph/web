@@ -9,7 +9,7 @@ import "@material/tab/dist/mdc.tab.css";
 import QueryEditor from "./QueryEditor";
 import Result from "./Result";
 import QueryHistory from "./QueryHistory";
-import { Query } from "./queries";
+import { Query, runQuery } from "./queries";
 import "./QueryPage.css";
 
 const ACTIVE_QUERY_INITIAL_STATE: number | null = null;
@@ -33,11 +33,7 @@ function QueryPage({ serverURL }: Props) {
         ...queries,
         { id, text: query, result: null, language, time: new Date() }
       ]);
-      fetch(`${serverURL}/api/v1/query/${language}`, {
-        method: "POST",
-        body: query
-      })
-        .then(res => res.json())
+      runQuery(serverURL, language, query)
         .then(result => {
           setQueries(queries =>
             queries.map(query => {
