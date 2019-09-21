@@ -14,6 +14,8 @@ import Result from "./Result";
 import QueryHistory from "./QueryHistory";
 import { Typography } from "@rmwc/typography";
 import "@material/typography/dist/mdc.typography.css";
+import { Select } from "@rmwc/select";
+import "@material/select/dist/mdc.select.css";
 import { useEditor } from "./monaco-util";
 import { Query } from "./types";
 import "./QueryPage.css";
@@ -25,9 +27,34 @@ type Props = {
   serverURL: string;
 };
 
+const languages: Array<{ label: string; value: string }> = [
+  { label: "Gizmo", value: "gizmo" },
+  { label: "GraphQL", value: "graphql" },
+  { label: "MQL", value: "mql" }
+];
+
+const queryLanguageToMonacoLanguage = (
+  language: typeof languages[number]["value"]
+): string => {
+  switch (language) {
+    case "gizmo": {
+      return "javascript";
+    }
+    case "graphql": {
+      return "graphql";
+    }
+    case "mql": {
+      return "json";
+    }
+    default: {
+      throw new Error(`Unexpected value ${language}`);
+    }
+  }
+};
+
 function QueryPage({ serverURL }: Props) {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
-  const [language, setLanguage] = useState("gizmo");
+  const [language, setLanguage] = useState(languages[0].value);
   const [activeQuery, setActiveQuery] = useState(ACTIVE_QUERY_INITIAL_STATE);
   const [queries, setQueries] = useState(QUERIES_INITIAL_STATE);
   const [handleEditorMount, editor] = useEditor();
@@ -59,7 +86,14 @@ function QueryPage({ serverURL }: Props) {
       .catch(error => {
         alert(error);
       });
-  }, [editor, queries]);
+  }, [editor, queries, language]);
+
+  const handleLanguageChange = React.useCallback(
+    (event: any) => {
+      setLanguage(event.target.value);
+    },
+    [setLanguage]
+  );
 
   const currentQuery = queries.find(query => query.id === activeQuery);
   const result = currentQuery ? currentQuery.result : null;
@@ -75,7 +109,7 @@ function QueryPage({ serverURL }: Props) {
         <MonacoEditor
           height={300}
           editorDidMount={handleEditorMount}
-          language="javascript"
+          language={queryLanguageToMonacoLanguage(language)}
           options={options}
         />
         <div className="actions">
@@ -84,6 +118,12 @@ function QueryPage({ serverURL }: Props) {
             unelevated
             label="Run"
             onClick={handleClick}
+          />
+          <Select
+            outlined
+            options={languages}
+            value={language}
+            onChange={handleLanguageChange}
           />
         </div>
         <TabBar
