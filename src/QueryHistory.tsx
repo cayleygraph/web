@@ -10,14 +10,17 @@ const QueryHistory = ({ queries }: { queries: Query[] }) => (
   <List className="QueryHistory">
     {[...queries].reverse().map(query => (
       <ListItem>
-        {query.time.toLocaleString()}{" "}
-        {query.result ? (
-          "error" in query.result ? (
-            <Icon icon="error" />
-          ) : (
-            <Icon icon="check_circle" />
-          )
-        ) : null}
+        <div className="time">{query.time.toLocaleString()}</div>
+        <div className="status">
+          {query.result ? (
+            "error" in query.result ? (
+              <Icon icon="error" />
+            ) : (
+              <Icon icon="check_circle" />
+            )
+          ) : null}
+        </div>
+        <div className="query">{query.text}</div>
       </ListItem>
     ))}
   </List>

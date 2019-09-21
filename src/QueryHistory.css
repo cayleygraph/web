@@ -2,3 +2,22 @@
   height: 300px;
   overflow: scroll;
 }
+
+.QueryHistory .mdc-list-item {
+  display: flex;
+}
+
+.QueryHistory .query {
+  height: 2em;
+  font-family: monospace;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.QueryHistory .time {
+  flex-shrink: 0;
+}
+
+.QueryHistory .status {
+  margin: 0 16px;
+}
