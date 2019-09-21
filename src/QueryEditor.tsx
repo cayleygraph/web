@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import { editor } from "monaco-editor";
 import MonacoEditor from "@monaco-editor/react";
 import { languageOptions, Language } from "./queries";
 import { Typography } from "@rmwc/typography";
