@@ -7,10 +7,8 @@ import { Typography } from "@rmwc/typography";
 import "@material/typography/dist/mdc.typography.css";
 import { Select } from "@rmwc/select";
 import "@material/select/dist/mdc.select.css";
-import { Button } from "@rmwc/button";
-import "@material/button/dist/mdc.button.css";
+import RunButton from "./RunButton";
 import { useEditor } from "./monaco-util";
-import "./QueryEditor.css";
 
 const queryLanguageToMonacoLanguage = (language: Language): string => {
   switch (language) {
@@ -61,12 +59,7 @@ const QueryEditor = ({
         options={options}
       />
       <div className="actions">
-        <Button
-          icon="play_circle_filled"
-          unelevated
-          label="Run"
-          onClick={handleRunButtonClick}
-        />
+        <RunButton onClick={handleRunButtonClick} />
         <Select
           outlined
           options={languageOptions}

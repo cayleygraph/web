@@ -16,3 +16,24 @@
   height: 100%;
   box-sizing: border-box;
 }
+
+.App > main .mdc-typography--headline6 {
+  margin: 0 30px;
+  padding: 12px 0;
+  display: block;
+}
+
+.App > main .actions {
+  background: white;
+  padding: 8px 24px;
+  border-color: #d3d3d3;
+  border-style: solid;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  border-left-width: 0;
+  border-right-width: 0;
+}
+
+.App main .actions > .mdc-button {
+  margin-right: 24px;
+}

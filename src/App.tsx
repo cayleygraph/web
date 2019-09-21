@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import QueryPage from "./QueryPage";
 import QueryShapePage from "./QueryShapePage";
 import VisualizePage from "./VisualizePage";
+import WritePage from "./WritePage";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
@@ -51,6 +52,7 @@ function App() {
       {page === "query" && <QueryPage serverURL={SERVER_URL} />}
       {page === "queryShape" && <QueryShapePage serverURL={SERVER_URL} />}
       {page === "visualize" && <VisualizePage serverURL={SERVER_URL} />}
+      {page === "write" && <WritePage serverURL={SERVER_URL} />}
     </div>
   );
 }
