@@ -31,7 +31,7 @@ type Props = {
   serverURL: string;
 };
 
-const Result = ({ result }: { result: string | null }) => {
+const Result = ({ result }: { result: object | null }) => {
   const options: editor.IDiffEditorConstructionOptions = {
     readOnly: true,
     minimap: { enabled: false },
