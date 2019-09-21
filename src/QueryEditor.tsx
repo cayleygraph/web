@@ -1,6 +1,7 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 // eslint-disable-next-line
 import * as monaco from "monaco-editor";
+import { monaco as monacoInit } from "@monaco-editor/react";
 import MonacoEditor from "@monaco-editor/react";
 import { languageOptions, Language } from "./queries";
 import { Typography } from "@rmwc/typography";
@@ -26,6 +27,30 @@ const queryLanguageToMonacoLanguage = (language: Language): string => {
     }
   }
 };
+
+const getGizmoDefinitions = async (): [string, string] => {
+  const gizmoPath = `${process.env.PUBLIC_URL}/gizmo.d.ts`;
+  const res = await fetch(gizmoPath);
+  const content = await res.text();
+  return [content, gizmoPath];
+};
+
+async function initMonaco() {
+  const [content, path] = await getGizmoDefinitions();
+  const monacoInstance = await monacoInit.init();
+  const {
+    javascriptDefaults,
+    ScriptTarget
+  } = monacoInstance.languages.typescript;
+  javascriptDefaults.setCompilerOptions({
+    noLib: true,
+    target: ScriptTarget.ES5,
+    allowNonTsExtensions: true
+  });
+  javascriptDefaults.addExtraLib(content, path);
+}
+
+initMonaco();
 
 const QueryEditor = ({
   onRun
