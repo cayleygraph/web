@@ -3,7 +3,7 @@ import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
 import { Icon } from "@rmwc/icon";
 import "@rmwc/icon/icon.css";
-import { Query } from "./types";
+import { Query } from "./queries";
 import "./QueryHistory.css";
 
 const QueryHistory = ({ queries }: { queries: Query[] }) => (
@@ -11,6 +11,7 @@ const QueryHistory = ({ queries }: { queries: Query[] }) => (
     {[...queries].reverse().map(query => (
       <ListItem>
         <div className="time">{query.time.toLocaleString()}</div>
+        <div className="time">{query.language}</div>
         <div className="status">
           {query.result ? (
             "error" in query.result ? (

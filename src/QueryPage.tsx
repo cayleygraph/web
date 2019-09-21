@@ -17,7 +17,7 @@ import "@material/typography/dist/mdc.typography.css";
 import { Select } from "@rmwc/select";
 import "@material/select/dist/mdc.select.css";
 import { useEditor } from "./monaco-util";
-import { Query } from "./types";
+import { Query, languageOptions, Language } from "./queries";
 import "./QueryPage.css";
 
 const ACTIVE_QUERY_INITIAL_STATE: number | null = null;
@@ -27,15 +27,7 @@ type Props = {
   serverURL: string;
 };
 
-const languages: Array<{ label: string; value: string }> = [
-  { label: "Gizmo", value: "gizmo" },
-  { label: "GraphQL", value: "graphql" },
-  { label: "MQL", value: "mql" }
-];
-
-const queryLanguageToMonacoLanguage = (
-  language: typeof languages[number]["value"]
-): string => {
+const queryLanguageToMonacoLanguage = (language: Language): string => {
   switch (language) {
     case "gizmo": {
       return "javascript";
@@ -54,7 +46,7 @@ const queryLanguageToMonacoLanguage = (
 
 function QueryPage({ serverURL }: Props) {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
-  const [language, setLanguage] = useState(languages[0].value);
+  const [language, setLanguage] = useState(languageOptions[0].value);
   const [activeQuery, setActiveQuery] = useState(ACTIVE_QUERY_INITIAL_STATE);
   const [queries, setQueries] = useState(QUERIES_INITIAL_STATE);
   const [handleEditorMount, editor] = useEditor();
@@ -65,7 +57,7 @@ function QueryPage({ serverURL }: Props) {
     setActiveQuery(id);
     setQueries(queries => [
       ...queries,
-      { id, text: query, result: null, time: new Date() }
+      { id, text: query, result: null, language, time: new Date() }
     ]);
     fetch(`${serverURL}/api/v1/query/${language}`, {
       method: "POST",
@@ -121,7 +113,7 @@ function QueryPage({ serverURL }: Props) {
           />
           <Select
             outlined
-            options={languages}
+            options={languageOptions}
             value={language}
             onChange={handleLanguageChange}
           />
