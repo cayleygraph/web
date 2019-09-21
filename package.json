@@ -37,6 +37,6 @@
     ]
   },
   "devDependencies": {
-    "tslint-react-hooks": "^2.2.1"
+    "eslint-plugin-react-hooks": "^2.0.1"
   }
 }
