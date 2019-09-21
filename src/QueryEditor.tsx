@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 // eslint-disable-next-line
-import { editor } from "monaco-editor";
+import * as monaco from "monaco-editor";
 import MonacoEditor from "@monaco-editor/react";
 import { languageOptions, Language } from "./queries";
 import { Typography } from "@rmwc/typography";
@@ -34,7 +34,7 @@ const QueryEditor = ({
 }) => {
   const [handleEditorMount, editor] = useEditor();
   const [language, setLanguage] = useState(languageOptions[0].value);
-  const options: editor.IDiffEditorConstructionOptions = {
+  const options: monaco.editor.IDiffEditorConstructionOptions = {
     minimap: { enabled: false }
   };
 

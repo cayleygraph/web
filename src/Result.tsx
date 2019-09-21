@@ -1,9 +1,9 @@
 import React from "react";
-import { editor } from "monaco-editor";
+import * as monaco from "monaco-editor";
 import MonacoEditor from "@monaco-editor/react";
 
 const Result = ({ result }: { result: object | null }) => {
-  const options: editor.IDiffEditorConstructionOptions = {
+  const options: monaco.editor.IDiffEditorConstructionOptions = {
     readOnly: true,
     minimap: { enabled: false },
     scrollBeyondLastLine: false
