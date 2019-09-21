@@ -13,7 +13,7 @@ const QueryHistory = ({ queries }: { queries: Query[] }) => (
         option => option.value === query.language
       );
       return (
-        <ListItem>
+        <ListItem key={query.id}>
           <div className="time">{query.time.toLocaleString()}</div>
           <div className="status">
             {query.result ? (
