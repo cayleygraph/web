@@ -9,8 +9,3 @@
   display: flex;
   flex-direction: row;
 }
-
-.App > main {
-  flex: 1;
-  padding: 16px;
-}

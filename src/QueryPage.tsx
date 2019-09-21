@@ -12,6 +12,8 @@ import "@material/tab-bar/dist/mdc.tab-bar.css";
 import "@material/tab/dist/mdc.tab.css";
 import Result from "./Result";
 import QueryHistory from "./QueryHistory";
+import { Typography } from "@rmwc/typography";
+import "@material/typography/dist/mdc.typography.css";
 import { useEditor } from "./monaco-util";
 import { Query } from "./types";
 import "./QueryPage.css";
@@ -68,6 +70,7 @@ function QueryPage({ serverURL }: Props) {
 
   return (
     <main>
+      <Typography use="headline6">Query Editor</Typography>
       <Card className="Run">
         <MonacoEditor
           height={300}
@@ -75,14 +78,14 @@ function QueryPage({ serverURL }: Props) {
           language="javascript"
           options={options}
         />
-        <Button
-          icon="play_circle_filled"
-          unelevated
-          label="Run"
-          onClick={handleClick}
-        />
-      </Card>
-      <Card>
+        <div className="actions">
+          <Button
+            icon="play_circle_filled"
+            unelevated
+            label="Run"
+            onClick={handleClick}
+          />
+        </div>
         <TabBar
           style={{ width: "30em" }}
           activeTabIndex={activeTabIndex}

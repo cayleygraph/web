@@ -1,10 +1,31 @@
+main {
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+main > .mdc-typography--headline6 {
+  margin: 0 30px;
+  padding: 12px 0;
+  display: block;
+}
+
+.actions {
+  border-color: #d3d3d3;
+  border-style: solid;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  border-left-width: 0;
+  border-right-width: 0;
+}
+
 .Run {
-  height: calc(300px + 32px + 3em);
+  flex: 1;
   display: flex;
   flex-direction: column;
   padding-top: 16px;
   z-index: 10;
-  margin-bottom: 16px;
 }
 
 .Run .mdc-button {
