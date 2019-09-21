@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { editor } from "monaco-editor";
 import { Card } from "@rmwc/card";
 import "@material/card/dist/mdc.card.css";
 import { Button } from "@rmwc/button";
@@ -27,6 +28,10 @@ type Props = {
 };
 
 const Result = ({ result }: { result: string | null }) => {
+  const options: editor.IDiffEditorConstructionOptions = {
+    readOnly: true,
+    minimap: { enabled: false }
+  };
   let formattedResult = result;
 
   if (result) {
@@ -40,7 +45,7 @@ const Result = ({ result }: { result: string | null }) => {
       height={300}
       value={formattedResult}
       language="json"
-      options={{ readOnly: true }}
+      options={options}
     />
   );
 };
@@ -94,6 +99,10 @@ function QueryPage({ serverURL }: Props) {
   const currentQuery = queries.find(query => query.id === activeQuery);
   const result = currentQuery ? currentQuery.result : null;
 
+  const options: editor.IDiffEditorConstructionOptions = {
+    minimap: { enabled: false }
+  };
+
   return (
     <main>
       <Card className="Run">
@@ -101,6 +110,7 @@ function QueryPage({ serverURL }: Props) {
           height={300}
           editorDidMount={handleEditorMount}
           language="javascript"
+          options={options}
         />
         <Button label="Run" onClick={handleClick} />
       </Card>
