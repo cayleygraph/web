@@ -3,8 +3,14 @@ import { Card } from "@rmwc/card";
 import "@material/card/dist/mdc.card.css";
 import { Button } from "@rmwc/button";
 import "@material/button/dist/mdc.button.css";
+import { TabBar, Tab } from "@rmwc/tabs";
+import "@material/tab-scroller/dist/mdc.tab-scroller.css";
+import "@material/tab-indicator/dist/mdc.tab-indicator.css";
+import "@material/tab-bar/dist/mdc.tab-bar.css";
+import "@material/tab/dist/mdc.tab.css";
 import MonacoEditor from "@monaco-editor/react";
 import { useEditor } from "./monaco-util";
+import "./QueryPage.css";
 
 type Query = {
   id: number;
@@ -20,7 +26,37 @@ type Props = {
   serverURL: string;
 };
 
+const Result = ({ result }: { result: string | null }) => {
+  let formattedResult = result;
+
+  if (result) {
+    try {
+      formattedResult = JSON.stringify(JSON.parse(result), null, 4);
+    } catch {}
+  }
+
+  return (
+    <MonacoEditor
+      height={300}
+      value={formattedResult}
+      language="json"
+      options={{ readOnly: true }}
+    />
+  );
+};
+
+const QueryHistory = ({ queries }: { queries: Query[] }) => (
+  <>
+    {[...queries].reverse().map(query => (
+      <div>
+        {query.time.toLocaleString()} result? {query.result ? "yes" : "no"}
+      </div>
+    ))}
+  </>
+);
+
 function QueryPage({ serverURL }: Props) {
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [language, setLanguage] = useState("gizmo");
   const [activeQuery, setActiveQuery] = useState(ACTIVE_QUERY_INITIAL_STATE);
   const [queries, setQueries] = useState(QUERIES_INITIAL_STATE);
@@ -56,15 +92,7 @@ function QueryPage({ serverURL }: Props) {
   }, [editor, queries]);
 
   const currentQuery = queries.find(query => query.id === activeQuery);
-  const result = currentQuery && currentQuery.result;
-
-  let formattedResult = result;
-
-  if (result) {
-    try {
-      formattedResult = JSON.stringify(JSON.parse(result), null, 4);
-    } catch {}
-  }
+  const result = currentQuery ? currentQuery.result : null;
 
   return (
     <main>
@@ -76,21 +104,17 @@ function QueryPage({ serverURL }: Props) {
         />
         <Button label="Run" onClick={handleClick} />
       </Card>
-      <div>Results | Query History</div>
       <Card>
-        {[...queries].reverse().map(query => (
-          <div>
-            {query.time.toLocaleString()} result? {query.result ? "yes" : "no"}
-          </div>
-        ))}
-      </Card>
-      <Card className="Results">
-        <MonacoEditor
-          height={300}
-          value={formattedResult}
-          language="json"
-          options={{ readOnly: true }}
-        />
+        <TabBar
+          style={{ width: "30em" }}
+          activeTabIndex={activeTabIndex}
+          onActivate={evt => setActiveTabIndex(evt.detail.index)}
+        >
+          <Tab>Results</Tab>
+          <Tab>Query History</Tab>
+        </TabBar>
+        {activeTabIndex === 0 && <Result result={result} />}
+        {activeTabIndex === 1 && <QueryHistory queries={queries} />}
       </Card>
     </main>
   );

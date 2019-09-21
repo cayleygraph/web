@@ -1,0 +1,13 @@
+.Run {
+  height: calc(300px + 32px + 3em);
+  display: flex;
+  flex-direction: column;
+  padding-top: 16px;
+  z-index: 10;
+  margin-bottom: 16px;
+}
+
+.Run .mdc-button {
+  align-self: flex-end;
+  margin: 16px;
+}

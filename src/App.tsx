@@ -17,7 +17,7 @@ function App() {
         </DrawerHeader>
         <DrawerContent>
           <List>
-            <ListItem>Query</ListItem>
+            <ListItem activated>Query</ListItem>
             <ListItem>Query Shape</ListItem>
             <ListItem>Visualize</ListItem>
             <ListItem>Write</ListItem>
