@@ -26,9 +26,15 @@ export async function runQuery(
   language: string,
   query: string
 ): Promise<QueryResult> {
-  const res = await fetch(`${serverURL}/api/v1/query/${language}`, {
-    method: "POST",
-    body: query
-  });
+  const res = await fetch(
+    `${serverURL}/api/v2/query?${new URLSearchParams({ lang: language })}`,
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/ld+json"
+      },
+      body: query
+    }
+  );
   return res.json();
 }
