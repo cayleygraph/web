@@ -9,7 +9,7 @@ import "@material/list/dist/mdc.list.css";
 import "@material/drawer/dist/mdc.drawer.css";
 import "./App.css";
 
-const SERVER_URL = "http://localhost:64210";
+const { REACT_APP_SERVER_URL: SERVER_URL } = process.env;
 
 function App() {
   /** @todo use router */
