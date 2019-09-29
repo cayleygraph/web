@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState } from "react";
 import QueryEditor from "./QueryEditor";
 import ForceGraph from "./ForceGraph";
 import { runQuery, QueryResult } from "./queries";
@@ -24,8 +24,6 @@ const resultToGraph = (
   }
   return { links, nodes: [...nodes.values()].map(id => ({ id })) };
 };
-
-const INITIAL_GRAPH_DATA_STATE: GraphData = { nodes: [], links: [] };
 
 const Link = ({ link }) => (
   <line

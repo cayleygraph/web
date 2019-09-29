@@ -42,7 +42,7 @@ const ForceGraph = ({ data, linkComponent, nodeComponent }: Props) => {
         setForceData({ ...data });
       });
     }
-  }, [data]);
+  }, [data, height, width]);
   return (
     <svg className="graph" ref={ref}>
       <Graph
