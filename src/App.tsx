@@ -12,6 +12,9 @@ import "./App.css";
 const { REACT_APP_SERVER_URL: SERVER_URL } = process.env;
 
 function App() {
+  if (SERVER_URL === undefined) {
+    throw new Error(`SERVER_URL environment variable must be provided`);
+  }
   /** @todo use router */
   const [page, setPage] = useState("query");
   return (
