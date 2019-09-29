@@ -5,5 +5,8 @@
     "useJSXTextNode": true
   },
   "extends": ["plugin:@typescript-eslint/recommended"],
-  "plugins": ["@typescript-eslint", "react-hooks"]
+  "plugins": ["@typescript-eslint", "react-hooks"],
+  "parserOptions": {
+    "warnOnUnsupportedTypeScriptVersion": false
+  }
 }
