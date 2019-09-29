@@ -7,7 +7,7 @@ import "@material/tab-indicator/dist/mdc.tab-indicator.css";
 import "@material/tab-bar/dist/mdc.tab-bar.css";
 import "@material/tab/dist/mdc.tab.css";
 import QueryEditor from "./QueryEditor";
-import Result from "./Result";
+import JSONCodeViewer from "./JSONCodeViewer";
 import QueryHistory from "./QueryHistory";
 import { Query, runQuery } from "./queries";
 
@@ -66,7 +66,7 @@ function QueryPage({ serverURL }: Props) {
           <Tab>Results</Tab>
           <Tab>Query History</Tab>
         </TabBar>
-        {activeTabIndex === 0 && <Result result={result} />}
+        {activeTabIndex === 0 && <JSONCodeViewer value={result} />}
         {activeTabIndex === 1 && <QueryHistory queries={queries} />}
       </Card>
     </main>
