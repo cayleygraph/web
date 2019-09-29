@@ -75,9 +75,13 @@ async function registerRunShortcut(
 }
 
 const QueryEditor = ({
-  onRun
+  onRun,
+  lastQuery,
+  onLastQueryChange
 }: {
   onRun: (query: string, language: Language) => void;
+  lastQuery: string | null;
+  onLastQueryChange: (query: string) => void;
 }) => {
   const [handleEditorMount, editor] = useEditor();
   const [language, setLanguage] = useState(languageOptions[0].value);
@@ -107,6 +111,17 @@ const QueryEditor = ({
       registerRunShortcut(editor, run);
     }
   }, [editor, run]);
+
+  useEffect(() => {
+    if (lastQuery && editor) {
+      editor.setValue(lastQuery);
+    }
+    return () => {
+      if (editor) {
+        return onLastQueryChange(editor.getValue());
+      }
+    };
+  }, [editor]);
 
   return (
     <div className="QueryEditor">

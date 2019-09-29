@@ -16,6 +16,7 @@ function App() {
     throw new Error(`SERVER_URL environment variable must be provided`);
   }
   /** @todo use router */
+  const [lastQuery, setLastQuery] = useState<string | null>(null);
   const [page, setPage] = useState("query");
   return (
     <div className="App">
@@ -52,9 +53,27 @@ function App() {
           </List>
         </DrawerContent>
       </Drawer>
-      {page === "query" && <QueryPage serverURL={SERVER_URL} />}
-      {page === "queryShape" && <QueryShapePage serverURL={SERVER_URL} />}
-      {page === "visualize" && <VisualizePage serverURL={SERVER_URL} />}
+      {page === "query" && (
+        <QueryPage
+          serverURL={SERVER_URL}
+          lastQuery={lastQuery}
+          onLastQueryChange={setLastQuery}
+        />
+      )}
+      {page === "queryShape" && (
+        <QueryShapePage
+          serverURL={SERVER_URL}
+          lastQuery={lastQuery}
+          onLastQueryChange={setLastQuery}
+        />
+      )}
+      {page === "visualize" && (
+        <VisualizePage
+          serverURL={SERVER_URL}
+          lastQuery={lastQuery}
+          onLastQueryChange={setLastQuery}
+        />
+      )}
       {page === "write" && <WritePage serverURL={SERVER_URL} />}
     </div>
   );

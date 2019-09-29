@@ -4,7 +4,11 @@ import ForceGraph from "./ForceGraph";
 import { runQuery, QueryResult } from "./queries";
 import "./VisualizePage.css";
 
-type Props = { serverURL: string };
+type Props = {
+  serverURL: string;
+  lastQuery: string | null;
+  onLastQueryChange: (query: string) => void;
+};
 
 type GraphData = {
   nodes: { id: string }[];
@@ -46,7 +50,7 @@ const Node = ({ node }) => (
   </g>
 );
 
-const VisualizePage = ({ serverURL }: Props) => {
+const VisualizePage = ({ serverURL, lastQuery, onLastQueryChange }: Props) => {
   const [result, setResult] = useState<QueryResult>(null);
   const handleRun = useCallback(
     (query, language) => {
@@ -58,7 +62,11 @@ const VisualizePage = ({ serverURL }: Props) => {
   );
   return (
     <main>
-      <QueryEditor onRun={handleRun} />
+      <QueryEditor
+        onRun={handleRun}
+        lastQuery={lastQuery}
+        onLastQueryChange={onLastQueryChange}
+      />
       <ForceGraph
         data={
           result && "result" in result ? resultToGraph(result.result) : null

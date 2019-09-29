@@ -1,8 +1,12 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import QueryEditor from "./QueryEditor";
 import JSONCodeViewer from "./JSONCodeViewer";
 
-type Props = { serverURL: string };
+type Props = {
+  serverURL: string;
+  lastQuery: string | null;
+  onLastQueryChange: (query: string) => void;
+};
 
 async function getShape(serverURL: string, query: string) {
   const res = await fetch(`${serverURL}/api/v1/shape/gizmo`, {
@@ -16,7 +20,7 @@ async function getShape(serverURL: string, query: string) {
   return result;
 }
 
-const QueryShapePage = ({ serverURL }: Props) => {
+const QueryShapePage = ({ serverURL, lastQuery, onLastQueryChange }: Props) => {
   const [result, setResult] = useState<object | null>(null);
   const run = useCallback(
     query => {
@@ -26,7 +30,11 @@ const QueryShapePage = ({ serverURL }: Props) => {
   );
   return (
     <main>
-      <QueryEditor onRun={run} />
+      <QueryEditor
+        onRun={run}
+        lastQuery={lastQuery}
+        onLastQueryChange={onLastQueryChange}
+      />
       <JSONCodeViewer value={result} />
     </main>
   );
