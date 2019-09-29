@@ -1,3 +1,9 @@
+# Cayley UI
+
+```bash
+docker run cayleygraph/web
+```
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

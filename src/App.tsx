@@ -9,7 +9,9 @@ import "@material/list/dist/mdc.list.css";
 import "@material/drawer/dist/mdc.drawer.css";
 import "./App.css";
 
-const { REACT_APP_SERVER_URL: SERVER_URL } = process.env;
+// window.SERVER_URL can be undefined or empty string. In any of these cases
+// it should default.
+const SERVER_URL = window.SERVER_URL || "http://localhost:64210";
 
 function App() {
   /** @todo use router */
