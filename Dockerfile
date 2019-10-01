@@ -12,4 +12,4 @@ RUN yarn build
 FROM nginx
 COPY --from=builder /build /usr/share/nginx/html
 COPY nginx.conf /etc/nginx
-CMD nginx
+CMD ["nginx"]
