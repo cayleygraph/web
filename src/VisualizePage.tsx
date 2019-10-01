@@ -6,8 +6,6 @@ import "./VisualizePage.css";
 
 type Props = {
   serverURL: string;
-  lastQuery: string | null;
-  onLastQueryChange: (query: string) => void;
 };
 
 type GraphData = {
@@ -50,7 +48,7 @@ const Node = ({ node }) => (
   </g>
 );
 
-const VisualizePage = ({ serverURL, lastQuery, onLastQueryChange }: Props) => {
+const VisualizePage = ({ serverURL }: Props) => {
   const [result, setResult] = useState<QueryResult>(null);
   const handleRun = useCallback(
     (query, language) => {
@@ -62,11 +60,7 @@ const VisualizePage = ({ serverURL, lastQuery, onLastQueryChange }: Props) => {
   );
   return (
     <main>
-      <QueryEditor
-        onRun={handleRun}
-        lastQuery={lastQuery}
-        onLastQueryChange={onLastQueryChange}
-      />
+      <QueryEditor onRun={handleRun} />
       <ForceGraph
         data={
           result && "result" in result ? resultToGraph(result.result) : null

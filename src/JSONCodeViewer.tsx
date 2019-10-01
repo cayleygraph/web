@@ -2,13 +2,13 @@ import React from "react";
 import * as monaco from "monaco-editor";
 import MonacoEditor from "@monaco-editor/react";
 
-const JSONCodeViewer = ({ value }: { value: object | null }) => {
-  const options: monaco.editor.IDiffEditorConstructionOptions = {
-    readOnly: true,
-    minimap: { enabled: false },
-    scrollBeyondLastLine: false
-  };
+const options: monaco.editor.IDiffEditorConstructionOptions = {
+  readOnly: true,
+  minimap: { enabled: false },
+  scrollBeyondLastLine: false
+};
 
+const JSONCodeViewer = ({ value }: { value: object | null }) => {
   return (
     <MonacoEditor
       height={300}

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-// eslint-disable-next-line
+// eslint-disable-next-
 import * as monaco from "monaco-editor";
 import { monaco as monacoInit } from "@monaco-editor/react";
 import MonacoEditor from "@monaco-editor/react";
@@ -10,6 +10,7 @@ import { Select } from "@rmwc/select";
 import "@material/select/dist/mdc.select.css";
 import RunButton from "./RunButton";
 import { useEditor } from "./monaco-util";
+import { setLastQuery, getLastQuery } from "./lastQuery";
 
 const queryLanguageToMonacoLanguage = (language: Language): string => {
   switch (language) {
@@ -35,21 +36,6 @@ const getGizmoDefinitions = async (): Promise<[string, string]> => {
   return [content, gizmoPath];
 };
 
-async function initMonaco(): Promise<void> {
-  const [content, path] = await getGizmoDefinitions();
-  const monacoInstance = await monacoInit.init();
-  const {
-    javascriptDefaults,
-    ScriptTarget
-  } = monacoInstance.languages.typescript;
-  javascriptDefaults.setCompilerOptions({
-    noLib: true,
-    target: ScriptTarget.ES5,
-    allowNonTsExtensions: true
-  });
-  javascriptDefaults.addExtraLib(content, path);
-}
-
 async function registerRunShortcut(
   editor: monaco.editor.IStandaloneCodeEditor,
   run: () => void
@@ -74,20 +60,32 @@ async function registerRunShortcut(
   });
 }
 
-const QueryEditor = ({
-  onRun,
-  lastQuery,
-  onLastQueryChange
-}: {
+const options: monaco.editor.IDiffEditorConstructionOptions = {
+  minimap: { enabled: false }
+};
+
+type Props = {
   onRun: (query: string, language: Language) => void;
-  lastQuery: string | null;
-  onLastQueryChange: (query: string) => void;
-}) => {
-  const [handleEditorMount, editor] = useEditor();
-  const [language, setLanguage] = useState(languageOptions[0].value);
-  const options: monaco.editor.IDiffEditorConstructionOptions = {
-    minimap: { enabled: false }
-  };
+};
+
+const QueryEditor = ({ onRun }: Props) => {
+  const lastQuery = getLastQuery();
+  const [onEditorMount, editor] = useEditor();
+  const [language, setLanguage] = useState(lastQuery.language);
+
+  useEffect(() => {
+    const lastQuery = getLastQuery();
+    setLanguage(lastQuery.language);
+  }, [setLanguage]);
+
+  const handleEditorMount = useCallback(
+    (_, editor) => {
+      const lastQuery = getLastQuery();
+      editor.setValue(lastQuery.text);
+      onEditorMount(_, editor);
+    },
+    [onEditorMount]
+  );
 
   const handleLanguageChange = React.useCallback(
     (event: any) => {
@@ -103,25 +101,21 @@ const QueryEditor = ({
   }, [editor, language, onRun]);
 
   useEffect(() => {
-    initMonaco();
-  }, []);
-
-  useEffect(() => {
     if (editor) {
       registerRunShortcut(editor, run);
     }
   }, [editor, run]);
 
   useEffect(() => {
-    if (lastQuery && editor) {
-      editor.setValue(lastQuery);
-    }
     return () => {
       if (editor) {
-        return onLastQueryChange(editor.getValue());
+        setLastQuery({
+          text: editor.getValue(),
+          language
+        });
       }
     };
-  }, [editor]);
+  }, [editor, language]);
 
   return (
     <div className="QueryEditor">
@@ -144,5 +138,22 @@ const QueryEditor = ({
     </div>
   );
 };
+
+async function initMonaco(): Promise<void> {
+  const [content, path] = await getGizmoDefinitions();
+  const monacoInstance = await monacoInit.init();
+  const {
+    javascriptDefaults,
+    ScriptTarget
+  } = monacoInstance.languages.typescript;
+  javascriptDefaults.setCompilerOptions({
+    noLib: true,
+    target: ScriptTarget.ES5,
+    allowNonTsExtensions: true
+  });
+  javascriptDefaults.addExtraLib(content, path);
+}
+
+initMonaco();
 
 export default QueryEditor;

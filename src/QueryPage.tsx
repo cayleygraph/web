@@ -16,11 +16,9 @@ const QUERIES_INITIAL_STATE: Query[] = [];
 
 type Props = {
   serverURL: string;
-  lastQuery: string | null;
-  onLastQueryChange: (query: string) => void;
 };
 
-function QueryPage({ serverURL, lastQuery, onLastQueryChange }: Props) {
+function QueryPage({ serverURL }: Props) {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
 
   const [activeQuery, setActiveQuery] = useState(ACTIVE_QUERY_INITIAL_STATE);
@@ -58,11 +56,7 @@ function QueryPage({ serverURL, lastQuery, onLastQueryChange }: Props) {
 
   return (
     <main>
-      <QueryEditor
-        onRun={handleRun}
-        lastQuery={lastQuery}
-        onLastQueryChange={onLastQueryChange}
-      />
+      <QueryEditor onRun={handleRun} />
       <Card>
         <TabBar
           style={{ width: "30em" }}

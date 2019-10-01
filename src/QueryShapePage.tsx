@@ -1,15 +1,13 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState } from "react";
 import QueryEditor from "./QueryEditor";
 import JSONCodeViewer from "./JSONCodeViewer";
 
 type Props = {
   serverURL: string;
-  lastQuery: string | null;
-  onLastQueryChange: (query: string) => void;
 };
 
-async function getShape(serverURL: string, query: string) {
-  const res = await fetch(`${serverURL}/api/v1/shape/gizmo`, {
+async function getShape(serverURL: string, language: string, query: string) {
+  const res = await fetch(`${serverURL}/api/v1/shape/${language}`, {
     method: "POST",
     body: query
   });
@@ -20,21 +18,17 @@ async function getShape(serverURL: string, query: string) {
   return result;
 }
 
-const QueryShapePage = ({ serverURL, lastQuery, onLastQueryChange }: Props) => {
+const QueryShapePage = ({ serverURL }: Props) => {
   const [result, setResult] = useState<object | null>(null);
   const run = useCallback(
-    query => {
-      getShape(serverURL, query).then(setResult);
+    (query, language) => {
+      getShape(serverURL, language, query).then(setResult);
     },
     [serverURL]
   );
   return (
     <main>
-      <QueryEditor
-        onRun={run}
-        lastQuery={lastQuery}
-        onLastQueryChange={onLastQueryChange}
-      />
+      <QueryEditor onRun={run} />
       <JSONCodeViewer value={result} />
     </main>
   );
