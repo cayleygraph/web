@@ -107,6 +107,14 @@ const QueryEditor = ({ onRun }: Props) => {
   }, [editor, run]);
 
   useEffect(() => {
+    if (editor) {
+      editor.onDidChangeModelContent(() => {
+        setLastQuery({
+          text: editor.getValue(),
+          language
+        });
+      });
+    }
     return () => {
       if (editor) {
         setLastQuery({
