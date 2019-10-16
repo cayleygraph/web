@@ -65,13 +65,16 @@ const WritePage = ({ serverURL }: Props) => {
       fileInput.click();
     }
   }, [fileInputRef]);
-  const handleFileInputChange = useCallback(event => {
-    for (const file of event.currentTarget.files) {
-      write(serverURL, file).then(() => {
-        console.log(`Uploaded ${file.name}`);
-      });
-    }
-  }, []);
+  const handleFileInputChange = useCallback(
+    event => {
+      for (const file of event.currentTarget.files) {
+        write(serverURL, file).then(() => {
+          console.log(`Uploaded ${file.name}`);
+        });
+      }
+    },
+    [serverURL]
+  );
   return (
     <>
       <input
