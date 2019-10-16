@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+  - "stable"
+cache:
+  directories:
+    - node_modules
+script:
+  - yarn test
+before_deploy:
+  - yarn run build
+  - (cd build; zip -r ../web.zip .)
+deploy:
+  - provider: releases
+    api_key: $GITHUB_AUTH_TOKEN
+    file: web.zip
+    skip_cleanup: true
+    on:
+      tags: true
