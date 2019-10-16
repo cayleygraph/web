@@ -23,7 +23,7 @@ function App() {
       <Drawer>
         <DrawerHeader>
           <DrawerTitle>
-            <img className="Logo" src={logo} />
+            <img className="Logo" src={logo} alt="logo" />
             Cayley
           </DrawerTitle>
         </DrawerHeader>
