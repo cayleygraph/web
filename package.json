@@ -10,7 +10,6 @@
     "@types/react-dom": "^16.9.0",
     "@vx/network": "^0.0.190",
     "d3-force": "^2.0.1",
-    "eslint": "^5.0.0",
     "monaco-editor": "^0.18.1",
     "prop-types": "^15.7.2",
     "react": "^16.10.1",
