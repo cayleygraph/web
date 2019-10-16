@@ -7,6 +7,7 @@ import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
 import "@material/drawer/dist/mdc.drawer.css";
+import logo from "./logo.svg";
 import "./App.css";
 
 const { REACT_APP_SERVER_URL: SERVER_URL } = process.env;
@@ -21,7 +22,10 @@ function App() {
     <div className="App">
       <Drawer>
         <DrawerHeader>
-          <DrawerTitle>Cayley</DrawerTitle>
+          <DrawerTitle>
+            <img className="Logo" src={logo} />
+            Cayley
+          </DrawerTitle>
         </DrawerHeader>
         <DrawerContent>
           <List>
