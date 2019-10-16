@@ -7,3 +7,8 @@ main {
   width: 100%;
   flex: 1;
 }
+
+.graph svg {
+  height: 100%;
+  width: 100%;
+}

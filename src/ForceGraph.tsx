@@ -25,12 +25,14 @@ const ForceGraph = ({ data, linkComponent, nodeComponent }: Props) => {
   const [forceData, setForceData] = useState(INITIAL_FORCE_DATA);
   const [ref, { width, height }] = useDimensions();
   useEffect(() => {
-    if (data) {
+    if (data && width && height) {
+      // @ts-ignore
       const force = forceSimulation(data.nodes)
         .force(
           "link",
           forceLink()
-            .id((d: { id: string }) => d.id)
+            // @ts-ignore
+            .id(d => d.id)
             .links(data.links)
             .distance(100)
         )
@@ -44,13 +46,15 @@ const ForceGraph = ({ data, linkComponent, nodeComponent }: Props) => {
     }
   }, [data, height, width]);
   return (
-    <svg className="graph" ref={ref}>
-      <Graph
-        graph={forceData}
-        linkComponent={linkComponent}
-        nodeComponent={nodeComponent}
-      />
-    </svg>
+    <div className="graph" ref={ref}>
+      <svg>
+        <Graph
+          graph={forceData}
+          linkComponent={linkComponent}
+          nodeComponent={nodeComponent}
+        />
+      </svg>
+    </div>
   );
 };
 

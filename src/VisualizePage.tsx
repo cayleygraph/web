@@ -14,20 +14,35 @@ type GraphData = {
 };
 
 const resultToGraph = (
-  result: Array<{ source: string; target: string }>
+  result: Array<{ source: { "@id": string }; target: { "@id": string } }>
 ): GraphData => {
   const links = [];
   const nodes = new Set();
   for (const row of result) {
-    const { source, target } = row;
+    if (!("source" in row) || !("target" in row)) {
+      continue;
+    }
+    const {
+      source: { "@id": source },
+      target: { "@id": target }
+    } = row;
     nodes.add(source);
     nodes.add(target);
     links.push({ source, target });
   }
+  // @ts-ignore
   return { links, nodes: [...nodes.values()].map(id => ({ id })) };
 };
 
-const Link = ({ link }) => (
+const Link = ({
+  link
+}: {
+  link: {
+    id: string;
+    source: { x: number; y: number };
+    target: { x: number; y: number };
+  };
+}) => (
   <line
     x1={link.source.x}
     y1={link.source.y}
@@ -41,7 +56,7 @@ const Link = ({ link }) => (
   </line>
 );
 
-const Node = ({ node }) => (
+const Node = ({ node }: { node: { id: string } }) => (
   <g>
     <circle r={5} fill="#21D4FD" />
     <text textAnchor="end">{node.id}</text>
@@ -61,13 +76,13 @@ const VisualizePage = ({ serverURL }: Props) => {
   return (
     <main>
       <QueryEditor onRun={handleRun} />
-      <ForceGraph
-        data={
-          result && "result" in result ? resultToGraph(result.result) : null
-        }
-        nodeComponent={Node}
-        linkComponent={Link}
-      />
+      {result && "result" in result ? (
+        <ForceGraph
+          data={resultToGraph(result.result)}
+          nodeComponent={Node}
+          linkComponent={Link}
+        />
+      ) : null}
     </main>
   );
 };
