@@ -45,3 +45,7 @@
 .App main .actions > .mdc-button {
   margin-right: 24px;
 }
+
+.App main .actions > .mdc-button:not(:first-child) {
+  margin-left: 24px;
+}
