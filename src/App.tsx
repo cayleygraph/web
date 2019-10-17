@@ -9,6 +9,7 @@ import "@material/list/dist/mdc.list.css";
 import "@material/drawer/dist/mdc.drawer.css";
 import logo from "./logo.svg";
 import "./App.css";
+import("./icon-font");
 
 const { REACT_APP_SERVER_URL: SERVER_URL } = process.env;
 
