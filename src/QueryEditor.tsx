@@ -111,7 +111,7 @@ const QueryEditor = ({ onRun }: Props) => {
       start();
       onRun(editor.getValue(), language, pause);
     }
-  }, [editor, language, onRun]);
+  }, [editor, language, onRun, reset, start, pause]);
 
   useEffect(() => {
     if (editor) {
