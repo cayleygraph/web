@@ -95,7 +95,7 @@ const QueryEditor = ({ onRun }: Props) => {
       editor.setValue(lastQuery.text);
       onEditorMount(_, editor);
     },
-    [onEditorMount]
+    [onEditorMount, language]
   );
 
   const handleLanguageChange = React.useCallback(
@@ -141,12 +141,13 @@ const QueryEditor = ({ onRun }: Props) => {
   return (
     <div className="QueryEditor">
       <Typography use="headline6">Query Editor</Typography>
-      <MonacoEditor
-        height={300}
-        editorDidMount={handleEditorMount}
-        language={queryLanguageToMonacoLanguage(language)}
-        options={options}
-      />
+        <MonacoEditor
+          key={language}
+          height={300}
+          editorDidMount={handleEditorMount}
+          language={queryLanguageToMonacoLanguage(language)}
+          options={options}
+        />
       <div className="actions">
         <RunButton onClick={run} />
         <Select
