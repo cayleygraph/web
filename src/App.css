@@ -42,6 +42,10 @@
   border-right-width: 0;
 }
 
+.App > main .actions .timer {
+  margin-left: 16px;
+}
+
 .App main .actions > .mdc-button {
   margin-right: 24px;
 }

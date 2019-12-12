@@ -25,7 +25,7 @@ function QueryPage({ serverURL }: Props) {
   const [queries, setQueries] = useState(QUERIES_INITIAL_STATE);
 
   const handleRun = React.useCallback(
-    (query, language) => {
+    (query, language, onDone) => {
       const id = queries.length;
       setActiveQuery(id);
       setQueries(queries => [
@@ -46,7 +46,8 @@ function QueryPage({ serverURL }: Props) {
         })
         .catch(error => {
           alert(error);
-        });
+        })
+        .finally(onDone);
     },
     [queries, serverURL]
   );

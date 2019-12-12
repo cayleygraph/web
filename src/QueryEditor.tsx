@@ -8,9 +8,17 @@ import { Typography } from "@rmwc/typography";
 import "@material/typography/dist/mdc.typography.css";
 import { Select } from "@rmwc/select";
 import "@material/select/dist/mdc.select.css";
+import { useTimer } from 'use-timer';
 import RunButton from "./RunButton";
 import { useEditor } from "./monaco-util";
 import { setLastQuery, getLastQuery } from "./lastQuery";
+
+const formatQueryTime = (queryTime: number): string => {
+  if (queryTime < 100) {
+    return `${queryTime} milliseconds`;
+  }
+  return `${(queryTime / 1000).toFixed(2)} seconds`;
+}
 
 const queryLanguageToMonacoLanguage = (language: Language): string => {
   switch (language) {
@@ -65,13 +73,16 @@ const options: monaco.editor.IDiffEditorConstructionOptions = {
 };
 
 type Props = {
-  onRun: (query: string, language: Language) => void;
+  onRun: (query: string, language: Language, onDone: () => void) => void;
 };
 
 const QueryEditor = ({ onRun }: Props) => {
   const lastQuery = getLastQuery();
   const [onEditorMount, editor] = useEditor();
   const [language, setLanguage] = useState(lastQuery.language);
+  const { time, start, pause, reset } = useTimer({
+    interval: 1,
+  });
 
   useEffect(() => {
     const lastQuery = getLastQuery();
@@ -96,7 +107,9 @@ const QueryEditor = ({ onRun }: Props) => {
 
   const run = useCallback(() => {
     if (editor) {
-      onRun(editor.getValue(), language);
+      reset();
+      start();
+      onRun(editor.getValue(), language, pause);
     }
   }, [editor, language, onRun]);
 
@@ -142,6 +155,7 @@ const QueryEditor = ({ onRun }: Props) => {
           value={language}
           onChange={handleLanguageChange}
         />
+        <span className="timer">{time ? `${formatQueryTime(time)} elapsed` : null}</span>
       </div>
     </div>
   );

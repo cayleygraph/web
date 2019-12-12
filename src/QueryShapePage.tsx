@@ -21,8 +21,8 @@ async function getShape(serverURL: string, language: string, query: string) {
 const QueryShapePage = ({ serverURL }: Props) => {
   const [result, setResult] = useState<object | null>(null);
   const run = useCallback(
-    (query, language) => {
-      getShape(serverURL, language, query).then(setResult);
+    (query, language, onDone) => {
+      getShape(serverURL, language, query).then(setResult).finally(onDone);
     },
     [serverURL]
   );

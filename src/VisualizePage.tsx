@@ -66,10 +66,10 @@ const Node = ({ node }: { node: { id: string } }) => (
 const VisualizePage = ({ serverURL }: Props) => {
   const [result, setResult] = useState<QueryResult>(null);
   const handleRun = useCallback(
-    (query, language) => {
+    (query, language, onDone) => {
       runQuery(serverURL, language, query).then(result => {
         setResult(result);
-      });
+      }).finally(onDone);
     },
     [serverURL]
   );
