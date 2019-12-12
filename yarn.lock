@@ -2227,10 +2227,10 @@
   dependencies:
     "@material/feature-targeting" "^3.1.0"
 
-"@monaco-editor/react@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-2.0.0.tgz#c0ce65bc6aa6e8ae2b34856eb138027d2a5e5092"
-  integrity sha512-KkjER09J77CGTDKLGwmdJdHLsMD4ZhZHS0LfJJDV997O/UkEQgvgt4Sn3A880APHH8sCS2/KdTPMJNSoqlp6OA==
+"@monaco-editor/react@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-2.4.0.tgz#f08be581bed6549367f07893ca9bd21ba8bfbf20"
+  integrity sha512-agiV2Y8HD1lrgQuQXkcyEvjf4FN33/VvYnj5x5OMu5O8S/Gs2lUhyr4wT5qQH5eh4Qp0qK7o79il/jEMEQs3uQ==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"

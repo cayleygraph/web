@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@monaco-editor/react": "^2.0.0",
+    "@monaco-editor/react": "^2.4.0",
     "@types/d3-force": "^1.2.1",
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.4",
