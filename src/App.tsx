@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import QueryPage from "./QueryPage";
-import QueryShapePage from "./QueryShapePage";
-import VisualizePage from "./VisualizePage";
 import WritePage from "./WritePage";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem } from "@rmwc/list";
@@ -37,18 +35,6 @@ function App() {
               Query
             </ListItem>
             <ListItem
-              activated={page === "queryShape"}
-              onClick={() => setPage("queryShape")}
-            >
-              Query Shape
-            </ListItem>
-            <ListItem
-              activated={page === "visualize"}
-              onClick={() => setPage("visualize")}
-            >
-              Visualize
-            </ListItem>
-            <ListItem
               activated={page === "write"}
               onClick={() => setPage("write")}
             >
@@ -58,8 +44,6 @@ function App() {
         </DrawerContent>
       </Drawer>
       {page === "query" && <QueryPage serverURL={SERVER_URL} />}
-      {page === "queryShape" && <QueryShapePage serverURL={SERVER_URL} />}
-      {page === "visualize" && <VisualizePage serverURL={SERVER_URL} />}
       {page === "write" && <WritePage serverURL={SERVER_URL} />}
     </div>
   );

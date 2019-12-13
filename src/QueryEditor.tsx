@@ -95,7 +95,7 @@ const QueryEditor = ({ onRun }: Props) => {
       editor.setValue(lastQuery.text);
       onEditorMount(_, editor);
     },
-    [onEditorMount, language]
+    [onEditorMount]
   );
 
   const handleLanguageChange = React.useCallback(

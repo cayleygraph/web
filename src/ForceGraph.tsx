@@ -5,7 +5,9 @@ import {
   forceCenter,
   forceLink,
   forceManyBody,
-  forceSimulation
+  forceSimulation,
+  Simulation,
+  SimulationNodeDatum
 } from "d3-force";
 
 type GraphData = {
@@ -25,9 +27,10 @@ const ForceGraph = ({ data, linkComponent, nodeComponent }: Props) => {
   const [forceData, setForceData] = useState(INITIAL_FORCE_DATA);
   const [ref, { width, height }] = useDimensions();
   useEffect(() => {
+    let force: Simulation<SimulationNodeDatum, undefined> | undefined;
     if (data && width && height) {
       // @ts-ignore
-      const force = forceSimulation(data.nodes)
+      force = forceSimulation(data.nodes)
         .force(
           "link",
           forceLink()
@@ -38,11 +41,17 @@ const ForceGraph = ({ data, linkComponent, nodeComponent }: Props) => {
         )
         .force("charge", forceManyBody())
         .force("center", forceCenter(width / 2, height / 2));
-
+    }
+    if (force) {
       // Force-update the component on each force tick
       force.on("tick", () => {
         setForceData({ ...data });
       });
+    }
+    return () => {
+      if (force) {
+        force.stop();
+      }
     }
   }, [data, height, width]);
   return (

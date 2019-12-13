@@ -9,6 +9,7 @@ import "@material/tab/dist/mdc.tab.css";
 import QueryEditor from "./QueryEditor";
 import JSONCodeViewer from "./JSONCodeViewer";
 import QueryHistory from "./QueryHistory";
+import Visualize from "./Visualize";
 import { Query, runQuery } from "./queries";
 
 const ACTIVE_QUERY_INITIAL_STATE: number | null = null;
@@ -23,6 +24,7 @@ function QueryPage({ serverURL }: Props) {
 
   const [activeQuery, setActiveQuery] = useState(ACTIVE_QUERY_INITIAL_STATE);
   const [queries, setQueries] = useState(QUERIES_INITIAL_STATE);
+  const [shapeResult, setShapeResult] = useState(null);
 
   const handleRun = React.useCallback(
     (query, language, onDone) => {
@@ -32,24 +34,33 @@ function QueryPage({ serverURL }: Props) {
         ...queries,
         { id, text: query, result: null, language, time: new Date() }
       ]);
-      runQuery(serverURL, language, query)
-        .then(result => {
-          setQueries(queries =>
-            queries.map(query => {
-              if (query.id === id) {
-                return { ...query, result };
-              } else {
-                return query;
-              }
-            })
-          );
-        })
-        .catch(error => {
-          alert(error);
-        })
-        .finally(onDone);
+      if (activeTabIndex === 2) {
+        getShape(serverURL, language, query)
+          .then(setShapeResult)
+          .catch(error => {
+            alert(error);
+          })
+          .finally(onDone);
+      } else {
+        runQuery(serverURL, language, query)
+          .then(result => {
+            setQueries(queries =>
+              queries.map(query => {
+                if (query.id === id) {
+                  return { ...query, result };
+                } else {
+                  return query;
+                }
+              })
+            );
+          })
+          .catch(error => {
+            alert(error);
+          })
+          .finally(onDone);
+      }
     },
-    [queries, serverURL]
+    [queries, serverURL, activeTabIndex]
   );
 
   const currentQuery = queries.find(query => query.id === activeQuery);
@@ -60,18 +71,34 @@ function QueryPage({ serverURL }: Props) {
       <QueryEditor onRun={handleRun} />
       <Card>
         <TabBar
-          style={{ width: "30em" }}
+          style={{ maxWidth: "35em" }}
           activeTabIndex={activeTabIndex}
           onActivate={evt => setActiveTabIndex(evt.detail.index)}
         >
           <Tab>Results</Tab>
           <Tab>Query History</Tab>
+          <Tab>Shape</Tab>
+          <Tab>Visualize</Tab>
         </TabBar>
         {activeTabIndex === 0 && <JSONCodeViewer value={result} />}
         {activeTabIndex === 1 && <QueryHistory queries={queries} />}
+        {activeTabIndex === 2 && <JSONCodeViewer value={shapeResult} />}
+        {activeTabIndex === 3 && <Visualize value={result} />}
       </Card>
     </main>
   );
 }
 
 export default QueryPage;
+
+async function getShape(serverURL: string, language: string, query: string) {
+  const res = await fetch(`${serverURL}/api/v1/shape/${language}`, {
+    method: "POST",
+    body: query
+  });
+  const { error, ...result } = await res.json();
+  if (error) {
+    throw new Error(error);
+  }
+  return result;
+}
