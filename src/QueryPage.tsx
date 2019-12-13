@@ -68,8 +68,12 @@ function QueryPage({ serverURL }: Props) {
           .finally(onDone);
       }
     },
-    [queries, serverURL, activeTabIndex]
+    [queries, serverURL, activeTabIndex, setActiveTabIndex]
   );
+
+  const handleRecovery = useCallback((query: Query) => {
+    /** @todo recover query */
+  }, []);
 
   const currentQuery = queries.find(query => query.id === activeQuery);
   const result = currentQuery ? currentQuery.result : null;
@@ -89,7 +93,9 @@ function QueryPage({ serverURL }: Props) {
           <Tab>Visualize</Tab>
         </TabBar>
         {activeTabIndex === 0 && <JSONCodeViewer value={result} />}
-        {activeTabIndex === 1 && <QueryHistory queries={queries} />}
+        {activeTabIndex === 1 && (
+          <QueryHistory queries={queries} onRecovery={handleRecovery} />
+        )}
         {activeTabIndex === 2 && <JSONCodeViewer value={shapeResult} />}
         {activeTabIndex === 3 && <Visualize value={result} />}
       </Card>
