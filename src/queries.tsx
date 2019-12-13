@@ -1,3 +1,5 @@
+import * as mime from "./mime";
+
 export type Language = "gizmo" | "graphql" | "mql";
 
 export type LanguageOption = {
@@ -31,7 +33,7 @@ export async function runQuery(
     {
       method: "POST",
       headers: {
-        Accept: "application/ld+json"
+        Accept: mime.JSON_LD
       },
       body: query
     }

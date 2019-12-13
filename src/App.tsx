@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import QueryPage from "./QueryPage";
-import WritePage from "./WritePage";
+import DataPage from "./DataPage";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
@@ -35,16 +35,16 @@ function App() {
               Query
             </ListItem>
             <ListItem
-              activated={page === "write"}
-              onClick={() => setPage("write")}
+              activated={page === "data"}
+              onClick={() => setPage("data")}
             >
-              Write
+              Data
             </ListItem>
           </List>
         </DrawerContent>
       </Drawer>
       {page === "query" && <QueryPage serverURL={SERVER_URL} />}
-      {page === "write" && <WritePage serverURL={SERVER_URL} />}
+      {page === "data" && <DataPage serverURL={SERVER_URL} />}
     </div>
   );
 }

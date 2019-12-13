@@ -56,6 +56,10 @@
   margin-left: 24px;
 }
 
+.App main .actions > .mdc-button + .mdc-button {
+  margin-left: 0;
+}
+
 .App main .query-results {
   flex: 1;
 }

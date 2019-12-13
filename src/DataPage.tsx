@@ -7,7 +7,9 @@ import "@material/select/dist/mdc.select.css";
 import { Button } from "@rmwc/button";
 import "@material/button/dist/mdc.button.css";
 import RunButton from "./RunButton";
+import download from "downloadjs";
 import { useEditor } from "./monaco-util";
+import * as mime from "./mime";
 
 type Props = {
   serverURL: string;
@@ -25,6 +27,13 @@ const runDelete = (serverURL: string, value: string): Promise<Response> =>
     body: value
   });
 
+const read = (serverURL: string): Promise<Response> =>
+  fetch(`${serverURL}/api/v2/read`, {
+    headers: {
+      Accept: mime.N_QUADS
+    }
+  });
+
 const options = [
   { label: "Write", value: "write" },
   { label: "Delete", value: "delete" }
@@ -33,6 +42,7 @@ const options = [
 const WritePage = ({ serverURL }: Props) => {
   const [mode, setMode] = useState(options[0].value);
   const [handleEditorMount, editor] = useEditor();
+
   const handleRunButtonClick = useCallback(() => {
     if (!editor) {
       return;
@@ -52,19 +62,23 @@ const WritePage = ({ serverURL }: Props) => {
       }
     }
   }, [serverURL, editor, mode]);
+
   const handleModeChange = useCallback(
     event => {
       setMode(event.target.value);
     },
     [setMode]
   );
+
   const fileInputRef = useRef<HTMLInputElement>(null);
+
   const openFileMenu = useCallback(() => {
     const fileInput = fileInputRef.current;
     if (fileInput) {
       fileInput.click();
     }
   }, [fileInputRef]);
+
   const handleFileInputChange = useCallback(
     event => {
       for (const file of event.currentTarget.files) {
@@ -75,6 +89,15 @@ const WritePage = ({ serverURL }: Props) => {
     },
     [serverURL]
   );
+
+  const downloadDump = useCallback(() => {
+    read(serverURL)
+      .then(res => res.blob())
+      .then(blob => {
+        download(blob, "data.nq", mime.N_QUADS);
+      });
+  }, []);
+
   return (
     <>
       <input
@@ -84,7 +107,7 @@ const WritePage = ({ serverURL }: Props) => {
         onChange={handleFileInputChange}
       />
       <main>
-        <Typography use="headline6">Write</Typography>
+        <Typography use="headline6">Data</Typography>
         <MonacoEditor
           editorDidMount={handleEditorMount}
           language="nquads"
@@ -98,7 +121,16 @@ const WritePage = ({ serverURL }: Props) => {
             value={mode}
             onChange={handleModeChange}
           />
-          <Button label="Upload file" onClick={openFileMenu} />
+          <Button
+            icon="cloud_upload"
+            label="Upload file"
+            onClick={openFileMenu}
+          />
+          <Button
+            icon="cloud_download"
+            label="Download dump"
+            onClick={downloadDump}
+          />
         </div>
       </main>
     </>
