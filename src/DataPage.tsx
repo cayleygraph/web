@@ -96,7 +96,7 @@ const WritePage = ({ serverURL }: Props) => {
       .then(blob => {
         download(blob, "data.nq", mime.N_QUADS);
       });
-  }, []);
+  }, [serverURL]);
 
   return (
     <>
