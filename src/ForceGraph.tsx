@@ -35,7 +35,6 @@ const ForceGraph = ({
   useEffect(() => {
     let force: Simulation<SimulationNodeDatum, undefined> | undefined;
     if (data && width && height) {
-      console.log(width, height);
       // @ts-ignore
       force = forceSimulation(data.nodes)
         .force(
