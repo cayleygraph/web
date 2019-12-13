@@ -23,6 +23,8 @@
   overflow: hidden;
   height: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .App > main .mdc-typography--headline6 {
@@ -52,4 +54,8 @@
 
 .App main .actions > .mdc-button:not(:first-child) {
   margin-left: 24px;
+}
+
+.App main .query-results {
+  flex: 1;
 }

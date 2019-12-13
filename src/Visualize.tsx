@@ -6,17 +6,15 @@ type GraphData = {
   links: { source: string; target: string }[];
 };
 
-type Result = Array<{ source?: { "@id": string }; target?: { "@id": string } }>
+type Result = Array<{ source?: { "@id": string }; target?: { "@id": string } }>;
 
-const resultToGraph = (
-  result: Result
-): GraphData => {
+const resultToGraph = (result: Result): GraphData => {
   const links = [];
   const nodes = new Set();
   for (const row of result) {
     const { source: sourceObject, target: targetObject } = row;
     if (!sourceObject || !targetObject) {
-        continue;
+      continue;
     }
     const source = sourceObject["@id"];
     const target = targetObject["@id"];
@@ -58,17 +56,24 @@ const Node = ({ node }: { node: { id: string } }) => (
 );
 
 type Props = {
-    value: null | { error: object } | {
-        result: Result,
-    }
+  height: number;
+  width: number;
+  value:
+    | null
+    | { error: object }
+    | {
+        result: Result;
+      };
 };
 
-const Visualize = ({ value }: Props) => {
+const Visualize = ({ value, height, width }: Props) => {
   return value && "result" in value ? (
     <ForceGraph
       data={resultToGraph(value.result)}
       nodeComponent={Node}
       linkComponent={Link}
+      height={height}
+      width={width}
     />
   ) : null;
 };

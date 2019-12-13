@@ -8,7 +8,7 @@ import { Typography } from "@rmwc/typography";
 import "@material/typography/dist/mdc.typography.css";
 import { Select } from "@rmwc/select";
 import "@material/select/dist/mdc.select.css";
-import { useTimer } from 'use-timer';
+import { useTimer } from "use-timer";
 import RunButton from "./RunButton";
 import { useEditor } from "./monaco-util";
 import { setLastQuery, getLastQuery } from "./lastQuery";
@@ -18,7 +18,7 @@ const formatQueryTime = (queryTime: number): string => {
     return `${queryTime} milliseconds`;
   }
   return `${(queryTime / 1000).toFixed(2)} seconds`;
-}
+};
 
 const queryLanguageToMonacoLanguage = (language: Language): string => {
   switch (language) {
@@ -81,7 +81,7 @@ const QueryEditor = ({ onRun }: Props) => {
   const [onEditorMount, editor] = useEditor();
   const [language, setLanguage] = useState(lastQuery.language);
   const { time, start, pause, reset } = useTimer({
-    interval: 1,
+    interval: 1
   });
 
   useEffect(() => {
@@ -141,13 +141,13 @@ const QueryEditor = ({ onRun }: Props) => {
   return (
     <div className="QueryEditor">
       <Typography use="headline6">Query Editor</Typography>
-        <MonacoEditor
-          key={language}
-          height={300}
-          editorDidMount={handleEditorMount}
-          language={queryLanguageToMonacoLanguage(language)}
-          options={options}
-        />
+      <MonacoEditor
+        key={language}
+        height={300}
+        editorDidMount={handleEditorMount}
+        language={queryLanguageToMonacoLanguage(language)}
+        options={options}
+      />
       <div className="actions">
         <RunButton onClick={run} />
         <Select
@@ -156,7 +156,9 @@ const QueryEditor = ({ onRun }: Props) => {
           value={language}
           onChange={handleLanguageChange}
         />
-        <span className="timer">{time ? `${formatQueryTime(time)} elapsed` : null}</span>
+        <span className="timer">
+          {time ? `${formatQueryTime(time)} elapsed` : null}
+        </span>
       </div>
     </div>
   );

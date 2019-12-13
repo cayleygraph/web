@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Graph } from "@vx/network";
-import useDimensions from "react-use-dimensions";
 import {
   forceCenter,
   forceLink,
@@ -21,14 +20,22 @@ type Props = {
   data: GraphData;
   linkComponent: any;
   nodeComponent: any;
+  height: number;
+  width: number;
 };
 
-const ForceGraph = ({ data, linkComponent, nodeComponent }: Props) => {
+const ForceGraph = ({
+  data,
+  linkComponent,
+  nodeComponent,
+  height,
+  width
+}: Props) => {
   const [forceData, setForceData] = useState(INITIAL_FORCE_DATA);
-  const [ref, { width, height }] = useDimensions();
   useEffect(() => {
     let force: Simulation<SimulationNodeDatum, undefined> | undefined;
     if (data && width && height) {
+      console.log(width, height);
       // @ts-ignore
       force = forceSimulation(data.nodes)
         .force(
@@ -52,11 +59,11 @@ const ForceGraph = ({ data, linkComponent, nodeComponent }: Props) => {
       if (force) {
         force.stop();
       }
-    }
+    };
   }, [data, height, width]);
   return (
-    <div className="graph" ref={ref}>
-      <svg>
+    <div className="graph">
+      <svg height={height} width={width}>
         <Graph
           graph={forceData}
           linkComponent={linkComponent}

@@ -6,6 +6,7 @@ import "@material/tab-scroller/dist/mdc.tab-scroller.css";
 import "@material/tab-indicator/dist/mdc.tab-indicator.css";
 import "@material/tab-bar/dist/mdc.tab-bar.css";
 import "@material/tab/dist/mdc.tab.css";
+import useDimensions from "react-use-dimensions";
 import QueryEditor from "./QueryEditor";
 import JSONCodeViewer from "./JSONCodeViewer";
 import QueryHistory from "./QueryHistory";
@@ -41,6 +42,9 @@ function QueryPage({ serverURL }: Props) {
         ...queries,
         { id, text: query, result: null, language, time: new Date() }
       ]);
+      if (activeTabIndex === 1) {
+        setActiveTabIndex(0);
+      }
       if (activeTabIndex === 2) {
         getShape(serverURL, language, query)
           .then(setShapeResult)
@@ -49,7 +53,6 @@ function QueryPage({ serverURL }: Props) {
           })
           .finally(onDone);
       } else {
-        setActiveTabIndex(0);
         runQuery(serverURL, language, query)
           .then(result => {
             setQueries(queries =>
@@ -71,6 +74,8 @@ function QueryPage({ serverURL }: Props) {
     [queries, serverURL, activeTabIndex, setActiveTabIndex]
   );
 
+  const [ref, { width, height }] = useDimensions();
+
   const handleRecovery = useCallback((query: Query) => {
     /** @todo recover query */
   }, []);
@@ -81,23 +86,29 @@ function QueryPage({ serverURL }: Props) {
   return (
     <main>
       <QueryEditor onRun={handleRun} />
-      <Card>
-        <TabBar
-          style={{ maxWidth: "35em" }}
-          activeTabIndex={activeTabIndex}
-          onActivate={handleTabActive}
-        >
-          <Tab>Results</Tab>
-          <Tab>Query History</Tab>
-          <Tab>Shape</Tab>
-          <Tab>Visualize</Tab>
-        </TabBar>
-        {activeTabIndex === 0 && <JSONCodeViewer value={result} />}
+      <TabBar
+        style={{ maxWidth: "35em" }}
+        activeTabIndex={activeTabIndex}
+        onActivate={handleTabActive}
+      >
+        <Tab>Results</Tab>
+        <Tab>Query History</Tab>
+        <Tab>Shape</Tab>
+        <Tab>Visualize</Tab>
+      </TabBar>
+      <Card ref={ref} className="query-results">
+        {activeTabIndex === 0 && (
+          <JSONCodeViewer height={height} value={result} />
+        )}
         {activeTabIndex === 1 && (
           <QueryHistory queries={queries} onRecovery={handleRecovery} />
         )}
-        {activeTabIndex === 2 && <JSONCodeViewer value={shapeResult} />}
-        {activeTabIndex === 3 && <Visualize value={result} />}
+        {activeTabIndex === 2 && (
+          <JSONCodeViewer height={height} value={shapeResult} />
+        )}
+        {activeTabIndex === 3 && (
+          <Visualize height={height} width={width} value={result} />
+        )}
       </Card>
     </main>
   );

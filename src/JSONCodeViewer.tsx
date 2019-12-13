@@ -8,10 +8,15 @@ const options: monaco.editor.IDiffEditorConstructionOptions = {
   scrollBeyondLastLine: false
 };
 
-const JSONCodeViewer = ({ value }: { value: object | null }) => {
+type Props = {
+  height: number;
+  value: object | null;
+};
+
+const JSONCodeViewer = ({ value, height }: Props) => {
   return (
     <MonacoEditor
-      height={300}
+      height={height}
       value={value ? JSON.stringify(value, null, 4) : ""}
       language="json"
       options={options}
