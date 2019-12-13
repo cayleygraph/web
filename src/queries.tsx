@@ -38,3 +38,19 @@ export async function runQuery(
   );
   return res.json();
 }
+
+export async function getShape(
+  serverURL: string,
+  language: string,
+  query: string
+): Promise<QueryResult> {
+  const res = await fetch(`${serverURL}/api/v1/shape/${language}`, {
+    method: "POST",
+    body: query
+  });
+  const { error, ...result } = await res.json();
+  if (error) {
+    throw new Error(error);
+  }
+  return result;
+}

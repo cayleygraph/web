@@ -11,7 +11,7 @@ import QueryEditor from "./QueryEditor";
 import JSONCodeViewer from "./JSONCodeViewer";
 import QueryHistory from "./QueryHistory";
 import Visualize from "./Visualize";
-import { Query, runQuery } from "./queries";
+import { Query, runQuery, getShape, QueryResult } from "./queries";
 
 const ACTIVE_QUERY_INITIAL_STATE: number | null = null;
 const QUERIES_INITIAL_STATE: Query[] = [];
@@ -25,7 +25,7 @@ function QueryPage({ serverURL }: Props) {
 
   const [activeQuery, setActiveQuery] = useState(ACTIVE_QUERY_INITIAL_STATE);
   const [queries, setQueries] = useState(QUERIES_INITIAL_STATE);
-  const [shapeResult, setShapeResult] = useState(null);
+  const [shapeResult, setShapeResult] = useState<QueryResult>(null);
 
   const handleTabActive = useCallback(
     event => {
@@ -36,23 +36,29 @@ function QueryPage({ serverURL }: Props) {
 
   const handleRun = useCallback(
     (query, language, onDone) => {
-      const id = queries.length;
-      setActiveQuery(id);
-      setQueries(queries => [
-        ...queries,
-        { id, text: query, result: null, language, time: new Date() }
-      ]);
       if (activeTabIndex === 1) {
         setActiveTabIndex(0);
       }
       if (activeTabIndex === 2) {
         getShape(serverURL, language, query)
-          .then(setShapeResult)
+          .then(result => setShapeResult(result))
           .catch(error => {
             alert(error);
           })
           .finally(onDone);
       } else {
+        const id = queries.length;
+        setActiveQuery(id);
+        setQueries(queries => [
+          ...queries,
+          {
+            id,
+            text: query,
+            result: null,
+            language,
+            time: new Date()
+          }
+        ]);
         runQuery(serverURL, language, query)
           .then(result => {
             setQueries(queries =>
@@ -115,15 +121,3 @@ function QueryPage({ serverURL }: Props) {
 }
 
 export default QueryPage;
-
-async function getShape(serverURL: string, language: string, query: string) {
-  const res = await fetch(`${serverURL}/api/v1/shape/${language}`, {
-    method: "POST",
-    body: query
-  });
-  const { error, ...result } = await res.json();
-  if (error) {
-    throw new Error(error);
-  }
-  return result;
-}
