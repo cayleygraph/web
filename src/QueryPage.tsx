@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Card } from "@rmwc/card";
 import "@material/card/dist/mdc.card.css";
 import { TabBar, Tab } from "@rmwc/tabs";
@@ -26,7 +26,14 @@ function QueryPage({ serverURL }: Props) {
   const [queries, setQueries] = useState(QUERIES_INITIAL_STATE);
   const [shapeResult, setShapeResult] = useState(null);
 
-  const handleRun = React.useCallback(
+  const handleTabActive = useCallback(
+    event => {
+      setActiveTabIndex(event.detail.index);
+    },
+    [setActiveTabIndex]
+  );
+
+  const handleRun = useCallback(
     (query, language, onDone) => {
       const id = queries.length;
       setActiveQuery(id);
@@ -42,6 +49,7 @@ function QueryPage({ serverURL }: Props) {
           })
           .finally(onDone);
       } else {
+        setActiveTabIndex(0);
         runQuery(serverURL, language, query)
           .then(result => {
             setQueries(queries =>
@@ -73,7 +81,7 @@ function QueryPage({ serverURL }: Props) {
         <TabBar
           style={{ maxWidth: "35em" }}
           activeTabIndex={activeTabIndex}
-          onActivate={evt => setActiveTabIndex(evt.detail.index)}
+          onActivate={handleTabActive}
         >
           <Tab>Results</Tab>
           <Tab>Query History</Tab>
