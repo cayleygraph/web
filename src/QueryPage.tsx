@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Card } from "@rmwc/card";
 import "@material/card/dist/mdc.card.css";
 import { TabBar, Tab } from "@rmwc/tabs";
@@ -6,10 +6,12 @@ import "@material/tab-scroller/dist/mdc.tab-scroller.css";
 import "@material/tab-indicator/dist/mdc.tab-indicator.css";
 import "@material/tab-bar/dist/mdc.tab-bar.css";
 import "@material/tab/dist/mdc.tab.css";
+import useDimensions from "react-use-dimensions";
 import QueryEditor from "./QueryEditor";
-import Result from "./Result";
+import JSONCodeViewer from "./JSONCodeViewer";
 import QueryHistory from "./QueryHistory";
-import { Query, runQuery } from "./queries";
+import Visualize from "./Visualize";
+import { Query, runQuery, getShape, QueryResult } from "./queries";
 
 const ACTIVE_QUERY_INITIAL_STATE: number | null = null;
 const QUERIES_INITIAL_STATE: Query[] = [];
@@ -23,33 +25,66 @@ function QueryPage({ serverURL }: Props) {
 
   const [activeQuery, setActiveQuery] = useState(ACTIVE_QUERY_INITIAL_STATE);
   const [queries, setQueries] = useState(QUERIES_INITIAL_STATE);
+  const [shapeResult, setShapeResult] = useState<QueryResult>(null);
 
-  const handleRun = React.useCallback(
-    (query, language) => {
-      const id = queries.length;
-      setActiveQuery(id);
-      setQueries(queries => [
-        ...queries,
-        { id, text: query, result: null, language, time: new Date() }
-      ]);
-      runQuery(serverURL, language, query)
-        .then(result => {
-          setQueries(queries =>
-            queries.map(query => {
-              if (query.id === id) {
-                return { ...query, result };
-              } else {
-                return query;
-              }
-            })
-          );
-        })
-        .catch(error => {
-          alert(error);
-        });
+  const handleTabActive = useCallback(
+    event => {
+      setActiveTabIndex(event.detail.index);
     },
-    [queries, serverURL]
+    [setActiveTabIndex]
   );
+
+  const handleRun = useCallback(
+    (query, language, onDone) => {
+      if (activeTabIndex === 1) {
+        setActiveTabIndex(0);
+      }
+      if (activeTabIndex === 2) {
+        getShape(serverURL, language, query)
+          .then(result => setShapeResult(result))
+          .catch(error => {
+            alert(error);
+          })
+          .finally(onDone);
+      } else {
+        const id = queries.length;
+        setActiveQuery(id);
+        setQueries(queries => [
+          ...queries,
+          {
+            id,
+            text: query,
+            result: null,
+            language,
+            time: new Date()
+          }
+        ]);
+        runQuery(serverURL, language, query)
+          .then(result => {
+            setQueries(queries =>
+              queries.map(query => {
+                if (query.id === id) {
+                  return { ...query, result };
+                } else {
+                  return query;
+                }
+              })
+            );
+          })
+          .catch(error => {
+            alert(error);
+          })
+          .finally(onDone);
+      }
+    },
+    [queries, serverURL, activeTabIndex, setActiveTabIndex]
+  );
+
+  const [ref, { width, height }] = useDimensions();
+
+  const handleRecovery = useCallback((query: Query) => {
+    /** @todo recover query */
+  }, []);
 
   const currentQuery = queries.find(query => query.id === activeQuery);
   const result = currentQuery ? currentQuery.result : null;
@@ -57,17 +92,29 @@ function QueryPage({ serverURL }: Props) {
   return (
     <main>
       <QueryEditor onRun={handleRun} />
-      <Card>
-        <TabBar
-          style={{ width: "30em" }}
-          activeTabIndex={activeTabIndex}
-          onActivate={evt => setActiveTabIndex(evt.detail.index)}
-        >
-          <Tab>Results</Tab>
-          <Tab>Query History</Tab>
-        </TabBar>
-        {activeTabIndex === 0 && <Result result={result} />}
-        {activeTabIndex === 1 && <QueryHistory queries={queries} />}
+      <TabBar
+        style={{ maxWidth: "35em" }}
+        activeTabIndex={activeTabIndex}
+        onActivate={handleTabActive}
+      >
+        <Tab>Results</Tab>
+        <Tab>Query History</Tab>
+        <Tab>Shape</Tab>
+        <Tab>Visualize</Tab>
+      </TabBar>
+      <Card ref={ref} className="query-results">
+        {activeTabIndex === 0 && (
+          <JSONCodeViewer height={height} value={result} />
+        )}
+        {activeTabIndex === 1 && (
+          <QueryHistory queries={queries} onRecovery={handleRecovery} />
+        )}
+        {activeTabIndex === 2 && (
+          <JSONCodeViewer height={height} value={shapeResult} />
+        )}
+        {activeTabIndex === 3 && (
+          <Visualize height={height} width={width} value={result} />
+        )}
       </Card>
     </main>
   );

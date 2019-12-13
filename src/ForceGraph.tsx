@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Graph } from "@vx/network";
-import useDimensions from "react-use-dimensions";
 import {
   forceCenter,
   forceLink,
   forceManyBody,
-  forceSimulation
+  forceSimulation,
+  Simulation,
+  SimulationNodeDatum
 } from "d3-force";
 
 type GraphData = {
@@ -19,38 +20,57 @@ type Props = {
   data: GraphData;
   linkComponent: any;
   nodeComponent: any;
+  height: number;
+  width: number;
 };
 
-const ForceGraph = ({ data, linkComponent, nodeComponent }: Props) => {
+const ForceGraph = ({
+  data,
+  linkComponent,
+  nodeComponent,
+  height,
+  width
+}: Props) => {
   const [forceData, setForceData] = useState(INITIAL_FORCE_DATA);
-  const [ref, { width, height }] = useDimensions();
   useEffect(() => {
-    if (data) {
-      const force = forceSimulation(data.nodes)
+    let force: Simulation<SimulationNodeDatum, undefined> | undefined;
+    if (data && width && height) {
+      console.log(width, height);
+      // @ts-ignore
+      force = forceSimulation(data.nodes)
         .force(
           "link",
           forceLink()
-            .id((d: { id: string }) => d.id)
+            // @ts-ignore
+            .id(d => d.id)
             .links(data.links)
             .distance(100)
         )
         .force("charge", forceManyBody())
         .force("center", forceCenter(width / 2, height / 2));
-
+    }
+    if (force) {
       // Force-update the component on each force tick
       force.on("tick", () => {
         setForceData({ ...data });
       });
     }
+    return () => {
+      if (force) {
+        force.stop();
+      }
+    };
   }, [data, height, width]);
   return (
-    <svg className="graph" ref={ref}>
-      <Graph
-        graph={forceData}
-        linkComponent={linkComponent}
-        nodeComponent={nodeComponent}
-      />
-    </svg>
+    <div className="graph">
+      <svg height={height} width={width}>
+        <Graph
+          graph={forceData}
+          linkComponent={linkComponent}
+          nodeComponent={nodeComponent}
+        />
+      </svg>
+    </div>
   );
 };
 

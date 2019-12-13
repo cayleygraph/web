@@ -1,9 +1,0 @@
-main {
-  display: flex;
-  flex-direction: column;
-}
-
-.graph {
-  width: 100%;
-  flex: 1;
-}

@@ -10,11 +10,21 @@
   flex-direction: row;
 }
 
+.App .Logo {
+  height: 2rem;
+  margin-right: 8px;
+  position: relative;
+  top: 0.5rem;
+  display: inline-block;
+}
+
 .App > main {
   flex: 1;
   overflow: hidden;
   height: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .App > main .mdc-typography--headline6 {
@@ -34,6 +44,23 @@
   border-right-width: 0;
 }
 
+.App > main .actions .timer {
+  margin-left: 16px;
+}
+
 .App main .actions > .mdc-button {
   margin-right: 24px;
+}
+
+.App main .actions > .mdc-button:not(:first-child) {
+  margin-left: 24px;
+}
+
+.App main .actions > .mdc-button + .mdc-button {
+  margin-left: 0;
+}
+
+.App main .query-results {
+  flex: 1;
+  overflow: hidden;
 }

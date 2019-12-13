@@ -1,6 +1,6 @@
 .QueryHistory {
-  height: 300px;
-  overflow: scroll;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .QueryHistory .mdc-list-item {

@@ -1,26 +1,32 @@
 import React, { useState } from "react";
 import QueryPage from "./QueryPage";
-import QueryShapePage from "./QueryShapePage";
-import VisualizePage from "./VisualizePage";
-import WritePage from "./WritePage";
+import DataPage from "./DataPage";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
 import "@material/drawer/dist/mdc.drawer.css";
+import logo from "./logo.svg";
 import "./App.css";
+import("./icon-font");
 
 // window.SERVER_URL can be undefined or empty string. In any of these cases
 // it should default.
 const SERVER_URL = window.SERVER_URL || "http://localhost:64210";
 
 function App() {
+  if (SERVER_URL === undefined) {
+    throw new Error(`SERVER_URL environment variable must be provided`);
+  }
   /** @todo use router */
   const [page, setPage] = useState("query");
   return (
     <div className="App">
       <Drawer>
         <DrawerHeader>
-          <DrawerTitle>Cayley</DrawerTitle>
+          <DrawerTitle>
+            <img className="Logo" src={logo} alt="logo" />
+            Cayley
+          </DrawerTitle>
         </DrawerHeader>
         <DrawerContent>
           <List>
@@ -31,30 +37,16 @@ function App() {
               Query
             </ListItem>
             <ListItem
-              activated={page === "queryShape"}
-              onClick={() => setPage("queryShape")}
+              activated={page === "data"}
+              onClick={() => setPage("data")}
             >
-              Query Shape
-            </ListItem>
-            <ListItem
-              activated={page === "visualize"}
-              onClick={() => setPage("visualize")}
-            >
-              Visualize
-            </ListItem>
-            <ListItem
-              activated={page === "write"}
-              onClick={() => setPage("write")}
-            >
-              Write
+              Data
             </ListItem>
           </List>
         </DrawerContent>
       </Drawer>
       {page === "query" && <QueryPage serverURL={SERVER_URL} />}
-      {page === "queryShape" && <QueryShapePage serverURL={SERVER_URL} />}
-      {page === "visualize" && <VisualizePage serverURL={SERVER_URL} />}
-      {page === "write" && <WritePage serverURL={SERVER_URL} />}
+      {page === "data" && <DataPage serverURL={SERVER_URL} />}
     </div>
   );
 }
