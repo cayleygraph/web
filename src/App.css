@@ -62,4 +62,5 @@
 
 .App main .query-results {
   flex: 1;
+  overflow: hidden;
 }
