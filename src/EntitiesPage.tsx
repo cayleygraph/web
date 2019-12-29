@@ -5,10 +5,34 @@ import "@material/floating-label/dist/mdc.floating-label.css";
 import "@material/notched-outline/dist/mdc.notched-outline.css";
 import "@material/line-ripple/dist/mdc.line-ripple.css";
 import { runQuery } from "./queries";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, Link } from "react-router-dom";
 
 type Props = {
   serverURL: string;
+};
+
+const Value = ({
+  value,
+  label
+}: {
+  value: string | { "@type": string; "@value": string };
+  label: string | { "@type": string; "@value": string } | null;
+}) => {
+  if (typeof value === "object" && "@id" in value) {
+    return (
+      <Link to={`/entities/${encodeURIComponent(value["@id"])}`}>
+        {label ? <Value value={label} label={null} /> : <li>{value["@id"]}</li>}
+      </Link>
+    );
+  }
+  if (typeof value === "string") {
+    return <li>{value}</li>;
+  }
+  return (
+    <li>
+      {value["@value"]} ({value["@type"]})
+    </li>
+  );
 };
 
 async function getEntity(serverURL: string, entityID: string) {
@@ -16,10 +40,12 @@ async function getEntity(serverURL: string, entityID: string) {
     serverURL,
     "gizmo",
     `
+    g.addDefaultNamespaces();
     g
     .V(g.IRI("${entityID}"))
     .out(g.V(), "property")
     .tag("value")
+    .saveOpt(g.IRI("rdfs:label"), "label")
     .getLimit(-1);
   `
   );
@@ -32,7 +58,7 @@ async function getEntity(serverURL: string, entityID: string) {
   const properties: { [key: string]: any } = {};
   for (const record of result.result) {
     const values = properties[record.property["@id"]] || [];
-    properties[record.property["@id"]] = [...values, record.value];
+    properties[record.property["@id"]] = [...values, record];
   }
   return properties;
 }
@@ -98,29 +124,9 @@ const EntitiesPage = ({ serverURL }: Props) => {
             if (!Array.isArray(values)) {
               throw new Error("Unexpected type of values");
             }
-            const valueNodes = values.map((value, i) => {
-              if (typeof value === "object" && "@id" in value) {
-                return (
-                  <a
-                    key={i}
-                    onClick={() => {
-                      history.push(
-                        `/entities/${encodeURIComponent(value["@id"])}`
-                      );
-                    }}
-                    style={{ color: "blue", cursor: "pointer" }}
-                  >
-                    <li>{value["@id"]}</li>
-                  </a>
-                );
-              }
-              if (typeof value === "string") {
-                return <li key={i}>{value}</li>;
-              }
+            const valueNodes = values.map((record, i) => {
               return (
-                <li key={i}>
-                  {value["@value"]} ({value["@type"]})
-                </li>
+                <Value key={i} value={record.value} label={record.label} />
               );
             });
             return (
