@@ -62,12 +62,12 @@ type Props = {
     | null
     | { error: string }
     | {
-        result: Result;
+        result: Result | null;
       };
 };
 
 const Visualize = ({ value, height, width }: Props) => {
-  return value && "result" in value ? (
+  return value && "result" in value && value.result ? (
     <ForceGraph
       data={resultToGraph(value.result)}
       nodeComponent={Node}

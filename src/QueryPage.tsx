@@ -24,8 +24,8 @@ function QueryPage({ serverURL }: Props) {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
 
   const [activeQuery, setActiveQuery] = useState(ACTIVE_QUERY_INITIAL_STATE);
-  const [queries, setQueries] = useState(QUERIES_INITIAL_STATE);
-  const [shapeResult, setShapeResult] = useState<QueryResult>(null);
+  const [queries, setQueries] = useState<Query[]>(QUERIES_INITIAL_STATE);
+  const [shapeResult, setShapeResult] = useState<QueryResult | null>(null);
 
   const handleTabActive = useCallback(
     event => {

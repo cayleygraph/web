@@ -1,11 +1,9 @@
-import React, { useEffect } from "react";
-import { TextField } from "@rmwc/textfield";
-import "@material/textfield/dist/mdc.textfield.css";
-import "@material/floating-label/dist/mdc.floating-label.css";
-import "@material/notched-outline/dist/mdc.notched-outline.css";
-import "@material/line-ripple/dist/mdc.line-ripple.css";
+import React, { useEffect, useCallback } from "react";
+import { Snackbar } from "@rmwc/snackbar";
+import "@material/snackbar/dist/mdc.snackbar.css";
+import "@material/button/dist/mdc.button.css";
 import { runQuery } from "./queries";
-import { useParams, useHistory, Link } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 
 type Props = {
   serverURL: string;
@@ -49,11 +47,11 @@ async function getEntity(serverURL: string, entityID: string) {
     .getLimit(-1);
   `
   );
-  if (result === null) {
-    throw new Error("No result");
-  }
   if ("error" in result) {
     throw new Error(result.error);
+  }
+  if (result.result === null) {
+    throw new Error("No result");
   }
   const properties: { [key: string]: any } = {};
   for (const record of result.result) {
@@ -70,9 +68,14 @@ const EntitiesPage = ({ serverURL }: Props) => {
   );
   const [temporalEntityID, setTemporalEntityID] = React.useState(entityID);
   const [result, setResult] = React.useState<any>(null);
-  const [error, setError] = React.useState(null);
+  const [error, setError] = React.useState<Error | null>(null);
+  const emptyError = useCallback(() => {
+    setError(null);
+  }, [setError]);
   useEffect(() => {
     if (entityID) {
+      setError(null);
+      setResult(null);
       getEntity(serverURL, entityID)
         .then(result => {
           setTemporalEntityID(entityID);
@@ -96,47 +99,51 @@ const EntitiesPage = ({ serverURL }: Props) => {
     },
     [setTemporalEntityID]
   );
+  console.log(error);
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        overflowY: "auto",
-        padding: 16,
-        background: "white"
-      }}
-    >
-      <h1>Entities</h1>
-      <form onSubmit={handleSubmit}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <label>Entity ID</label>
-          <input
-            onChange={handleChange}
-            value={temporalEntityID}
-            style={{ flex: 1, font: "inherit", marginLeft: 16 }}
-          />
-        </div>
-        <input type="submit" style={{ display: "none" }} />
-      </form>
-      <ul>
-        {result &&
-          Object.entries(result).map(([property, values]) => {
-            if (!Array.isArray(values)) {
-              throw new Error("Unexpected type of values");
-            }
-            const valueNodes = values.map((record, i) => {
+    <>
+      {error && <Snackbar open message={String(error)} />}
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          overflowY: "auto",
+          padding: 16,
+          background: "white"
+        }}
+      >
+        <h1>Entities</h1>
+        <form onSubmit={handleSubmit}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <label>Entity ID</label>
+            <input
+              onChange={handleChange}
+              value={temporalEntityID}
+              style={{ flex: 1, font: "inherit", marginLeft: 16 }}
+            />
+          </div>
+          <input type="submit" style={{ display: "none" }} />
+        </form>
+        <ul>
+          {result &&
+            Object.entries(result).map(([property, values]) => {
+              if (!Array.isArray(values)) {
+                throw new Error("Unexpected type of values");
+              }
+              const valueNodes = values.map((record, i) => {
+                return (
+                  <Value key={i} value={record.value} label={record.label} />
+                );
+              });
               return (
-                <Value key={i} value={record.value} label={record.label} />
+                <li key={property}>
+                  {property}: <ul>{valueNodes}</ul>
+                </li>
               );
-            });
-            return (
-              <li key={property}>
-                {property}: <ul>{valueNodes}</ul>
-              </li>
-            );
-          })}
-      </ul>
-    </div>
+            })}
+        </ul>
+      </div>
+    </>
   );
 };
 
