@@ -60,7 +60,7 @@ type Props = {
   width: number;
   value:
     | null
-    | { error: object }
+    | { error: string }
     | {
         result: Result;
       };

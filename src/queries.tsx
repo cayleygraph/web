@@ -13,7 +13,7 @@ export const languageOptions: LanguageOption[] = [
   { label: "MQL", value: "mql" }
 ];
 
-export type QueryResult = { result: any } | { error: object } | null;
+export type QueryResult = { result: any } | { error: string } | null;
 
 export type Query = {
   id: number;
