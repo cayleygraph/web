@@ -104,7 +104,6 @@ const EntitiesPage = ({ serverURL }: Props) => {
     <>
       {error && <Snackbar open message={String(error)} />}
       <div className="EntitiesPage">
-        <h1>Entities</h1>
         <form onSubmit={handleSubmit} className="EntityID">
           <label>Entity ID</label>
           <input type="text" onChange={handleChange} value={temporalEntityID} />
