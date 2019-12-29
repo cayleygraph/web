@@ -127,8 +127,10 @@ const EntitiesPage = ({ serverURL }: Props) => {
               });
               return (
                 <li key={property}>
-                  <Link to={entityLink(property)}>{property}</Link>:{" "}
-                  <ul>{valueNodes}</ul>
+                  <b>
+                    <Link to={entityLink(property)}>{property}</Link>
+                  </b>
+                  : {valueNodes}
                 </li>
               );
             })}
