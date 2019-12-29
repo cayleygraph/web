@@ -1,4 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+  useRouteMatch
+} from "react-router-dom";
 import QueryPage from "./QueryPage";
 import DataPage from "./DataPage";
 import EntitiesPage from "./EntitiesPage";
@@ -12,48 +20,60 @@ import("./icon-font");
 
 const { REACT_APP_SERVER_URL: SERVER_URL } = process.env;
 
+const Nav = () => {
+  const isQuery = useRouteMatch("/query");
+  const isData = useRouteMatch("/data");
+  const isEntities = useRouteMatch("/entities");
+  return (
+    <Drawer>
+      <DrawerHeader>
+        <DrawerTitle>
+          <img className="Logo" src={logo} alt="logo" />
+          Cayley
+        </DrawerTitle>
+      </DrawerHeader>
+      <DrawerContent>
+        <List>
+          <Link to="/query">
+            <ListItem activated={Boolean(isQuery)}>Query</ListItem>
+          </Link>
+          <Link to="/data">
+            <ListItem activated={Boolean(isData)}>Data</ListItem>
+          </Link>
+          <Link to="/entities">
+            <ListItem activated={Boolean(isEntities)}>Entities</ListItem>
+          </Link>
+        </List>
+      </DrawerContent>
+    </Drawer>
+  );
+};
+
 function App() {
   if (SERVER_URL === undefined) {
     throw new Error(`SERVER_URL environment variable must be provided`);
   }
-  /** @todo use router */
-  const [page, setPage] = useState("query");
+
   return (
-    <div className="App">
-      <Drawer>
-        <DrawerHeader>
-          <DrawerTitle>
-            <img className="Logo" src={logo} alt="logo" />
-            Cayley
-          </DrawerTitle>
-        </DrawerHeader>
-        <DrawerContent>
-          <List>
-            <ListItem
-              onClick={() => setPage("query")}
-              activated={page === "query"}
-            >
-              Query
-            </ListItem>
-            <ListItem
-              activated={page === "data"}
-              onClick={() => setPage("data")}
-            >
-              Data
-            </ListItem>
-            <ListItem
-              activated={page === "entities"}
-              onClick={() => setPage("entities")}
-            >
-              Entities
-            </ListItem>
-          </List>
-        </DrawerContent>
-      </Drawer>
-      {page === "query" && <QueryPage serverURL={SERVER_URL} />}
-      {page === "data" && <DataPage serverURL={SERVER_URL} />}
-      {page === "entities" && <EntitiesPage serverURL={SERVER_URL} />}
-    </div>
+    <Router>
+      <div className="App">
+        <Nav />
+        <Switch>
+          <Route path="/query">
+            <QueryPage serverURL={SERVER_URL} />
+          </Route>
+          <Route path="/data">
+            <DataPage serverURL={SERVER_URL} />
+          </Route>
+          <Route path="/entities">
+            <EntitiesPage serverURL={SERVER_URL} />
+          </Route>
+          <Route path="/">
+            <Redirect to="/query" />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
