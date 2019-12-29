@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useState, useCallback, Fragment } from "react";
 import { Snackbar } from "@rmwc/snackbar";
 import "@material/snackbar/dist/mdc.snackbar.css";
 import "@material/button/dist/mdc.button.css";
@@ -70,13 +70,13 @@ const EntitiesPage = ({ serverURL }: Props) => {
   const entityID = decodeURIComponent(
     history.location.pathname.replace(/^(\/)*entities(\/)*/, "")
   );
-  const [temporalEntityID, setTemporalEntityID] = React.useState(entityID);
-  const [result, setResult] = React.useState<any>(null);
-  const [error, setError] = React.useState<Error | null>(null);
+  const [temporalEntityID, setTemporalEntityID] = useState(entityID);
+  const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState<Error | null>(null);
   useEffect(() => {
+    setError(null);
+    setResult(null);
     if (entityID) {
-      setError(null);
-      setResult(null);
       getEntity(serverURL, entityID)
         .then(result => {
           setTemporalEntityID(entityID);
@@ -87,14 +87,14 @@ const EntitiesPage = ({ serverURL }: Props) => {
         });
     }
   }, [entityID, serverURL, setResult, setError]);
-  const handleSubmit = React.useCallback(
+  const handleSubmit = useCallback(
     event => {
       event.preventDefault();
       history.push(entityLink(temporalEntityID));
     },
     [temporalEntityID]
   );
-  const handleChange = React.useCallback(
+  const handleChange = useCallback(
     event => {
       setTemporalEntityID(event.target.value);
     },
@@ -110,18 +110,20 @@ const EntitiesPage = ({ serverURL }: Props) => {
           <input type="submit" />
         </form>
         <ul>
+          {!entityID &&
+            "Write an entity's IRI in the text box to view the entity"}
           {result &&
-            Object.entries(result).map(([property, values]) => {
+            Object.entries(result).map(([property, values], i) => {
               if (!Array.isArray(values)) {
                 throw new Error("Unexpected type of values");
               }
               const valueNodes = values.map((record, i) => {
                 const suffix = i === values.length - 1 ? null : ", ";
                 return (
-                  <>
+                  <Fragment key={i}>
                     <Value key={i} value={record.value} label={record.label} />
                     {suffix}
-                  </>
+                  </Fragment>
                 );
               });
               return (
