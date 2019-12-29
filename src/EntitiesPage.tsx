@@ -19,7 +19,7 @@ const Value = ({
   if (typeof value === "object" && "@id" in value) {
     return (
       <Link to={`/entities/${encodeURIComponent(value["@id"])}`}>
-        {label ? <Value value={label} label={null} /> : <li>{value["@id"]}</li>}
+        <li>{label ? <Value value={label} label={null} /> : value["@id"]}</li>
       </Link>
     );
   }
