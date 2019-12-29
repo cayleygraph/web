@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { TextField } from "@rmwc/textfield";
 import "@material/textfield/dist/mdc.textfield.css";
 import "@material/floating-label/dist/mdc.floating-label.css";
 import "@material/notched-outline/dist/mdc.notched-outline.css";
 import "@material/line-ripple/dist/mdc.line-ripple.css";
 import { runQuery } from "./queries";
+import { useParams, useHistory } from "react-router-dom";
 
 type Props = {
   serverURL: string;
@@ -37,47 +38,59 @@ async function getEntity(serverURL: string, entityID: string) {
 }
 
 const EntitiesPage = ({ serverURL }: Props) => {
-  const [entityID, setEntityID] = React.useState("");
+  const history = useHistory();
+  const entityID = decodeURIComponent(
+    history.location.pathname.replace("/entities/", "")
+  );
+  const [temporalEntityID, setTemporalEntityID] = React.useState(entityID);
   const [result, setResult] = React.useState<any>(null);
   const [error, setError] = React.useState(null);
-  const updateEntity = React.useCallback(
-    entityID => {
+  useEffect(() => {
+    if (entityID) {
       getEntity(serverURL, entityID)
         .then(result => {
+          setTemporalEntityID(entityID);
           setResult(result);
         })
         .catch(error => {
           setError(error);
         });
-    },
-    [entityID, serverURL, setResult, setError]
-  );
+    }
+  }, [entityID, serverURL, setResult, setError]);
   const handleSubmit = React.useCallback(
     event => {
       event.preventDefault();
-      updateEntity(entityID);
+      history.push(`/entities/${encodeURIComponent(temporalEntityID)}`);
     },
-    [entityID, updateEntity]
+    [temporalEntityID]
   );
   const handleChange = React.useCallback(
     event => {
-      setEntityID(event.target.value);
+      setTemporalEntityID(event.target.value);
     },
-    [setEntityID]
+    [setTemporalEntityID]
   );
   return (
-    <div style={{ width: "100%" }}>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        overflowY: "auto",
+        padding: 16,
+        background: "white"
+      }}
+    >
       <h1>Entities</h1>
       <form onSubmit={handleSubmit}>
-        <div>
+        <div style={{ display: "flex", alignItems: "center" }}>
           <label>Entity ID</label>
           <input
             onChange={handleChange}
-            value={entityID}
-            style={{ width: "100%" }}
+            value={temporalEntityID}
+            style={{ flex: 1, font: "inherit", marginLeft: 16 }}
           />
         </div>
-        <input type="submit" />
+        <input type="submit" style={{ display: "none" }} />
       </form>
       <ul>
         {result &&
@@ -85,13 +98,15 @@ const EntitiesPage = ({ serverURL }: Props) => {
             if (!Array.isArray(values)) {
               throw new Error("Unexpected type of values");
             }
-            const valueNodes = values.map(value => {
+            const valueNodes = values.map((value, i) => {
               if (typeof value === "object" && "@id" in value) {
                 return (
                   <a
+                    key={i}
                     onClick={() => {
-                      setEntityID(value["@id"]);
-                      updateEntity(value["@id"]);
+                      history.push(
+                        `/entities/${encodeURIComponent(value["@id"])}`
+                      );
                     }}
                     style={{ color: "blue", cursor: "pointer" }}
                   >
@@ -100,16 +115,16 @@ const EntitiesPage = ({ serverURL }: Props) => {
                 );
               }
               if (typeof value === "string") {
-                return <li>{value}</li>;
+                return <li key={i}>{value}</li>;
               }
               return (
-                <li>
+                <li key={i}>
                   {value["@value"]} ({value["@type"]})
                 </li>
               );
             });
             return (
-              <li>
+              <li key={property}>
                 {property}: <ul>{valueNodes}</ul>
               </li>
             );
