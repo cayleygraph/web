@@ -20,17 +20,17 @@ const Value = ({
   if (typeof value === "object" && "@id" in value) {
     return (
       <Link to={entityLink(value["@id"])}>
-        <li>{label ? <Value value={label} label={null} /> : value["@id"]}</li>
+        {label ? <Value value={label} label={null} /> : value["@id"]}
       </Link>
     );
   }
   if (typeof value === "string") {
-    return <li>{value}</li>;
+    return <>{value}</>;
   }
   return (
-    <li>
+    <>
       {value["@value"]} ({value["@type"]})
-    </li>
+    </>
   );
 };
 
@@ -117,8 +117,12 @@ const EntitiesPage = ({ serverURL }: Props) => {
                 throw new Error("Unexpected type of values");
               }
               const valueNodes = values.map((record, i) => {
+                const suffix = i === values.length - 1 ? null : ", ";
                 return (
-                  <Value key={i} value={record.value} label={record.label} />
+                  <>
+                    <Value key={i} value={record.value} label={record.label} />
+                    {suffix}
+                  </>
                 );
               });
               return (
