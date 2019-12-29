@@ -4,6 +4,7 @@ import "@material/snackbar/dist/mdc.snackbar.css";
 import "@material/button/dist/mdc.button.css";
 import { runQuery } from "./queries";
 import { useHistory, Link } from "react-router-dom";
+import "./EntitiesPage.css";
 
 type Props = {
   serverURL: string;
@@ -99,26 +100,12 @@ const EntitiesPage = ({ serverURL }: Props) => {
   return (
     <>
       {error && <Snackbar open message={String(error)} />}
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          overflowY: "auto",
-          padding: 16,
-          background: "white"
-        }}
-      >
+      <div className="EntitiesPage">
         <h1>Entities</h1>
-        <form onSubmit={handleSubmit}>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <label>Entity ID</label>
-            <input
-              onChange={handleChange}
-              value={temporalEntityID}
-              style={{ flex: 1, font: "inherit", marginLeft: 16 }}
-            />
-          </div>
-          <input type="submit" style={{ display: "none" }} />
+        <form onSubmit={handleSubmit} className="EntityID">
+          <label>Entity ID</label>
+          <input type="text" onChange={handleChange} value={temporalEntityID} />
+          <input type="submit" />
         </form>
         <ul>
           {result &&

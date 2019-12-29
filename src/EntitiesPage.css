@@ -1,0 +1,34 @@
+.EntitiesPage {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 16px;
+  background: white;
+}
+
+.EntitiesPage .EntityID {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.EntitiesPage .EntityID input[type="text"] {
+  font: inherit;
+  padding: 8px;
+  border-radius: 16px;
+  max-width: 40em;
+  border: 1px solid rgb(206, 206, 206);
+  outline: none;
+  margin-left: 16px;
+  flex: 1;
+}
+
+.EntitiesPage .EntityID input[type="text"]:focus {
+  border: 2px solid rgb(136, 100, 236);
+}
+
+.EntitiesPage .EntityID input[type="submit"] {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+}
