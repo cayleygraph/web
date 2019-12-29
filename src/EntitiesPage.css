@@ -32,3 +32,8 @@
   top: -9999px;
   left: -9999px;
 }
+
+.EntitiesPage a:link,
+.EntitiesPage a:visited {
+  color: rgb(136, 100, 236);
+}

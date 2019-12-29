@@ -19,7 +19,7 @@ const Value = ({
 }) => {
   if (typeof value === "object" && "@id" in value) {
     return (
-      <Link to={`/entities/${encodeURIComponent(value["@id"])}`}>
+      <Link to={entityLink(value["@id"])}>
         <li>{label ? <Value value={label} label={null} /> : value["@id"]}</li>
       </Link>
     );
@@ -62,10 +62,13 @@ async function getEntity(serverURL: string, entityID: string) {
   return properties;
 }
 
+const entityLink = (iri: string): string =>
+  `/entities/${encodeURIComponent(iri)}`;
+
 const EntitiesPage = ({ serverURL }: Props) => {
   const history = useHistory();
   const entityID = decodeURIComponent(
-    history.location.pathname.replace("/entities/", "")
+    history.location.pathname.replace(/^(\/)*entities(\/)*/, "")
   );
   const [temporalEntityID, setTemporalEntityID] = React.useState(entityID);
   const [result, setResult] = React.useState<any>(null);
@@ -87,7 +90,7 @@ const EntitiesPage = ({ serverURL }: Props) => {
   const handleSubmit = React.useCallback(
     event => {
       event.preventDefault();
-      history.push(`/entities/${encodeURIComponent(temporalEntityID)}`);
+      history.push(entityLink(temporalEntityID));
     },
     [temporalEntityID]
   );
@@ -120,7 +123,8 @@ const EntitiesPage = ({ serverURL }: Props) => {
               });
               return (
                 <li key={property}>
-                  {property}: <ul>{valueNodes}</ul>
+                  <Link to={entityLink(property)}>{property}</Link>:{" "}
+                  <ul>{valueNodes}</ul>
                 </li>
               );
             })}

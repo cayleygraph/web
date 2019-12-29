@@ -18,6 +18,10 @@
   display: inline-block;
 }
 
+.App .mdc-drawer__content a {
+  text-decoration: none;
+}
+
 .App > main {
   flex: 1;
   overflow: hidden;
