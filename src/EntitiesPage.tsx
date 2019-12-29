@@ -69,9 +69,6 @@ const EntitiesPage = ({ serverURL }: Props) => {
   const [temporalEntityID, setTemporalEntityID] = React.useState(entityID);
   const [result, setResult] = React.useState<any>(null);
   const [error, setError] = React.useState<Error | null>(null);
-  const emptyError = useCallback(() => {
-    setError(null);
-  }, [setError]);
   useEffect(() => {
     if (entityID) {
       setError(null);
@@ -99,7 +96,6 @@ const EntitiesPage = ({ serverURL }: Props) => {
     },
     [setTemporalEntityID]
   );
-  console.log(error);
   return (
     <>
       {error && <Snackbar open message={String(error)} />}
