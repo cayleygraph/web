@@ -10,6 +10,11 @@ type Props = {
   serverURL: string;
 };
 
+const RDFS = "http://www.w3.org/2000/01/rdf-schema#";
+const RDFS_LABEL = RDFS + "label";
+const RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+const RDF_TYPE = RDF + "type";
+
 const Value = ({
   value,
   label
@@ -64,6 +69,20 @@ async function getEntity(serverURL: string, entityID: string) {
 
 const entityLink = (iri: string): string =>
   `/entities/${encodeURIComponent(iri)}`;
+
+const PropertyName = ({ property }: { property: string }) => {
+  if (property === RDFS_LABEL) {
+    return <b>Label</b>;
+  }
+  if (property === RDF_TYPE) {
+    return <b>Type</b>;
+  }
+  return (
+    <b>
+      <Link to={entityLink(property)}>{property}</Link>
+    </b>
+  );
+};
 
 const EntitiesPage = ({ serverURL }: Props) => {
   const history = useHistory();
@@ -128,10 +147,7 @@ const EntitiesPage = ({ serverURL }: Props) => {
               });
               return (
                 <li key={property}>
-                  <b>
-                    <Link to={entityLink(property)}>{property}</Link>
-                  </b>
-                  : {valueNodes}
+                  <PropertyName property={property} />: {valueNodes}
                 </li>
               );
             })}
