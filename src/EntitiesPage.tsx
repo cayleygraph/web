@@ -111,7 +111,7 @@ const EntitiesPage = ({ serverURL }: Props) => {
       event.preventDefault();
       history.push(entityLink(temporalEntityID));
     },
-    [temporalEntityID]
+    [temporalEntityID, history]
   );
   const handleChange = useCallback(
     event => {
