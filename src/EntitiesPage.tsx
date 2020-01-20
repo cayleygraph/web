@@ -67,6 +67,60 @@ async function getEntity(serverURL: string, entityID: string) {
   return properties;
 }
 
+type Suggestion = {
+  value: string;
+  label: string | { "@value": string; "@type": string };
+};
+
+const AUTO_SUGGESTION_RESULT_LIMIT = 12;
+
+async function getAutoCompletionSuggestions(
+  serverURL: string,
+  entityIDPrefix: string
+) {
+  const result = await runQuery(
+    serverURL,
+    "gizmo",
+    `
+g.addDefaultNamespaces();
+
+var labelResults = g.V()
+  .tag("entity")
+  .out(g.IRI("rdfs:label"))
+  .tag("label")
+  .filter(like("${entityIDPrefix}%"))
+  .limit(${AUTO_SUGGESTION_RESULT_LIMIT});
+
+var iriResults = g.V()
+  .tag("entity")
+  .filter(like("${entityIDPrefix}%"))
+  .limit(${AUTO_SUGGESTION_RESULT_LIMIT});
+
+labelResults
+  .union(iriResults)
+  .getLimit(${AUTO_SUGGESTION_RESULT_LIMIT});
+  `
+  );
+  if ("error" in result) {
+    throw new Error(result.error);
+  }
+  const results = result.result || [];
+  return results
+    .filter(result => "@id" in result.entity)
+    .map(
+      (result): Suggestion => {
+        return {
+          label: result.label
+            ? typeof result.label === "object" && "@value" in result.label
+              ? result.label["@value"]
+              : result.label
+            : result.entity["@id"],
+          value: result.entity["@id"]
+        };
+      }
+    );
+}
+
 const entityLink = (iri: string): string =>
   `/entities/${encodeURIComponent(iri)}`;
 
@@ -90,6 +144,7 @@ const EntitiesPage = ({ serverURL }: Props) => {
     history.location.pathname.replace(/^(\/)*entities(\/)*/, "")
   );
   const [temporalEntityID, setTemporalEntityID] = useState(entityID);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<Error | null>(null);
   useEffect(() => {
@@ -106,18 +161,31 @@ const EntitiesPage = ({ serverURL }: Props) => {
         });
     }
   }, [entityID, serverURL, setResult, setError]);
+
+  const goToEntity = useCallback(
+    entityID => {
+      setTemporalEntityID(entityID);
+      history.push(entityLink(entityID));
+    },
+    [history, setTemporalEntityID]
+  );
+
   const handleSubmit = useCallback(
     event => {
       event.preventDefault();
-      history.push(entityLink(temporalEntityID));
+      goToEntity(temporalEntityID);
     },
-    [temporalEntityID, history]
+    [temporalEntityID, goToEntity]
   );
+
   const handleChange = useCallback(
     event => {
       setTemporalEntityID(event.target.value);
+      getAutoCompletionSuggestions(serverURL, event.target.value)
+        .then(setSuggestions)
+        .catch(setError);
     },
-    [setTemporalEntityID]
+    [setTemporalEntityID, setSuggestions, setError, serverURL]
   );
   return (
     <>
@@ -127,6 +195,21 @@ const EntitiesPage = ({ serverURL }: Props) => {
           <label>Entity ID</label>
           <input type="text" onChange={handleChange} value={temporalEntityID} />
           <input type="submit" />
+          <div className="suggestions">
+            {suggestions.map((suggestion, i) => {
+              return (
+                <div
+                  className="result"
+                  key={i}
+                  onClick={() => {
+                    goToEntity(suggestion.value);
+                  }}
+                >
+                  {suggestion.label}
+                </div>
+              );
+            })}
+          </div>
         </form>
         <ul>
           {!entityID &&

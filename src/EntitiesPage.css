@@ -10,21 +10,44 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  position: relative;
 }
 
 .EntitiesPage .EntityID input[type="text"] {
   font: inherit;
-  padding: 8px;
+  padding: 8px 16px;
   border-radius: 16px;
   max-width: 40em;
-  border: 1px solid rgb(206, 206, 206);
+  border: none;
+  box-shadow: 0 0 0 1px rgb(206, 206, 206) inset;
   outline: none;
   margin-left: 16px;
   flex: 1;
+  transition: box-shadow 0.05s;
 }
 
 .EntitiesPage .EntityID input[type="text"]:focus {
-  border: 2px solid rgb(136, 100, 236);
+  box-shadow: 0 0 0 2px rgb(136, 100, 236) inset;
+}
+
+.EntitiesPage .EntityID .suggestions {
+  opacity: 0;
+  background-color: white;
+  border: 1px solid grey;
+  width: 100%;
+  transition: opacity 0.05s;
+  transform: translateY(calc(100% + 10px));
+  position: absolute;
+  bottom: 0;
+}
+
+.EntitiesPage .EntityID .suggestions .result {
+  padding: 8px;
+}
+
+.EntitiesPage .EntityID input[type="text"]:focus ~ .suggestions,
+.EntitiesPage .EntityID .suggestions:focus {
+  opacity: 1;
 }
 
 .EntitiesPage .EntityID input[type="submit"] {
