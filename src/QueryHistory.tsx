@@ -10,6 +10,17 @@ type OnRecovery = (query: Query) => void;
 
 type Props = { queries: Query[]; onRecovery: OnRecovery };
 
+const TIME_OPTIONS = {
+  hour: "2-digit",
+  minute: "2-digit"
+};
+
+const DATE_OPTIONS = {
+  month: "numeric",
+  day: "numeric",
+  year: "numeric"
+};
+
 const QueryHistoryItem = ({
   query,
   onRecovery
@@ -26,10 +37,7 @@ const QueryHistoryItem = ({
   return (
     <ListItem key={query.id} onClick={handleClick}>
       <div className="time">
-        {query.time.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit"
-        })}
+        {query.time.toLocaleTimeString([], TIME_OPTIONS)}
       </div>
       <div className="status">
         {query.result ? (
@@ -52,7 +60,7 @@ const QueryHistory = ({ queries, onRecovery }: Props) => {
     <List className="QueryHistory">
       {groupedQueries.map(group => {
         return (
-          <ListGroup>
+          <ListGroup key={group.date}>
             <ListGroupSubheader>{group.date}</ListGroupSubheader>
             {group.queries.map(query => (
               <QueryHistoryItem
@@ -77,7 +85,7 @@ function groupQueriesByTime(queries: Query[]): QueriesByTime {
   for (const query of queries) {
     const [group] = groupedQueries;
     const currentDate = group?.date;
-    const date = query.time.toLocaleDateString();
+    const date = query.time.toLocaleDateString([], DATE_OPTIONS);
     if (date !== currentDate) {
       groupedQueries.unshift({ date, queries: [query] });
     } else {
