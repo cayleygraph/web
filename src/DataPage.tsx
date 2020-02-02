@@ -1,4 +1,7 @@
 import React, { useCallback, useState, useRef } from "react";
+import { Snackbar } from "@rmwc/snackbar";
+import "@material/snackbar/dist/mdc.snackbar.css";
+import "@material/button/dist/mdc.button.css";
 import MonacoEditor from "@monaco-editor/react";
 import { Typography } from "@rmwc/typography";
 import "@material/typography/dist/mdc.typography.css";
@@ -40,8 +43,13 @@ const options = [
 ];
 
 const WritePage = ({ serverURL }: Props) => {
+  const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
   const [mode, setMode] = useState(options[0].value);
   const [handleEditorMount, editor] = useEditor();
+
+  const unsetSnackbarMessage = useCallback(() => {
+    setSnackbarMessage(null);
+  }, [setSnackbarMessage]);
 
   const handleRunButtonClick = useCallback(() => {
     if (!editor) {
@@ -50,11 +58,15 @@ const WritePage = ({ serverURL }: Props) => {
     const value = editor.getValue();
     switch (mode) {
       case "write": {
-        write(serverURL, value);
+        write(serverURL, value).catch(error => {
+          setSnackbarMessage(error.toString());
+        });
         return;
       }
       case "delete": {
-        runDelete(serverURL, value);
+        runDelete(serverURL, value).catch(error => {
+          setSnackbarMessage(error.toString());
+        });
         return;
       }
       default: {
@@ -82,9 +94,13 @@ const WritePage = ({ serverURL }: Props) => {
   const handleFileInputChange = useCallback(
     event => {
       for (const file of event.currentTarget.files) {
-        write(serverURL, file).then(() => {
-          console.log(`Uploaded ${file.name}`);
-        });
+        write(serverURL, file)
+          .then(() => {
+            setSnackbarMessage(`Uploaded ${file.name}`);
+          })
+          .catch(error => {
+            setSnackbarMessage(error.toString());
+          });
       }
     },
     [serverURL]
@@ -95,11 +111,19 @@ const WritePage = ({ serverURL }: Props) => {
       .then(res => res.blob())
       .then(blob => {
         download(blob, "data.nq", mime.N_QUADS);
+      })
+      .catch(error => {
+        setSnackbarMessage(error.toString());
       });
   }, [serverURL]);
 
   return (
     <>
+      <Snackbar
+        open={snackbarMessage !== null}
+        onClose={unsetSnackbarMessage}
+        message={snackbarMessage}
+      />
       <input
         type="file"
         ref={fileInputRef}
