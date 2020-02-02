@@ -1,4 +1,7 @@
 import React, { useState, useCallback } from "react";
+import { Snackbar } from "@rmwc/snackbar";
+import "@material/snackbar/dist/mdc.snackbar.css";
+import "@material/button/dist/mdc.button.css";
 import { Card } from "@rmwc/card";
 import "@material/card/dist/mdc.card.css";
 import { TabBar, Tab } from "@rmwc/tabs";
@@ -21,11 +24,16 @@ type Props = {
 };
 
 function QueryPage({ serverURL }: Props) {
+  const [error, setError] = useState<Error | null>(null);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
 
   const [activeQuery, setActiveQuery] = useState(ACTIVE_QUERY_INITIAL_STATE);
   const [queries, setQueries] = useState(QUERIES_INITIAL_STATE);
   const [shapeResult, setShapeResult] = useState<QueryResult>(null);
+
+  const unsetError = useCallback(() => {
+    setError(null);
+  }, [setError]);
 
   const handleTabActive = useCallback(
     event => {
@@ -36,6 +44,7 @@ function QueryPage({ serverURL }: Props) {
 
   const handleRun = useCallback(
     (query, language, onDone) => {
+      setError(null);
       if (activeTabIndex === 1) {
         setActiveTabIndex(0);
       }
@@ -43,7 +52,7 @@ function QueryPage({ serverURL }: Props) {
         getShape(serverURL, language, query)
           .then(result => setShapeResult(result))
           .catch(error => {
-            alert(error);
+            setError(error);
           })
           .finally(onDone);
       } else {
@@ -72,7 +81,7 @@ function QueryPage({ serverURL }: Props) {
             );
           })
           .catch(error => {
-            alert(error);
+            setError(error);
           })
           .finally(onDone);
       }
@@ -91,6 +100,11 @@ function QueryPage({ serverURL }: Props) {
 
   return (
     <main>
+      <Snackbar
+        open={error !== null}
+        onClose={unsetError}
+        message={error && error.toString()}
+      />
       <QueryEditor onRun={handleRun} />
       <TabBar
         style={{ maxWidth: "35em" }}
