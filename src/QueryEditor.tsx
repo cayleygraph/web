@@ -13,6 +13,14 @@ import RunButton from "./RunButton";
 import { useEditor } from "./monaco-util";
 import { setLastQuery, getLastQuery } from "./lastQuery";
 
+// Setup monaco to use local monaco instead of CDN
+monacoInit.config({
+  urls: {
+    monacoLoader: "/vs/loader.js",
+    monacoBase: "/vs"
+  }
+});
+
 const formatQueryTime = (queryTime: number): string => {
   if (queryTime < 100) {
     return `${queryTime} milliseconds`;
