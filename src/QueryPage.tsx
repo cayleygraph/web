@@ -24,16 +24,23 @@ type Props = {
 };
 
 function QueryPage({ serverURL }: Props) {
-  const [error, setError] = useState<Error | null>(null);
+  const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
 
   const [activeQuery, setActiveQuery] = useState(ACTIVE_QUERY_INITIAL_STATE);
   const [queries, setQueries] = useState(QUERIES_INITIAL_STATE);
   const [shapeResult, setShapeResult] = useState<QueryResult>(null);
 
-  const unsetError = useCallback(() => {
-    setError(null);
-  }, [setError]);
+  const unsetSnackbarMessage = useCallback(() => {
+    setSnackbarMessage(null);
+  }, [setSnackbarMessage]);
+
+  const handleError = useCallback(
+    error => {
+      setSnackbarMessage(error.toString());
+    },
+    [setSnackbarMessage]
+  );
 
   const handleTabActive = useCallback(
     event => {
@@ -44,16 +51,13 @@ function QueryPage({ serverURL }: Props) {
 
   const handleRun = useCallback(
     (query, language, onDone) => {
-      setError(null);
       if (activeTabIndex === 1) {
         setActiveTabIndex(0);
       }
       if (activeTabIndex === 2) {
         getShape(serverURL, language, query)
           .then(result => setShapeResult(result))
-          .catch(error => {
-            setError(error);
-          })
+          .catch(handleError)
           .finally(onDone);
       } else {
         const id = queries.length;
@@ -80,13 +84,11 @@ function QueryPage({ serverURL }: Props) {
               })
             );
           })
-          .catch(error => {
-            setError(error);
-          })
+          .catch(handleError)
           .finally(onDone);
       }
     },
-    [queries, serverURL, activeTabIndex, setActiveTabIndex]
+    [queries, serverURL, activeTabIndex, setActiveTabIndex, handleError]
   );
 
   const [ref, { width, height }] = useDimensions();
@@ -101,9 +103,9 @@ function QueryPage({ serverURL }: Props) {
   return (
     <main>
       <Snackbar
-        open={error !== null}
-        onClose={unsetError}
-        message={error && error.toString()}
+        open={snackbarMessage !== null}
+        onClose={unsetSnackbarMessage}
+        message={snackbarMessage}
       />
       <QueryEditor onRun={handleRun} />
       <TabBar
