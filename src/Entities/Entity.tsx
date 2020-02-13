@@ -1,7 +1,12 @@
 import React, { Fragment, useState, useEffect } from "react";
 import Value from "./Value";
 import PropertyName from "./PropertyName";
-import { getEntity, EntityValueRecord, Entity as EntityData } from "./data";
+import {
+  getEntity,
+  EntityValueRecord,
+  Entity as EntityData,
+  RDFS_LABEL
+} from "./data";
 
 type Props = {
   entityID: string;
@@ -12,9 +17,11 @@ type Props = {
 
 const Entity = ({ entityID, serverURL, onError, error }: Props) => {
   const [result, setResult] = useState<EntityData | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     onError(null);
     setResult(null);
+    setLoading(true);
     if (entityID) {
       getEntity(serverURL, entityID)
         .then(result => {
@@ -22,21 +29,28 @@ const Entity = ({ entityID, serverURL, onError, error }: Props) => {
         })
         .catch(error => {
           onError(error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   }, [entityID, serverURL, setResult, onError]);
   if (error) {
     return null;
   }
-  if (result === null) {
+  if (loading) {
     return <div>Loading...</div>;
   }
+  if (result === null) {
+    return <NotFound />;
+  }
+  const labels = (result[RDFS_LABEL] || []).map(values => (
+    <Value value={values.value} />
+  ));
   return (
-    <Fragment>
+    <div className="Entity">
+      <h1>{labels}</h1>
       {Object.entries(result).map(([property, values]) => {
-        if (!Array.isArray(values)) {
-          throw new Error("Unexpected type of values");
-        }
         const valueNodes = values.map((record: EntityValueRecord, i) => {
           const suffix = i === values.length - 1 ? null : ", ";
           return (
@@ -47,13 +61,22 @@ const Entity = ({ entityID, serverURL, onError, error }: Props) => {
           );
         });
         return (
-          <li key={property}>
-            <PropertyName property={property} />: {valueNodes}
-          </li>
+          <div className="Property">
+            <PropertyName key={property} property={property} />: {valueNodes}
+          </div>
         );
       })}
-    </Fragment>
+    </div>
   );
 };
 
 export default Entity;
+
+const NotFound = () => {
+  return (
+    <div className="NotFound">
+      <div className="emoji">🤷</div>
+      Not Found
+    </div>
+  );
+};

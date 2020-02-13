@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { EntityValue, Label } from "./data";
+import { EntityValue, Label, XSD_STRING } from "./data";
 import { entityLink } from "./navigation";
 
 const Value = ({
@@ -8,7 +8,7 @@ const Value = ({
   label
 }: {
   value: EntityValue;
-  label: Label | null | undefined;
+  label?: Label | null | undefined;
 }) => {
   if (typeof value === "object" && "@id" in value) {
     return (
@@ -19,6 +19,9 @@ const Value = ({
   }
   if (typeof value === "string") {
     return <>{value}</>;
+  }
+  if ("@type" in value && value["@type"] === XSD_STRING) {
+    return <>{value["@value"]}</>;
   }
   if ("@language" in value) {
     return (

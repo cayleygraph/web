@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
+import "./Search.css";
 import { getAutoCompletionSuggestions, Suggestion } from "./data";
 
 type OnSelect = (entityID: string) => void;
@@ -38,18 +39,24 @@ const Search = ({ entityID, onError, serverURL, onSelect }: Props) => {
     setQuery(entityID);
   }, [entityID]);
 
+  const shouldHideSuggestions =
+    suggestions.length === 1 && suggestions[0].value === entityID;
+
   return (
-    <form onSubmit={handleSubmit} className="EntityID">
+    <form onSubmit={handleSubmit} className="Search">
       <label>Entity ID</label>
       <input type="text" onChange={handleChange} value={query} />
       <input type="submit" />
-      <div className="suggestions">
-        {suggestions.map((suggestion, i) => {
-          return (
-            <SearchItem key={i} suggestion={suggestion} onSelect={onSelect} />
-          );
-        })}
-      </div>
+      {!shouldHideSuggestions && (
+        <div className="suggestions">
+          {suggestions.length === 0 && <div className="result">No results</div>}
+          {suggestions.map((suggestion, i) => {
+            return (
+              <SearchItem key={i} suggestion={suggestion} onSelect={onSelect} />
+            );
+          })}
+        </div>
+      )}
     </form>
   );
 };

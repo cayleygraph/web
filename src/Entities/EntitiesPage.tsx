@@ -36,18 +36,16 @@ const EntitiesPage = ({ serverURL }: Props) => {
           serverURL={serverURL}
           entityID={entityID}
         />
-        <ul>
-          {!entityID &&
-            "Write an entity's IRI in the text box to view the entity"}
-          {entityID && (
-            <Entity
-              serverURL={serverURL}
-              entityID={entityID}
-              onError={setError}
-              error={error}
-            />
-          )}
-        </ul>
+        {!entityID &&
+          "Write an entity's IRI in the text box to view the entity"}
+        {entityID && (
+          <Entity
+            serverURL={serverURL}
+            entityID={entityID}
+            onError={setError}
+            error={error}
+          />
+        )}
       </div>
     </>
   );

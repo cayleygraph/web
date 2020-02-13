@@ -4,6 +4,7 @@ export const RDFS = "http://www.w3.org/2000/01/rdf-schema#";
 export const RDFS_LABEL = RDFS + "label";
 export const RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 export const RDF_TYPE = RDF + "type";
+export const XSD_STRING = "http://www.w3.org/2001/XMLSchema#string";
 
 export type Suggestion = {
   value: string;
@@ -34,7 +35,7 @@ export type Entity = { [key: string]: EntityValueRecord[] };
 export async function getEntity(
   serverURL: string,
   entityID: string
-): Promise<Entity> {
+): Promise<Entity | null> {
   const result: GizmoQueryResult<EntityValueRecord> = await runQuery(
     serverURL,
     "gizmo",
@@ -52,7 +53,7 @@ export async function getEntity(
     throw new Error(result.error);
   }
   if (result.result === null) {
-    throw new Error("No result");
+    return null;
   }
   const properties: Entity = {};
   for (const record of result.result) {
