@@ -10,13 +10,32 @@ export type Suggestion = {
   label: string | { "@value": string; "@type": string };
 };
 
-type Entity = { [key: string]: any };
+type JsonLdReference = { "@id": string };
+type JsonLdValue =
+  | { "@value": string; "@language": string }
+  | { "@value": string; "@type": string };
+
+export type EntityValue = JsonLdReference | JsonLdValue | string;
+export type Label = string | JsonLdValue;
+
+type EntityValueRecord = {
+  id: JsonLdReference;
+  property: JsonLdReference;
+  value: EntityValue;
+  label?: Label;
+};
+
+type GizmoQueryResult<T extends Object> =
+  | { result: T[] | null }
+  | { error: string };
+
+export type Entity = { [key: string]: EntityValueRecord[] };
 
 export async function getEntity(
   serverURL: string,
   entityID: string
 ): Promise<Entity> {
-  const result = await runQuery(
+  const result: GizmoQueryResult<EntityValueRecord> = await runQuery(
     serverURL,
     "gizmo",
     `

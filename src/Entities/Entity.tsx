@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import Value from "./Value";
 import PropertyName from "./PropertyName";
-import { getEntity } from "./data";
+import { getEntity, Entity } from "./data";
 
 type Props = {
   entityID: string;
@@ -11,7 +11,7 @@ type Props = {
 };
 
 const Entity = ({ entityID, serverURL, onError, error }: Props) => {
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<Entity | null>(null);
   useEffect(() => {
     onError(null);
     setResult(null);

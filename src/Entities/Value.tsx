@@ -1,13 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { EntityValue, Label } from "./data";
 import { entityLink } from "./navigation";
 
 const Value = ({
   value,
   label
 }: {
-  value: string | { "@type": string; "@value": string };
-  label: string | { "@type": string; "@value": string } | null;
+  value: EntityValue;
+  label: Label | null;
 }) => {
   if (typeof value === "object" && "@id" in value) {
     return (
@@ -18,6 +19,13 @@ const Value = ({
   }
   if (typeof value === "string") {
     return <>{value}</>;
+  }
+  if ("@language" in value) {
+    return (
+      <>
+        {value} {value["@language"]}
+      </>
+    );
   }
   return (
     <>
