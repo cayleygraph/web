@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { getAutoCompletionSuggestions, Suggestion } from "./data";
 
 type OnSelect = (entityID: string) => void;
@@ -11,30 +11,33 @@ type Props = {
 };
 
 const Search = ({ entityID, onError, serverURL, onSelect }: Props) => {
-  const [temporalEntityID, setTemporalEntityID] = useState(entityID);
+  const [query, setQuery] = useState(entityID);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const handleSubmit = useCallback(
     event => {
       event.preventDefault();
-      onSelect(temporalEntityID);
+      onSelect(query);
     },
-    [temporalEntityID, onSelect]
+    [query, onSelect]
   );
 
   const handleChange = useCallback(
     event => {
-      setTemporalEntityID(event.target.value);
-      getAutoCompletionSuggestions(serverURL, event.target.value)
-        .then(setSuggestions)
-        .catch(onError);
+      setQuery(event.target.value);
     },
-    [setTemporalEntityID, setSuggestions, onError, serverURL]
+    [setQuery, setSuggestions, onError, serverURL]
   );
+
+  useEffect(() => {
+    getAutoCompletionSuggestions(serverURL, query)
+      .then(setSuggestions)
+      .catch(onError);
+  }, [query]);
 
   return (
     <form onSubmit={handleSubmit} className="EntityID">
       <label>Entity ID</label>
-      <input type="text" onChange={handleChange} value={temporalEntityID} />
+      <input type="text" onChange={handleChange} value={query} />
       <input type="submit" />
       <div className="suggestions">
         {suggestions.map((suggestion, i) => {
