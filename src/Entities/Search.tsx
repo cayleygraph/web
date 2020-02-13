@@ -25,14 +25,14 @@ const Search = ({ entityID, onError, serverURL, onSelect }: Props) => {
     event => {
       setQuery(event.target.value);
     },
-    [setQuery, setSuggestions, onError, serverURL]
+    [setQuery]
   );
 
   useEffect(() => {
     getAutoCompletionSuggestions(serverURL, query)
       .then(setSuggestions)
       .catch(onError);
-  }, [query]);
+  }, [query, setSuggestions, onError, serverURL]);
 
   return (
     <form onSubmit={handleSubmit} className="EntityID">
