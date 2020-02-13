@@ -3,7 +3,7 @@ import { Snackbar } from "@rmwc/snackbar";
 import "@material/snackbar/dist/mdc.snackbar.css";
 import "@material/button/dist/mdc.button.css";
 
-import { useHistory } from "react-router-dom";
+import { useHistory, Route } from "react-router-dom";
 
 import Search from "./Search";
 import Entity from "./Entity";
@@ -36,16 +36,17 @@ const EntitiesPage = ({ serverURL }: Props) => {
           serverURL={serverURL}
           entityID={entityID}
         />
-        {!entityID &&
-          "Write an entity's IRI in the text box to view the entity"}
-        {entityID && (
+        <Route exact path="/entities">
+          Write an entity's IRI in the text box to view the entity
+        </Route>
+        <Route path="/entities/:entity">
           <Entity
             serverURL={serverURL}
             entityID={entityID}
             onError={setError}
             error={error}
           />
-        )}
+        </Route>
       </div>
     </>
   );
