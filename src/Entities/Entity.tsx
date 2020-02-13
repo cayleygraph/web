@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import Value from "./Value";
 import PropertyName from "./PropertyName";
-import { getEntity, Entity } from "./data";
+import { getEntity, EntityValueRecord, Entity as EntityData } from "./data";
 
 type Props = {
   entityID: string;
@@ -11,7 +11,7 @@ type Props = {
 };
 
 const Entity = ({ entityID, serverURL, onError, error }: Props) => {
-  const [result, setResult] = useState<Entity | null>(null);
+  const [result, setResult] = useState<EntityData | null>(null);
   useEffect(() => {
     onError(null);
     setResult(null);
@@ -37,7 +37,7 @@ const Entity = ({ entityID, serverURL, onError, error }: Props) => {
         if (!Array.isArray(values)) {
           throw new Error("Unexpected type of values");
         }
-        const valueNodes = values.map((record, i) => {
+        const valueNodes = values.map((record: EntityValueRecord, i) => {
           const suffix = i === values.length - 1 ? null : ", ";
           return (
             <Fragment key={i}>

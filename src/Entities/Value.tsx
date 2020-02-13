@@ -8,7 +8,7 @@ const Value = ({
   label
 }: {
   value: EntityValue;
-  label: Label | null;
+  label: Label | null | undefined;
 }) => {
   if (typeof value === "object" && "@id" in value) {
     return (

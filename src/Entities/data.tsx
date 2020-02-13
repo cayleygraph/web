@@ -18,7 +18,7 @@ type JsonLdValue =
 export type EntityValue = JsonLdReference | JsonLdValue | string;
 export type Label = string | JsonLdValue;
 
-type EntityValueRecord = {
+export type EntityValueRecord = {
   id: JsonLdReference;
   property: JsonLdReference;
   value: EntityValue;
