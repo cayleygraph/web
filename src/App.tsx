@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 import QueryPage from "./QueryPage";
 import DataPage from "./DataPage";
-import EntitiesPage from "./EntitiesPage";
+import EntitiesPage from "./Entities/EntitiesPage";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
