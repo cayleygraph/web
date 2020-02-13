@@ -7,9 +7,10 @@ type Props = {
   entityID: string;
   serverURL: string;
   onError: (error: Error | null) => void;
+  error: Error | null;
 };
 
-const Entity = ({ entityID, serverURL, onError }: Props) => {
+const Entity = ({ entityID, serverURL, onError, error }: Props) => {
   const [result, setResult] = useState<any>(null);
   useEffect(() => {
     onError(null);
@@ -24,6 +25,9 @@ const Entity = ({ entityID, serverURL, onError }: Props) => {
         });
     }
   }, [entityID, serverURL, setResult, onError]);
+  if (error) {
+    return null;
+  }
   if (result === null) {
     return <div>Loading...</div>;
   }

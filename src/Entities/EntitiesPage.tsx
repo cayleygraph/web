@@ -44,6 +44,7 @@ const EntitiesPage = ({ serverURL }: Props) => {
               serverURL={serverURL}
               entityID={entityID}
               onError={setError}
+              error={error}
             />
           )}
         </ul>
