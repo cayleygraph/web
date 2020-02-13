@@ -75,8 +75,7 @@ export default Entity;
 const NotFound = () => {
   return (
     <div className="NotFound">
-      <div className="emoji">🤷</div>
-      Not Found
+      <h1>🤷 No entity found</h1>
     </div>
   );
 };

@@ -12,15 +12,10 @@
 }
 
 .EntitiesPage .NotFound {
-  text-align: center;
   font-size: 1.2rem;
-  padding: 64px;
-}
-
-.EntitiesPage .NotFound .emoji {
-  font-size: 3em;
 }
 
 .EntitiesPage .Property {
+  max-width: 50em;
   margin-bottom: 1em;
 }
