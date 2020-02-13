@@ -34,6 +34,10 @@ const Search = ({ entityID, onError, serverURL, onSelect }: Props) => {
       .catch(onError);
   }, [query, setSuggestions, onError, serverURL]);
 
+  useEffect(() => {
+    setQuery(entityID);
+  }, [entityID]);
+
   return (
     <form onSubmit={handleSubmit} className="EntityID">
       <label>Entity ID</label>
