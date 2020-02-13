@@ -15,6 +15,7 @@
 }
 
 .QueryHistory .time {
+  width: 5em;
   flex-shrink: 0;
 }
 

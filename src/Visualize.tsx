@@ -67,7 +67,7 @@ type Props = {
 };
 
 const Visualize = ({ value, height, width }: Props) => {
-  return value && "result" in value && value.result ? (
+  return value && "result" in value && value.result !== null ? (
     <ForceGraph
       data={resultToGraph(value.result)}
       nodeComponent={Node}
