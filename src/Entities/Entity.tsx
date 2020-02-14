@@ -1,12 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import Value from "./Value";
 import PropertyName from "./PropertyName";
-import {
-  getEntity,
-  EntityValueRecord,
-  Entity as EntityData,
-  RDFS_LABEL
-} from "./data";
+import { getEntity, Entity as EntityData, RDFS_LABEL } from "./data";
 
 type Props = {
   entityID: string;
@@ -44,7 +39,7 @@ const Entity = ({ entityID, serverURL, onError, error }: Props) => {
   if (result === null) {
     return <NotFound />;
   }
-  const labels = (result[RDFS_LABEL].values || []).map((record, i) => (
+  const labels = (result[RDFS_LABEL]?.values || []).map((record, i) => (
     <Value key={i} value={record.value} />
   ));
   return (

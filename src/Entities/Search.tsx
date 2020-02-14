@@ -44,7 +44,7 @@ const Search = ({ entityID, onError, serverURL, onSelect }: Props) => {
 
   return (
     <form onSubmit={handleSubmit} className="Search">
-      <label>Entity ID</label>
+      <label>ID</label>
       <input type="text" onChange={handleChange} value={query} />
       <input type="submit" />
       {!shouldHideSuggestions && (

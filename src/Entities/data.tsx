@@ -30,6 +30,10 @@ type JsonLdValue =
   | { "@value": string; "@language": string }
   | { "@value": string; "@type": string };
 
+export function isReference(value: EntityValue): value is JsonLdReference {
+  return typeof value === "object" && "@id" in value;
+}
+
 type GizmoQueryResult<T extends Object> = { result: T[] | null };
 type GizmoQueryError = { error: string };
 
@@ -176,9 +180,7 @@ export type ClassRecord = {
 };
 
 export async function getClassesPage(
-  serverURL: string,
-  pageNumber: number,
-  pageSize: number
+  serverURL: string
 ): Promise<ClassRecord[]> {
   const response: GizmoQueryResponse<ClassRecord> = await runQuery(
     serverURL,
@@ -190,8 +192,7 @@ g.V(g.IRI("rdfs:Class"))
 .in(g.IRI("rdf:type"))
 .saveOpt(g.IRI("rdfs:label"), "label")
 .unique()
-.skip(${pageNumber * pageSize})
-.getLimit(${pageSize});
+.getLimit(-1);
   `
   );
   const result = getResult(response);

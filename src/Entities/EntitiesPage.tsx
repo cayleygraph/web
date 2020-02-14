@@ -30,6 +30,7 @@ const EntitiesPage = ({ serverURL }: Props) => {
   return (
     <>
       {error && <Snackbar open message={String(error)} />}
+      <Classes serverURL={serverURL} entityID={entityID} />
       <div className="EntitiesPage">
         <Search
           serverURL={serverURL}
@@ -39,7 +40,6 @@ const EntitiesPage = ({ serverURL }: Props) => {
         />
         <Route exact path="/entities">
           Write an entity's IRI in the text box to view the entity
-          {/* <Classes serverURL={serverURL} /> */}
         </Route>
         <Route path="/entities/:entity">
           <Entity
