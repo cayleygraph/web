@@ -44,14 +44,15 @@ const Entity = ({ entityID, serverURL, onError, error }: Props) => {
   if (result === null) {
     return <NotFound />;
   }
-  const labels = (result[RDFS_LABEL] || []).map(values => (
-    <Value value={values.value} />
+  const labels = (result[RDFS_LABEL].values || []).map((record, i) => (
+    <Value key={i} value={record.value} />
   ));
   return (
     <div className="Entity">
       <h1>{labels}</h1>
-      {Object.entries(result).map(([property, values]) => {
-        const valueNodes = values.map((record: EntityValueRecord, i) => {
+      {Object.entries(result).map(([propertyID, property]) => {
+        const values = property.values;
+        const valueNodes = values.map((record, i) => {
           const suffix = i === values.length - 1 ? null : ", ";
           return (
             <Fragment key={i}>
@@ -61,8 +62,9 @@ const Entity = ({ entityID, serverURL, onError, error }: Props) => {
           );
         });
         return (
-          <div className="Property">
-            <PropertyName key={property} property={property} />: {valueNodes}
+          <div className="Property" key={propertyID}>
+            <PropertyName property={propertyID} label={property.label} />:{" "}
+            {valueNodes}
           </div>
         );
       })}

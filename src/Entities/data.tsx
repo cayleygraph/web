@@ -30,6 +30,20 @@ type JsonLdValue =
   | { "@value": string; "@language": string }
   | { "@value": string; "@type": string };
 
+type GizmoQueryResult<T extends Object> = { result: T[] | null };
+type GizmoQueryError = { error: string };
+
+type GizmoQueryResponse<T extends Object> =
+  | GizmoQueryResult<T>
+  | GizmoQueryError;
+
+function getResult<T>(response: GizmoQueryResponse<T>): T[] | null {
+  if ("error" in response) {
+    throw new Error(response.error);
+  }
+  return response.result;
+}
+
 export type EntityValue = JsonLdReference | JsonLdValue | string;
 export type Label = string | JsonLdValue;
 
@@ -40,43 +54,69 @@ export type EntityValueRecord = {
   label?: Label;
 };
 
-type GizmoQueryResult<T extends Object> =
-  | { result: T[] | null }
-  | { error: string };
+type PropertyRecord = {
+  id: JsonLdReference;
+  label: Label;
+};
 
-export type Entity = { [key: string]: EntityValueRecord[] };
+export type Entity = {
+  [id: string]: {
+    label?: Label;
+    values: Array<{
+      value: EntityValue;
+      label?: Label;
+    }>;
+  };
+};
 
 export async function getEntity(
   serverURL: string,
   entityID: string
 ): Promise<Entity | null> {
-  const result: GizmoQueryResult<EntityValueRecord> = await runQuery(
+  const response: GizmoQueryResponse<
+    EntityValueRecord | PropertyRecord
+  > = await runQuery(
     serverURL,
     "gizmo",
     `
       g.addDefaultNamespaces();
-      g
-      .V(g.IRI("${entityID}"))
+
+      var entity = g.V(g.IRI("${entityID}"));
+      
+      entity
       .out(g.V(), "property")
       .tag("value")
       .saveOpt(g.IRI("rdfs:label"), "label")
       .getLimit(-1);
+
+      entity
+      .outPredicates()
+      .save(g.IRI("rdfs:label"), "label")
+      .getLimit(-1);
     `
   );
-  if ("error" in result) {
-    throw new Error(result.error);
-  }
-  if (result.result === null) {
+  const result = getResult(response);
+  if (result === null) {
     return null;
   }
   const properties: Entity = {};
-  for (const record of result.result) {
-    const propertyID =
-      record.property["@id"] === RDF_TYPE
-        ? JSON_LD_TYPE
-        : record.property["@id"];
-    const values = properties[propertyID] || [];
-    properties[propertyID] = [...values, record];
+  for (const record of result) {
+    if ("property" in record) {
+      const propertyID =
+        record.property["@id"] === RDF_TYPE
+          ? JSON_LD_TYPE
+          : record.property["@id"];
+      const property = properties[propertyID] || { values: [] };
+      property.values.push({
+        value: record.value,
+        label: record.label
+      });
+      properties[propertyID] = property;
+    } else {
+      console.log(record);
+      const property = properties[record.id["@id"]];
+      property.label = record.label;
+    }
   }
   return properties;
 }
@@ -128,4 +168,35 @@ export async function getAutoCompletionSuggestions(
         };
       }
     );
+}
+
+export type ClassRecord = {
+  id: JsonLdReference;
+  label: Label;
+};
+
+export async function getClassesPage(
+  serverURL: string,
+  pageNumber: number,
+  pageSize: number
+): Promise<ClassRecord[]> {
+  const response: GizmoQueryResponse<ClassRecord> = await runQuery(
+    serverURL,
+    "gizmo",
+    `
+g.addDefaultNamespaces();
+
+g.V(g.IRI("rdfs:Class"))
+.in(g.IRI("rdf:type"))
+.saveOpt(g.IRI("rdfs:label"), "label")
+.unique()
+.skip(${pageNumber * pageSize})
+.getLimit(${pageSize});
+  `
+  );
+  const result = getResult(response);
+  if (result === null) {
+    return [];
+  }
+  return result;
 }

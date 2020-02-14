@@ -7,6 +7,7 @@ import { useHistory, Route } from "react-router-dom";
 
 import Search from "./Search";
 import Entity from "./Entity";
+import Classes from "./Classes";
 import { entityLink, getEntityID } from "./navigation";
 import "./EntitiesPage.css";
 
@@ -31,13 +32,14 @@ const EntitiesPage = ({ serverURL }: Props) => {
       {error && <Snackbar open message={String(error)} />}
       <div className="EntitiesPage">
         <Search
+          serverURL={serverURL}
           onSelect={goToEntity}
           onError={setError}
-          serverURL={serverURL}
           entityID={entityID}
         />
         <Route exact path="/entities">
           Write an entity's IRI in the text box to view the entity
+          {/* <Classes serverURL={serverURL} /> */}
         </Route>
         <Route path="/entities/:entity">
           <Entity

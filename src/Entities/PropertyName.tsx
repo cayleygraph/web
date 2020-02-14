@@ -4,11 +4,18 @@ import {
   RDFS_LABEL,
   JSON_LD_TYPE,
   RDFS_SUB_CLASS_OF,
-  RDFS_COMMENT
+  RDFS_COMMENT,
+  Label
 } from "./data";
 import { entityLink } from "./navigation";
 
-const PropertyName = ({ property }: { property: string }) => {
+const PropertyName = ({
+  property,
+  label
+}: {
+  property: string;
+  label?: Label;
+}) => {
   if (property === RDFS_LABEL) {
     return <b>Label</b>;
   }
@@ -21,9 +28,10 @@ const PropertyName = ({ property }: { property: string }) => {
   if (property === RDFS_COMMENT) {
     return <b>Comment</b>;
   }
+  const display = label || property;
   return (
     <b>
-      <Link to={entityLink(property)}>{property}</Link>
+      <Link to={entityLink(property)}>{display}</Link>
     </b>
   );
 };
