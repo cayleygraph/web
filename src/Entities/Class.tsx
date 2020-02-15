@@ -18,7 +18,7 @@ const Class = ({ serverURL, id, data }: Props) => {
       <EntityTitle data={data} type="Class" />
       <EntityComment data={data} />
       <EntityID id={id} />
-      <Properties data={data} />
+      <Properties data={data} noSingleType />
       <Instances serverURL={serverURL} classID={id} />
     </div>
   );

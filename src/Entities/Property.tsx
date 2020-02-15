@@ -16,7 +16,7 @@ const Property = ({ id, data }: Props) => {
       <EntityTitle data={data} type="Property" />
       <EntityComment data={data} />
       <EntityID id={id} />
-      <Properties data={data} />
+      <Properties data={data} noSingleType />
     </div>
   );
 };

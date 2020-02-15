@@ -27,21 +27,16 @@ const Instances = ({ classID, serverURL }: Props) => {
   if (data === null) {
     return <span>"Loading..."</span>;
   }
+  const itemNodes = data.map(record => {
+    return (
+      <Value value={record.id} label={record.label} Component={ListItem} />
+    );
+  });
   /** @todo navigation controls */
   return (
     <div className="Instances">
       <h3>Instances</h3>
-      <List>
-        {data.map(record => {
-          return (
-            <Value
-              value={record.id}
-              label={record.label}
-              Component={ListItem}
-            />
-          );
-        })}
-      </List>
+      <List>{data.length === 0 ? "No instances" : itemNodes}</List>
     </div>
   );
 };
