@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Entity as EntityData } from "./data";
+import { Entity as EntityData, RDFS_LABEL, RDFS_COMMENT } from "./data";
 import PropertyName from "./PropertyName";
 import Value from "./Value";
 
@@ -12,6 +12,14 @@ const Properties = ({ data }: Props) => {
     <>
       {Object.entries(data).map(([propertyID, property]) => {
         const values = property.values;
+        if (
+          // For single labels there's no need to render as they are visible in EntityTitle
+          (propertyID === RDFS_LABEL && values.length === 1) ||
+          // Comments are rendered separately
+          propertyID === RDFS_COMMENT
+        ) {
+          return null;
+        }
         const valueNodes = values.map((record, i) => {
           const suffix = i === values.length - 1 ? null : ", ";
           return (

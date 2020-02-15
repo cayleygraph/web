@@ -17,16 +17,14 @@ const PropertyName = ({
   label?: Label;
 }) => {
   if (property === RDFS_LABEL) {
-    return <b>Label</b>;
+    // Will only render if there are multiple labels
+    return <b>Labels</b>;
   }
   if (property === JSON_LD_TYPE) {
     return <b>Type</b>;
   }
   if (property === RDFS_SUB_CLASS_OF) {
     return <b>Sub Class Of</b>;
-  }
-  if (property === RDFS_COMMENT) {
-    return <b>Comment</b>;
   }
   const display = label || property;
   return (

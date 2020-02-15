@@ -1,0 +1,19 @@
+import React from "react";
+import { Entity as EntityData, RDFS_COMMENT } from "./data";
+
+type Props = {
+  data: EntityData;
+};
+
+const EntityComment = ({ data }: Props) => {
+  const comments = data[RDFS_COMMENT]?.values || [];
+  return (
+    <>
+      {comments.map(record => {
+        return <p>{record.value}</p>;
+      })}
+    </>
+  );
+};
+
+export default EntityComment;

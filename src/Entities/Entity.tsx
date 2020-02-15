@@ -1,6 +1,7 @@
 import React from "react";
 import { Entity as EntityData } from "./data";
 import EntityTitle from "./EntityTitle";
+import EntityComment from "./EntityComment";
 import Properties from "./Properties";
 
 type Props = {
@@ -12,6 +13,7 @@ const Entity = ({ data }: Props) => {
     <div className="Entity">
       <span>Entity</span>
       <EntityTitle data={data} />
+      <EntityComment data={data} />
       <Properties data={data} />
     </div>
   );
