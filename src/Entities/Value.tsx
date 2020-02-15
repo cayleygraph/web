@@ -1,6 +1,13 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
-import { EntityValue, Label, XSD_STRING, isReference } from "./data";
+import {
+  EntityValue,
+  Label,
+  XSD,
+  XSD_STRING,
+  isReference,
+  RDFS_CLASS
+} from "./data";
 import { entityLink } from "./navigation";
 
 const Value = ({
@@ -13,10 +20,17 @@ const Value = ({
   Component?: React.ComponentType;
 }) => {
   if (isReference(value)) {
+    const id = value["@id"];
+    if (id === RDFS_CLASS) {
+      return <Component>Class</Component>;
+    }
+    if (id.startsWith(XSD)) {
+      return <Component>{id.substr(XSD.length)}</Component>;
+    }
     return (
-      <Link to={entityLink(value["@id"])}>
+      <Link to={entityLink(id)}>
         <Component>
-          {label ? <Value value={label} label={null} /> : value["@id"]}
+          {label ? <Value value={label} label={null} /> : id}
         </Component>
       </Link>
     );
@@ -36,7 +50,7 @@ const Value = ({
   }
   return (
     <Component>
-      {value["@value"]} ({value["@type"]})
+      {value["@value"]} (<Value value={{ "@id": value["@type"] }} />)
     </Component>
   );
 };
