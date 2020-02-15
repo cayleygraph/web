@@ -18,7 +18,7 @@ const Instances = ({ classID, serverURL }: Props) => {
     getInstancesPage(serverURL, classID, page, PAGE_SIZE)
       .then(setData)
       .catch(setError);
-  }, [classID, setData, setError, page]);
+  }, [serverURL, classID, setData, setError, page]);
   /** @todo replace with snackbar */
   console.error(error);
   if (error) {
