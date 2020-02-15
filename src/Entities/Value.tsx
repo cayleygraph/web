@@ -6,7 +6,8 @@ import {
   XSD,
   XSD_STRING,
   isReference,
-  RDFS_CLASS
+  RDFS_CLASS,
+  RDF_PROPERTY
 } from "./data";
 import { entityLink } from "./navigation";
 
@@ -31,6 +32,13 @@ const Value = ({ value, label, Component = Fragment }: Props) => {
       return (
         <a href="https://www.w3.org/TR/rdf-schema/#ch_class">
           <Component>Class</Component>
+        </a>
+      );
+    }
+    if (id === RDF_PROPERTY) {
+      return (
+        <a href="https://www.w3.org/TR/rdf-schema/#ch_property">
+          <Component>Property</Component>
         </a>
       );
     }
