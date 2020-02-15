@@ -52,7 +52,7 @@ const Value = ({ value, label, Component = Fragment }: Props) => {
     return (
       <Link to={entityLink(id)}>
         <Component>
-          {label ? <Value value={label} label={null} /> : id}
+          {label ? <Value value={label} label={null} /> : idToDisplay(id)}
         </Component>
       </Link>
     );
@@ -85,3 +85,19 @@ const Value = ({ value, label, Component = Fragment }: Props) => {
 };
 
 export default Value;
+
+function idToDisplay(id: string): string {
+  try {
+    const url = new URL(id);
+    if (url.hash) {
+      return url.hash.substr(1);
+    }
+    if (url.pathname.length > 1) {
+      const parts = url.pathname.split("/");
+      return parts[parts.length - 1];
+    }
+    return id;
+  } catch {
+    return id;
+  }
+}
