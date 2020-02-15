@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
-import { getClasses } from "./data";
+import { getClasses, ClassRecord } from "./data";
 import Value from "./Value";
 import "./Classes.css";
 import { Link } from "react-router-dom";
+import useEntityID from "./useEntityID";
 
-type Props = { serverURL: string; entityID: string };
+type Props = {
+  serverURL: string;
+  onError: (error: Error) => void;
+};
 
-const Classes = ({ serverURL, entityID }: Props) => {
-  const [classes, setClasses] = useState<any[]>([]);
+const Classes = ({ serverURL, onError }: Props) => {
+  const [classes, setClasses] = useState<ClassRecord[]>([]);
+  const entityID = useEntityID();
+
   useEffect(() => {
     getClasses(serverURL)
       .then(setClasses)
-      /** @todo send error up */
-      .catch(console.error);
+      .catch(onError);
   }, [serverURL, setClasses]);
-  const orderedClasses = [...classes];
-  orderedClasses.sort((a, b) => {
-    if ((a.label || b.id) < (b.label || b.id)) {
-      return -1;
-    }
-    return 1;
-  });
+
+  const orderedClasses = sortClasses(classes);
   return (
     <List className="Classes">
       <Link to="/entities">
@@ -47,3 +47,14 @@ const Classes = ({ serverURL, entityID }: Props) => {
 };
 
 export default Classes;
+
+function sortClasses(classes: ClassRecord[]) {
+  const orderedClasses = [...classes];
+  orderedClasses.sort((a, b) => {
+    if ((a.label || b.id) < (b.label || b.id)) {
+      return -1;
+    }
+    return 1;
+  });
+  return orderedClasses;
+}

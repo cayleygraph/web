@@ -11,17 +11,19 @@ import Entity from "./Entity";
 import Class from "./Class";
 import Property from "./Property";
 import NotFound from "./NotFound";
+import useEntityID from "./useEntityID";
 
 type Props = {
-  entityID: string;
   serverURL: string;
   onError: (error: Error | null) => void;
   error: Error | null;
 };
 
-const EntityPage = ({ entityID, serverURL, onError, error }: Props) => {
+const EntityPage = ({ serverURL, onError, error }: Props) => {
   const [result, setResult] = useState<EntityData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const entityID = useEntityID();
+
   useEffect(() => {
     onError(null);
     setResult(null);
@@ -39,6 +41,9 @@ const EntityPage = ({ entityID, serverURL, onError, error }: Props) => {
         });
     }
   }, [entityID, serverURL, setResult, onError]);
+  if (!entityID) {
+    return null;
+  }
   if (error) {
     return null;
   }

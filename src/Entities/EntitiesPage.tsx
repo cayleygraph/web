@@ -19,7 +19,6 @@ type Props = {
 
 const EntitiesPage = ({ serverURL }: Props) => {
   const history = useHistory();
-  const entityID = getEntityID(history.location.pathname);
   const [error, setError] = useState<Error | null>(null);
 
   const goToEntity = useCallback(
@@ -38,11 +37,10 @@ const EntitiesPage = ({ serverURL }: Props) => {
             serverURL={serverURL}
             onSelect={goToEntity}
             onError={setError}
-            entityID={entityID}
           />
         </DrawerHeader>
         <DrawerContent>
-          <Classes serverURL={serverURL} entityID={entityID} />
+          <Classes serverURL={serverURL} onError={setError} />
         </DrawerContent>
       </Drawer>
       <div className="EntitiesPage">
@@ -50,12 +48,7 @@ const EntitiesPage = ({ serverURL }: Props) => {
           Write an entity's IRI in the text box to view the entity
         </Route>
         <Route path="/entities/:entity">
-          <EntityPage
-            serverURL={serverURL}
-            entityID={entityID}
-            onError={setError}
-            error={error}
-          />
+          <EntityPage serverURL={serverURL} onError={setError} error={error} />
         </Route>
       </div>
     </>

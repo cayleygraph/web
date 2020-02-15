@@ -1,19 +1,20 @@
 import React, { useState, useCallback, useEffect } from "react";
 import "./Search.css";
 import { getAutoCompletionSuggestions, Suggestion } from "./data";
+import useEntityID from "./useEntityID";
 
 type OnSelect = (entityID: string) => void;
 
 type Props = {
-  entityID: string;
   onError: (error: Error) => void;
   onSelect: OnSelect;
   serverURL: string;
 };
 
-const Search = ({ entityID, onError, serverURL, onSelect }: Props) => {
+const Search = ({ onError, serverURL, onSelect }: Props) => {
   const [query, setQuery] = useState();
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const entityID = useEntityID();
   const handleSubmit = useCallback(
     event => {
       event.preventDefault();
