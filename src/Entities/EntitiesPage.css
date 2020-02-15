@@ -19,16 +19,3 @@
   max-width: 50em;
   margin-bottom: 1em;
 }
-
-.TopicTitle {
-  width: 692px;
-  margin-top: 2rem;
-  margin-bottom: 1.5rem;
-}
-
-.EntityType {
-  font-size: 20px;
-  line-height: 1;
-  font-weight: 400;
-  color: #666;
-}

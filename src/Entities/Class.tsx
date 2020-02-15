@@ -15,10 +15,7 @@ type Props = {
 const Class = ({ serverURL, id, data }: Props) => {
   return (
     <div className="Entity">
-      <div className="TopicTitle">
-        <span className="EntityType">Class</span>
-        <EntityTitle data={data} />
-      </div>
+      <EntityTitle data={data} type="Class" />
       <EntityComment data={data} />
       <EntityID id={id} />
       <Properties data={data} />

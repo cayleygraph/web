@@ -13,10 +13,7 @@ type Props = {
 const Property = ({ id, data }: Props) => {
   return (
     <div className="Entity">
-      <div className="TopicTitle">
-        <span className="EntityType">Property</span>
-        <EntityTitle data={data} />
-      </div>
+      <EntityTitle data={data} type="Property" />
       <EntityComment data={data} />
       <EntityID id={id} />
       <Properties data={data} />
