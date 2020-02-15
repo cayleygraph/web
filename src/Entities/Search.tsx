@@ -36,6 +36,11 @@ const Search = ({ onError, serverURL, onSelect }: Props) => {
       .catch(onError);
   }, [query, setSuggestions, onError, serverURL]);
 
+  // Reset query on entity change
+  useEffect(() => {
+    setQuery("");
+  }, [entityID]);
+
   const shouldHideSuggestions =
     suggestions.length === 1 && suggestions[0].value === entityID;
 
