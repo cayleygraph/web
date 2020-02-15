@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { Snackbar } from "@rmwc/snackbar";
 import "@material/snackbar/dist/mdc.snackbar.css";
 import "@material/button/dist/mdc.button.css";
-import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
+import { Drawer, DrawerHeader, DrawerContent } from "@rmwc/drawer";
 import "@material/drawer/dist/mdc.drawer.css";
 
 import { useHistory, Route } from "react-router-dom";
