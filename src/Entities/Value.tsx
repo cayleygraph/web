@@ -1,62 +1,13 @@
 import React, { Fragment } from "react";
-import { Link } from "react-router-dom";
-import {
-  EntityValue,
-  Label,
-  XSD,
-  XSD_STRING,
-  isReference,
-  RDFS_CLASS,
-  RDF_PROPERTY
-} from "./data";
-import { entityLink } from "./navigation";
+import { JsonLdValue, XSD_STRING } from "./data";
+import ID from "./ID";
 
 type Props = {
-  value: EntityValue;
-  label?: Label | null | undefined;
+  value: string | JsonLdValue;
   Component?: React.ComponentType;
 };
 
-/**
- * Component to render entity values.
- * An entity value can be either another entity, a simple literal (e.g. number) or text.
- * The component may be provided with a label for an entity.
- * For entities the component will create a link to the entity page.
- * The component may be provided with a Component to wrap the rendered value.
- */
-const Value = ({ value, label, Component = Fragment }: Props) => {
-  // Entity values
-  if (isReference(value)) {
-    const id = value["@id"];
-    if (id === RDFS_CLASS) {
-      return (
-        <a href="https://www.w3.org/TR/rdf-schema/#ch_class">
-          <Component>Class</Component>
-        </a>
-      );
-    }
-    if (id === RDF_PROPERTY) {
-      return (
-        <a href="https://www.w3.org/TR/rdf-schema/#ch_property">
-          <Component>Property</Component>
-        </a>
-      );
-    }
-    if (id.startsWith(XSD)) {
-      return (
-        <a href={id}>
-          <Component>{id.substr(XSD.length)}</Component>
-        </a>
-      );
-    }
-    return (
-      <Link to={entityLink(id)}>
-        <Component>
-          {label ? <Value value={label} label={null} /> : idToDisplay(id)}
-        </Component>
-      </Link>
-    );
-  }
+const Value = ({ value, Component = Fragment }: Props) => {
   // Text values
   if (typeof value === "string") {
     return <Component>{value}</Component>;
@@ -77,7 +28,7 @@ const Value = ({ value, label, Component = Fragment }: Props) => {
     }
     return (
       <Component>
-        {value["@value"]} (<Value value={{ "@id": type }} />)
+        {value["@value"]} (<ID id={type} />)
       </Component>
     );
   }
@@ -85,19 +36,3 @@ const Value = ({ value, label, Component = Fragment }: Props) => {
 };
 
 export default Value;
-
-export function idToDisplay(id: string): string {
-  try {
-    const url = new URL(id);
-    if (url.hash) {
-      return url.hash.substr(1);
-    }
-    if (url.pathname.length > 1) {
-      const parts = url.pathname.split("/");
-      return parts[parts.length - 1];
-    }
-    return id;
-  } catch {
-    return id;
-  }
-}

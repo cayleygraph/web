@@ -1,6 +1,7 @@
 import React from "react";
 import { Entity as EntityData, RDFS_LABEL } from "./data";
-import Value, { idToDisplay } from "./Value";
+import EntityValue from "./EntityValue";
+import { idToDisplay } from "./ID";
 import "./EntityTitle.css";
 
 type Props = {
@@ -16,7 +17,7 @@ const EntityTitle = ({ id, type, data }: Props) => {
       <span className="type">{type}</span>
       <h1>
         {text.map((record, i) => (
-          <Value key={i} value={record.value} />
+          <EntityValue key={i} value={record.value} />
         ))}
       </h1>
     </div>

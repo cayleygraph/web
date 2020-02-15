@@ -1,6 +1,6 @@
 import React from "react";
 import { RDFS_LABEL, JSON_LD_TYPE, RDFS_SUB_CLASS_OF, Label } from "./data";
-import Value from "./Value";
+import ID from "./ID";
 
 const PropertyName = ({
   property,
@@ -21,7 +21,7 @@ const PropertyName = ({
   }
   return (
     <b>
-      <Value value={{ "@id": property }} label={label} />
+      <ID id={property} label={label} />
     </b>
   );
 };

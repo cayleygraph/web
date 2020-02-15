@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { Entity as EntityData, RDFS_LABEL, RDFS_COMMENT } from "./data";
 import PropertyName from "./PropertyName";
-import Value from "./Value";
+import EntityValue from "./EntityValue";
 
 type Props = {
   data: EntityData;
@@ -27,7 +27,7 @@ const Properties = ({ data, noSingleType }: Props) => {
           const suffix = i === values.length - 1 ? null : ", ";
           return (
             <Fragment key={i}>
-              <Value key={i} value={record.value} label={record.label} />
+              <EntityValue key={i} value={record.value} label={record.label} />
               {suffix}
             </Fragment>
           );

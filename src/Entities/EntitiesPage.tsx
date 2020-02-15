@@ -10,7 +10,7 @@ import { useHistory, Route } from "react-router-dom";
 import Search from "./Search";
 import EntityPage from "./EntityPage";
 import Classes from "./Classes";
-import { entityLink, getEntityID } from "./navigation";
+import { entityLink } from "./navigation";
 import "./EntitiesPage.css";
 
 type Props = {

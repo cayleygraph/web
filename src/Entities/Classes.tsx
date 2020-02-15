@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
 import { getClasses, ClassRecord } from "./data";
-import Value from "./Value";
+import EntityValue from "./EntityValue";
 import "./Classes.css";
 import { Link } from "react-router-dom";
 import useEntityID from "./useEntityID";
@@ -20,7 +20,7 @@ const Classes = ({ serverURL, onError }: Props) => {
     getClasses(serverURL)
       .then(setClasses)
       .catch(onError);
-  }, [serverURL, setClasses]);
+  }, [serverURL, setClasses, onError]);
 
   const orderedClasses = sortClasses(classes);
   return (
@@ -34,7 +34,7 @@ const Classes = ({ serverURL, onError }: Props) => {
           <ListItem {...props} activated={classID === entityID} />
         );
         return (
-          <Value
+          <EntityValue
             key={classID}
             value={record.id}
             label={record.label}

@@ -34,7 +34,7 @@ export type Suggestion = {
 };
 
 export type JsonLdReference = { "@id": string };
-type JsonLdValue =
+export type JsonLdValue =
   | { "@value": string; "@language": string }
   | { "@value": string; "@type": string };
 

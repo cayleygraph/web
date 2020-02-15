@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { getInstancesPage, InstanceRecord, InstancesPage } from "./data";
+import { getInstancesPage, InstancesPage } from "./data";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
 import "./Instances.css";
 
-import Value from "./Value";
+import EntityValue from "./EntityValue";
 import Paginator from "./Paginator";
 
 type Props = {
@@ -28,7 +28,7 @@ const Instances = ({ classID, serverURL, onError }: Props) => {
   }
   const itemNodes = data.data.map(record => {
     return (
-      <Value
+      <EntityValue
         key={record.id["@id"]}
         value={record.id}
         label={record.label}
