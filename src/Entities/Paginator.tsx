@@ -18,12 +18,22 @@ const Paginator = ({ pageSize, length, onChange, value }: Props) => {
   const forward = useCallback(() => {
     onChange(value + 1);
   }, [onChange, value]);
+  const firstItem = value + 1;
+  const lastItem = firstItem * pageSize;
   return (
     <div className="Paginator">
-      {value + 1} – {(value + 1) * pageSize}
+      {firstItem} – {lastItem}
       {length !== undefined && ` ${length}`}
-      <IconButton icon="keyboard_arrow_left" onClick={backward} />
-      <IconButton icon="keyboard_arrow_right" onClick={forward} />
+      <IconButton
+        disabled={value === 0}
+        icon="keyboard_arrow_left"
+        onClick={backward}
+      />
+      <IconButton
+        disabled={lastItem === length}
+        icon="keyboard_arrow_right"
+        onClick={forward}
+      />
     </div>
   );
 };
