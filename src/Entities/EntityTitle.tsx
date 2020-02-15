@@ -1,20 +1,21 @@
 import React from "react";
 import { Entity as EntityData, RDFS_LABEL } from "./data";
-import Value from "./Value";
+import Value, { idToDisplay } from "./Value";
 import "./EntityTitle.css";
 
 type Props = {
+  id: string;
   type: string;
   data: EntityData;
 };
 
-const EntityTitle = ({ type, data }: Props) => {
-  const labels = data[RDFS_LABEL]?.values || [];
+const EntityTitle = ({ id, type, data }: Props) => {
+  const text = getText(id, data);
   return (
     <div className="EntityTitle">
       <span className="type">{type}</span>
       <h1>
-        {labels.map((record, i) => (
+        {text.map((record, i) => (
           <Value key={i} value={record.value} />
         ))}
       </h1>
@@ -23,3 +24,11 @@ const EntityTitle = ({ type, data }: Props) => {
 };
 
 export default EntityTitle;
+
+function getText(id: string, data: EntityData): Array<{ value: any }> {
+  const labels = data[RDFS_LABEL]?.values;
+  if (!labels) {
+    return [{ value: idToDisplay(id) }];
+  }
+  return labels;
+}

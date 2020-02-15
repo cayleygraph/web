@@ -40,12 +40,14 @@ const Instances = ({ classID, serverURL, onError }: Props) => {
     <div className="Instances">
       <h3>Instances</h3>
       <List>{data.data.length === 0 ? "No instances" : itemNodes}</List>
-      <Paginator
-        pageSize={PAGE_SIZE}
-        value={page}
-        length={data.total}
-        onChange={setPage}
-      />
+      {data.data.length !== 0 && (
+        <Paginator
+          pageSize={PAGE_SIZE}
+          value={page}
+          length={data.total}
+          onChange={setPage}
+        />
+      )}
     </div>
   );
 };

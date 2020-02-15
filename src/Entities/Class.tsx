@@ -13,10 +13,15 @@ type Props = {
   data: EntityData;
 };
 
+/**
+ * @todo show super classes in the bottom with a special view
+ * @todo show properties with domain of class
+ */
+
 const Class = ({ serverURL, onError, id, data }: Props) => {
   return (
     <div className="Entity">
-      <EntityTitle data={data} type="Class" />
+      <EntityTitle id={id} data={data} type="Class" />
       <EntityComment data={data} />
       <EntityID id={id} />
       <Properties data={data} noSingleType />

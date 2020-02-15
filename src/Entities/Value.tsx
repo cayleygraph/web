@@ -86,7 +86,7 @@ const Value = ({ value, label, Component = Fragment }: Props) => {
 
 export default Value;
 
-function idToDisplay(id: string): string {
+export function idToDisplay(id: string): string {
   try {
     const url = new URL(id);
     if (url.hash) {
