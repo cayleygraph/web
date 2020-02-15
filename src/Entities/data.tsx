@@ -159,7 +159,9 @@ export async function getAutoCompletionSuggestions(
   }
   const results = result.result || [];
   return results
-    .filter(result => "@id" in result.entity)
+    .filter(
+      result => typeof result.entity === "object" && "@id" in result.entity
+    )
     .map(
       (result): Suggestion => {
         return {
