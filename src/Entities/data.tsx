@@ -7,6 +7,7 @@ export const XSD = "http://www.w3.org/2001/XMLSchema#";
 
 // RDF
 export const RDF_TYPE = RDF + "type";
+export const RDF_PROPERTY = RDF + "Property";
 
 // RDFS
 export const RDFS_LABEL = RDFS + "label";

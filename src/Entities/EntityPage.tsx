@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
 
-import { getEntity, Entity as EntityData, RDFS_CLASS } from "./data";
+import {
+  getEntity,
+  Entity as EntityData,
+  RDFS_CLASS,
+  RDF_PROPERTY
+} from "./data";
 import Entity from "./Entity";
-import NotFound from "./NotFound";
 import Class from "./Class";
+import Property from "./Property";
+import NotFound from "./NotFound";
 
 type Props = {
   entityID: string;
@@ -41,6 +47,9 @@ const EntityPage = ({ entityID, serverURL, onError, error }: Props) => {
   if (result === null) {
     return <NotFound />;
   }
+  if (isProperty(result)) {
+    return <Property id={entityID} data={result} />;
+  }
   if (isClass(result)) {
     return <Class serverURL={serverURL} id={entityID} data={result} />;
   }
@@ -49,12 +58,20 @@ const EntityPage = ({ entityID, serverURL, onError, error }: Props) => {
 
 export default EntityPage;
 
-function isClass(result: EntityData): boolean {
+function hasType(result: EntityData, type: string) {
   const types = result["@type"]?.values || [];
   return types.some(
     record =>
       typeof record.value === "object" &&
       "@id" in record.value &&
-      record.value["@id"] === RDFS_CLASS
+      record.value["@id"] === type
   );
+}
+
+function isClass(result: EntityData): boolean {
+  return hasType(result, RDFS_CLASS);
+}
+
+function isProperty(result: EntityData): boolean {
+  return hasType(result, RDF_PROPERTY);
 }
