@@ -11,10 +11,6 @@
   color: rgb(98, 49, 233);
 }
 
-.EntitiesPage .NotFound {
-  font-size: 1.2rem;
-}
-
 .EntitiesPage .Property {
   max-width: 50em;
   margin-bottom: 1em;
