@@ -1,5 +1,6 @@
 import React from "react";
 import { Entity as EntityData, RDFS_COMMENT } from "./data";
+import Value from "./Value";
 
 type Props = {
   data: EntityData;
@@ -10,7 +11,11 @@ const EntityComment = ({ data }: Props) => {
   return (
     <>
       {comments.map(record => {
-        return <p>{record.value}</p>;
+        return (
+          <p>
+            <Value value={record.value} />
+          </p>
+        );
       })}
     </>
   );
