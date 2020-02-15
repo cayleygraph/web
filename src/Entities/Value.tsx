@@ -65,7 +65,7 @@ const Value = ({ value, label, Component = Fragment }: Props) => {
   if ("@language" in value) {
     return (
       <Component>
-        {value} ({value["@language"]})
+        {value["@value"]} ({value["@language"]})
       </Component>
     );
   }
