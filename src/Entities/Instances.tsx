@@ -8,14 +8,17 @@ import Value from "./Value";
 
 type Props = { classID: string; serverURL: string };
 
+const PAGE_SIZE = 10;
+
 const Instances = ({ classID, serverURL }: Props) => {
   const [data, setData] = useState<InstanceRecord[] | null>(null);
+  const [page, setPage] = useState<number>(0);
   const [error, setError] = useState();
   useEffect(() => {
-    getInstancesPage(serverURL, classID, 0, 20)
+    getInstancesPage(serverURL, classID, page, PAGE_SIZE)
       .then(setData)
       .catch(setError);
-  }, [classID, setData, setError]);
+  }, [classID, setData, setError, page]);
   /** @todo replace with snackbar */
   console.error(error);
   if (error) {
@@ -26,13 +29,20 @@ const Instances = ({ classID, serverURL }: Props) => {
   }
   /** @todo navigation controls */
   return (
-    <List className="Instances">
-      {data.map(record => {
-        return (
-          <Value value={record.id} label={record.label} Component={ListItem} />
-        );
-      })}
-    </List>
+    <div className="Instances">
+      <h3>Instances</h3>
+      <List>
+        {data.map(record => {
+          return (
+            <Value
+              value={record.id}
+              label={record.label}
+              Component={ListItem}
+            />
+          );
+        })}
+      </List>
+    </div>
   );
 };
 
