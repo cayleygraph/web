@@ -3,7 +3,7 @@ import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
 import "@material/drawer/dist/mdc.drawer.css";
-import { getClassesPage } from "./data";
+import { getClasses } from "./data";
 import Value from "./Value";
 import "./Classes.css";
 import { Link } from "react-router-dom";
@@ -13,7 +13,7 @@ type Props = { serverURL: string; entityID: string };
 const Classes = ({ serverURL, entityID }: Props) => {
   const [classes, setClasses] = useState<any[]>([]);
   useEffect(() => {
-    getClassesPage(serverURL)
+    getClasses(serverURL)
       .then(setClasses)
       /** @todo send error up */
       .catch(console.error);

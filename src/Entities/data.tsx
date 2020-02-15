@@ -181,9 +181,7 @@ export type ClassRecord = {
   label: Label;
 };
 
-export async function getClassesPage(
-  serverURL: string
-): Promise<ClassRecord[]> {
+export async function getClasses(serverURL: string): Promise<ClassRecord[]> {
   const response: GizmoQueryResponse<ClassRecord> = await runQuery(
     serverURL,
     "gizmo",
