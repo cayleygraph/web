@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import Value from "./Value";
 import PropertyName from "./PropertyName";
 import { getEntity, Entity as EntityData, RDFS_LABEL } from "./data";
+import NotFound from "./NotFound";
 
 type Props = {
   entityID: string;
@@ -10,7 +11,7 @@ type Props = {
   error: Error | null;
 };
 
-const Entity = ({ entityID, serverURL, onError, error }: Props) => {
+const EntityPage = ({ entityID, serverURL, onError, error }: Props) => {
   const [result, setResult] = useState<EntityData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
@@ -67,12 +68,4 @@ const Entity = ({ entityID, serverURL, onError, error }: Props) => {
   );
 };
 
-export default Entity;
-
-const NotFound = () => {
-  return (
-    <div className="NotFound">
-      <h1>🤷 No entity found</h1>
-    </div>
-  );
-};
+export default EntityPage;
