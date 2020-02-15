@@ -215,33 +215,39 @@ export type InstanceRecord = {
   label?: Label;
 };
 
+export type InstancesPage = { total: number; data: InstanceRecord[] };
+
 export async function getInstancesPage(
   serverURL: string,
   classID: string,
   pageNumber: number,
   pageSize: number
-): Promise<InstanceRecord[]> {
+): Promise<InstancesPage> {
   const skip = pageNumber * pageSize;
   const query = `
 g.addDefaultNamespaces();
 
-g.V(g.IRI("${classID}"))
-.in(g.IRI("rdf:type"))
+var instances = g.V().has(g.IRI("rdf:type"), g.IRI("${classID}"))
+
+g.emit(instances.count());
+
+instances
 .saveOpt(g.IRI("rdfs:label"), "label")
 .skip(${skip})
 .getLimit(${pageSize});
   `;
   const response = await runQuery(serverURL, "gizmo", query);
   const result = getResult(response);
-  if (result === null) {
-    return [];
-  }
-  return result.map(record => {
-    return {
-      id: record.id,
-      label: record.label
-    };
-  });
+  const [total, ...items] = result || [];
+  return {
+    total,
+    data: items.map(record => {
+      return {
+        id: record.id,
+        label: record.label
+      };
+    })
+  };
 }
 
 export function isClass(types: Set<string>): boolean {

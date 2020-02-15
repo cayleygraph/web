@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getInstancesPage, InstanceRecord } from "./data";
+import { getInstancesPage, InstanceRecord, InstancesPage } from "./data";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
 import "./Instances.css";
@@ -16,7 +16,7 @@ type Props = {
 const PAGE_SIZE = 10;
 
 const Instances = ({ classID, serverURL, onError }: Props) => {
-  const [data, setData] = useState<InstanceRecord[] | null>(null);
+  const [data, setData] = useState<InstancesPage | null>(null);
   const [page, setPage] = useState<number>(0);
   useEffect(() => {
     getInstancesPage(serverURL, classID, page, PAGE_SIZE)
@@ -26,7 +26,7 @@ const Instances = ({ classID, serverURL, onError }: Props) => {
   if (data === null) {
     return <span>"Loading..."</span>;
   }
-  const itemNodes = data.map(record => {
+  const itemNodes = data.data.map(record => {
     return (
       <Value
         key={record.id["@id"]}
@@ -39,8 +39,13 @@ const Instances = ({ classID, serverURL, onError }: Props) => {
   return (
     <div className="Instances">
       <h3>Instances</h3>
-      <List>{data.length === 0 ? "No instances" : itemNodes}</List>
-      <Paginator pageSize={PAGE_SIZE} value={page} onChange={setPage} />
+      <List>{data.data.length === 0 ? "No instances" : itemNodes}</List>
+      <Paginator
+        pageSize={PAGE_SIZE}
+        value={page}
+        length={data.total}
+        onChange={setPage}
+      />
     </div>
   );
 };
