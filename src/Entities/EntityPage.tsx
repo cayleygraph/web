@@ -42,9 +42,9 @@ const EntityPage = ({ entityID, serverURL, onError, error }: Props) => {
     return <NotFound />;
   }
   if (isClass(result)) {
-    return <Class data={result} />;
+    return <Class serverURL={serverURL} id={entityID} data={result} />;
   }
-  return <Entity data={result} />;
+  return <Entity id={entityID} data={result} />;
 };
 
 export default EntityPage;
