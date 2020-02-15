@@ -1,4 +1,4 @@
-.EntitiesPage .Search {
+.Search {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -7,7 +7,7 @@
   margin-bottom: 26px;
 }
 
-.EntitiesPage .Search input[type="text"] {
+.Search input[type="text"] {
   font: inherit;
   padding: 8px 16px;
   border-radius: 16px;
@@ -15,18 +15,17 @@
   border: none;
   box-shadow: 0 0 0 rgba(32, 33, 36, 0.28), 0 0 0 1px #dfe1e5 inset;
   outline: none;
-  margin-left: 16px;
   flex: 1;
   transition: box-shadow 0.05s;
 }
 
-.EntitiesPage .Search input[type="text"]:focus,
-.EntitiesPage .Search input[type="text"]:hover {
+.Search input[type="text"]:focus,
+.Search input[type="text"]:hover {
   box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28),
     0 0 0 1px rgba(223, 225, 229, 0) inset;
 }
 
-.EntitiesPage .Search .suggestions {
+.Search .suggestions {
   opacity: 0;
   background-color: white;
   border: 1px solid grey;
@@ -38,18 +37,18 @@
   pointer-events: none;
 }
 
-.EntitiesPage .Search .suggestions .result {
+.Search .suggestions .result {
   padding: 8px;
 }
 
-.EntitiesPage .Search input[type="text"]:focus ~ .suggestions,
-.EntitiesPage .Search .suggestions:focus,
-.EntitiesPage .Search .suggestions:active {
+.Search input[type="text"]:focus ~ .suggestions,
+.Search .suggestions:focus,
+.Search .suggestions:active {
   opacity: 1;
   pointer-events: all;
 }
 
-.EntitiesPage .Search input[type="submit"] {
+.Search input[type="submit"] {
   position: absolute;
   top: -9999px;
   left: -9999px;

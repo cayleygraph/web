@@ -12,7 +12,7 @@ type Props = {
 };
 
 const Search = ({ entityID, onError, serverURL, onSelect }: Props) => {
-  const [query, setQuery] = useState(entityID);
+  const [query, setQuery] = useState();
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const handleSubmit = useCallback(
     event => {
@@ -35,16 +35,11 @@ const Search = ({ entityID, onError, serverURL, onSelect }: Props) => {
       .catch(onError);
   }, [query, setSuggestions, onError, serverURL]);
 
-  useEffect(() => {
-    setQuery(entityID);
-  }, [entityID]);
-
   const shouldHideSuggestions =
     suggestions.length === 1 && suggestions[0].value === entityID;
 
   return (
     <form onSubmit={handleSubmit} className="Search">
-      <label>ID</label>
       <input type="text" onChange={handleChange} value={query} />
       <input type="submit" />
       {!shouldHideSuggestions && (

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
-import "@material/drawer/dist/mdc.drawer.css";
 import { getClasses } from "./data";
 import Value from "./Value";
 import "./Classes.css";
@@ -26,34 +24,25 @@ const Classes = ({ serverURL, entityID }: Props) => {
     return 1;
   });
   return (
-    <div className="Classes">
-      <Drawer>
-        <DrawerHeader>
-          <DrawerTitle>Types</DrawerTitle>
-        </DrawerHeader>
-        <DrawerContent>
-          <List>
-            <Link to="/entities">
-              <ListItem activated={entityID === ""}>All</ListItem>
-            </Link>
-            {orderedClasses.map(record => {
-              const classID = record.id["@id"];
-              const Component = (props: Object) => (
-                <ListItem {...props} activated={classID === entityID} />
-              );
-              return (
-                <Value
-                  key={classID}
-                  value={record.id}
-                  label={record.label}
-                  Component={Component}
-                />
-              );
-            })}
-          </List>
-        </DrawerContent>
-      </Drawer>
-    </div>
+    <List className="Classes">
+      <Link to="/entities">
+        <ListItem activated={entityID === ""}>All</ListItem>
+      </Link>
+      {orderedClasses.map(record => {
+        const classID = record.id["@id"];
+        const Component = (props: Object) => (
+          <ListItem {...props} activated={classID === entityID} />
+        );
+        return (
+          <Value
+            key={classID}
+            value={record.id}
+            label={record.label}
+            Component={Component}
+          />
+        );
+      })}
+    </List>
   );
 };
 

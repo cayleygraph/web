@@ -2,6 +2,8 @@ import React, { useState, useCallback } from "react";
 import { Snackbar } from "@rmwc/snackbar";
 import "@material/snackbar/dist/mdc.snackbar.css";
 import "@material/button/dist/mdc.button.css";
+import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
+import "@material/drawer/dist/mdc.drawer.css";
 
 import { useHistory, Route } from "react-router-dom";
 
@@ -30,14 +32,20 @@ const EntitiesPage = ({ serverURL }: Props) => {
   return (
     <>
       {error && <Snackbar open message={String(error)} />}
-      <Classes serverURL={serverURL} entityID={entityID} />
+      <Drawer>
+        <DrawerHeader>
+          <Search
+            serverURL={serverURL}
+            onSelect={goToEntity}
+            onError={setError}
+            entityID={entityID}
+          />
+        </DrawerHeader>
+        <DrawerContent>
+          <Classes serverURL={serverURL} entityID={entityID} />
+        </DrawerContent>
+      </Drawer>
       <div className="EntitiesPage">
-        <Search
-          serverURL={serverURL}
-          onSelect={goToEntity}
-          onError={setError}
-          entityID={entityID}
-        />
         <Route exact path="/entities">
           Write an entity's IRI in the text box to view the entity
         </Route>
