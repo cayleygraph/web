@@ -5,6 +5,7 @@ import "@material/list/dist/mdc.list.css";
 import "./Instances.css";
 
 import Value from "./Value";
+import Paginator from "./Paginator";
 
 type Props = {
   classID: string;
@@ -17,17 +18,11 @@ const PAGE_SIZE = 10;
 const Instances = ({ classID, serverURL, onError }: Props) => {
   const [data, setData] = useState<InstanceRecord[] | null>(null);
   const [page, setPage] = useState<number>(0);
-  const [error, setError] = useState();
   useEffect(() => {
     getInstancesPage(serverURL, classID, page, PAGE_SIZE)
       .then(setData)
-      .catch(setError);
-  }, [serverURL, classID, setData, setError, page]);
-  /** @todo replace with snackbar */
-  if (error) {
-    console.error(error);
-    return null;
-  }
+      .catch(onError);
+  }, [serverURL, classID, setData, onError, page]);
   if (data === null) {
     return <span>"Loading..."</span>;
   }
@@ -41,11 +36,11 @@ const Instances = ({ classID, serverURL, onError }: Props) => {
       />
     );
   });
-  /** @todo navigation controls */
   return (
     <div className="Instances">
       <h3>Instances</h3>
       <List>{data.length === 0 ? "No instances" : itemNodes}</List>
+      <Paginator pageSize={PAGE_SIZE} value={page} onChange={setPage} />
     </div>
   );
 };
