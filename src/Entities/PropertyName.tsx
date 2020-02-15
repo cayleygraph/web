@@ -1,12 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  RDFS_LABEL,
-  JSON_LD_TYPE,
-  RDFS_SUB_CLASS_OF,
-  RDFS_COMMENT,
-  Label
-} from "./data";
+import { RDFS_LABEL, JSON_LD_TYPE, RDFS_SUB_CLASS_OF, Label } from "./data";
 import { entityLink } from "./navigation";
 
 const PropertyName = ({
