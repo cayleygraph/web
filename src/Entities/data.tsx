@@ -201,3 +201,37 @@ g.V(g.IRI("rdfs:Class"))
   }
   return result;
 }
+
+export type InstanceRecord = {
+  id: JsonLdReference;
+  label?: Label;
+};
+
+export async function getInstancesPage(
+  serverURL: string,
+  classID: string,
+  pageNumber: number,
+  pageSize: number
+): Promise<InstanceRecord[]> {
+  const skip = pageNumber * pageSize;
+  const query = `
+g.addDefaultNamespaces();
+
+g.V(g.IRI("${classID}"))
+.in(g.IRI("rdf:type"))
+.saveOpt(g.IRI("rdfs:label"), "label")
+.skip(${skip})
+.getLimit(${pageSize});
+  `;
+  const response = await runQuery(serverURL, "gizmo", query);
+  const result = getResult(response);
+  if (result === null) {
+    return [];
+  }
+  return result.map(record => {
+    return {
+      id: record.id,
+      label: record.label
+    };
+  });
+}
