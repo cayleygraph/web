@@ -4,6 +4,7 @@ import { runQuery } from "../queries";
 export const RDFS = "http://www.w3.org/2000/01/rdf-schema#";
 export const RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 export const XSD = "http://www.w3.org/2001/XMLSchema#";
+export const OWL = "http://www.w3.org/2002/07/owl#";
 
 // RDF
 export const RDF_TYPE = RDF + "type";
@@ -20,6 +21,12 @@ export const XSD_STRING = XSD + "string";
 
 // JSON LD
 export const JSON_LD_TYPE = "@type";
+
+// OWL
+export const OWL_CLASS = OWL + "Class";
+export const OWL_OBJECT_PROPERTY = OWL + "ObjectProperty";
+export const OWL_DATA_PROPERTY = OWL + "DataProperty";
+export const OWL_ANNOTATION_PROPERTY = OWL + "AnnotationProperty";
 
 export type Suggestion = {
   value: string;
@@ -235,4 +242,16 @@ g.V(g.IRI("${classID}"))
       label: record.label
     };
   });
+}
+
+export function isClass(types: Set<string>): boolean {
+  return types.has(RDFS_CLASS) || types.has(OWL_CLASS);
+}
+
+export function isProperty(types: Set<string>): boolean {
+  return (
+    types.has(OWL_OBJECT_PROPERTY) ||
+    types.has(OWL_DATA_PROPERTY) ||
+    types.has(OWL_ANNOTATION_PROPERTY)
+  );
 }

@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 import {
   getEntity,
   Entity as EntityData,
-  RDFS_CLASS,
-  RDF_PROPERTY,
-  JsonLdReference
+  isClass,
+  isProperty,
+  isReference
 } from "./data";
 import Entity from "./Entity";
 import Class from "./Class";
@@ -48,7 +48,7 @@ const EntityPage = ({ entityID, serverURL, onError, error }: Props) => {
   if (result === null) {
     return <NotFound id={entityID} />;
   }
-  if (isProperty(result)) {
+  if (hasPropertyType(result)) {
     return <Property id={entityID} data={result} />;
   }
   if (hasClassType(result)) {
@@ -71,18 +71,15 @@ function getTypeIDs(result: EntityData): Set<string> {
   return new Set(
     types
       .map(record => record.value)
-      .filter(
-        (value): value is JsonLdReference =>
-          typeof value === "object" && "@id" in value
-      )
+      .filter(isReference)
       .map(value => value["@id"])
   );
 }
 
 function hasClassType(result: EntityData): boolean {
-  return getTypeIDs(result).has(RDFS_CLASS);
+  return isClass(getTypeIDs(result));
 }
 
-function isProperty(result: EntityData): boolean {
-  return getTypeIDs(result).has(RDF_PROPERTY);
+function hasPropertyType(result: EntityData): boolean {
+  return isProperty(getTypeIDs(result));
 }
