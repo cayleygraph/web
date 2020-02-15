@@ -24,6 +24,7 @@ const Instances = ({ classID, serverURL }: Props) => {
   if (data === null) {
     return <span>"Loading..."</span>;
   }
+  /** @todo navigation controls */
   return (
     <List className="Instances">
       {data.map(record => {
