@@ -20,7 +20,7 @@ const PropertyName = ({
   if (property === RDFS_SUB_CLASS_OF) {
     return <b>Sub Class Of</b>;
   }
-  const display = label || property;
+  const display = label || propertyToDisplay(property);
   return (
     <b>
       <Link to={entityLink(property)}>{display}</Link>
@@ -29,3 +29,19 @@ const PropertyName = ({
 };
 
 export default PropertyName;
+
+function propertyToDisplay(property: string): string {
+  try {
+    const url = new URL(property);
+    if (url.hash) {
+      return url.hash.substr(1);
+    }
+    if (url.pathname.length > 1) {
+      const parts = url.pathname.split("/");
+      return parts[parts.length - 1];
+    }
+    return property;
+  } catch {
+    return property;
+  }
+}
