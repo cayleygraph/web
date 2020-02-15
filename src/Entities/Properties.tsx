@@ -1,10 +1,5 @@
 import React, { Fragment } from "react";
-import {
-  Entity as EntityData,
-  RDFS_LABEL,
-  RDFS_COMMENT,
-  RDF_TYPE
-} from "./data";
+import { Entity as EntityData, RDFS_LABEL, RDFS_COMMENT } from "./data";
 import PropertyName from "./PropertyName";
 import Value from "./Value";
 

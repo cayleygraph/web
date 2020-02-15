@@ -6,11 +6,15 @@ import "./Instances.css";
 
 import Value from "./Value";
 
-type Props = { classID: string; serverURL: string };
+type Props = {
+  classID: string;
+  serverURL: string;
+  onError: (error: Error) => void;
+};
 
 const PAGE_SIZE = 10;
 
-const Instances = ({ classID, serverURL }: Props) => {
+const Instances = ({ classID, serverURL, onError }: Props) => {
   const [data, setData] = useState<InstanceRecord[] | null>(null);
   const [page, setPage] = useState<number>(0);
   const [error, setError] = useState();
@@ -20,8 +24,8 @@ const Instances = ({ classID, serverURL }: Props) => {
       .catch(setError);
   }, [serverURL, classID, setData, setError, page]);
   /** @todo replace with snackbar */
-  console.error(error);
   if (error) {
+    console.error(error);
     return null;
   }
   if (data === null) {
@@ -29,7 +33,12 @@ const Instances = ({ classID, serverURL }: Props) => {
   }
   const itemNodes = data.map(record => {
     return (
-      <Value value={record.id} label={record.label} Component={ListItem} />
+      <Value
+        key={record.id["@id"]}
+        value={record.id}
+        label={record.label}
+        Component={ListItem}
+      />
     );
   });
   /** @todo navigation controls */

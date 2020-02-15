@@ -8,18 +8,19 @@ import Instances from "./Instances";
 
 type Props = {
   serverURL: string;
+  onError: (error: Error) => void;
   id: string;
   data: EntityData;
 };
 
-const Class = ({ serverURL, id, data }: Props) => {
+const Class = ({ serverURL, onError, id, data }: Props) => {
   return (
     <div className="Entity">
       <EntityTitle data={data} type="Class" />
       <EntityComment data={data} />
       <EntityID id={id} />
       <Properties data={data} noSingleType />
-      <Instances serverURL={serverURL} classID={id} />
+      <Instances serverURL={serverURL} classID={id} onError={onError} />
     </div>
   );
 };

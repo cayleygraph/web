@@ -51,7 +51,14 @@ const EntityPage = ({ entityID, serverURL, onError, error }: Props) => {
     return <Property id={entityID} data={result} />;
   }
   if (isClass(result)) {
-    return <Class serverURL={serverURL} id={entityID} data={result} />;
+    return (
+      <Class
+        serverURL={serverURL}
+        onError={onError}
+        id={entityID}
+        data={result}
+      />
+    );
   }
   return <Entity id={entityID} data={result} />;
 };
