@@ -26,7 +26,7 @@ export type Suggestion = {
   label: string | { "@value": string; "@type": string };
 };
 
-type JsonLdReference = { "@id": string };
+export type JsonLdReference = { "@id": string };
 type JsonLdValue =
   | { "@value": string; "@language": string }
   | { "@value": string; "@type": string };

@@ -4,7 +4,8 @@ import {
   getEntity,
   Entity as EntityData,
   RDFS_CLASS,
-  RDF_PROPERTY
+  RDF_PROPERTY,
+  JsonLdReference
 } from "./data";
 import Entity from "./Entity";
 import Class from "./Class";
@@ -45,12 +46,12 @@ const EntityPage = ({ entityID, serverURL, onError, error }: Props) => {
     return <div>Loading...</div>;
   }
   if (result === null) {
-    return <NotFound />;
+    return <NotFound id={entityID} />;
   }
   if (isProperty(result)) {
     return <Property id={entityID} data={result} />;
   }
-  if (isClass(result)) {
+  if (hasClassType(result)) {
     return (
       <Class
         serverURL={serverURL}
@@ -65,20 +66,23 @@ const EntityPage = ({ entityID, serverURL, onError, error }: Props) => {
 
 export default EntityPage;
 
-function hasType(result: EntityData, type: string) {
+function getTypeIDs(result: EntityData): Set<string> {
   const types = result["@type"]?.values || [];
-  return types.some(
-    record =>
-      typeof record.value === "object" &&
-      "@id" in record.value &&
-      record.value["@id"] === type
+  return new Set(
+    types
+      .map(record => record.value)
+      .filter(
+        (value): value is JsonLdReference =>
+          typeof value === "object" && "@id" in value
+      )
+      .map(value => value["@id"])
   );
 }
 
-function isClass(result: EntityData): boolean {
-  return hasType(result, RDFS_CLASS);
+function hasClassType(result: EntityData): boolean {
+  return getTypeIDs(result).has(RDFS_CLASS);
 }
 
 function isProperty(result: EntityData): boolean {
-  return hasType(result, RDF_PROPERTY);
+  return getTypeIDs(result).has(RDF_PROPERTY);
 }
