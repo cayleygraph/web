@@ -7,14 +7,14 @@ type Props = {
   data: EntityData;
 };
 
-const Entity = ({ data }: Props) => {
+const Class = ({ data }: Props) => {
   return (
     <div className="Entity">
-      <span>Entity</span>
+      <span>Class</span>
       <EntityTitle data={data} />
       <Properties data={data} />
     </div>
   );
 };
 
-export default Entity;
+export default Class;

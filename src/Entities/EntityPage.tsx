@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-import { getEntity, Entity as EntityData } from "./data";
+import { getEntity, Entity as EntityData, RDFS_CLASS } from "./data";
 import Entity from "./Entity";
 import NotFound from "./NotFound";
+import Class from "./Class";
 
 type Props = {
   entityID: string;
@@ -40,7 +41,20 @@ const EntityPage = ({ entityID, serverURL, onError, error }: Props) => {
   if (result === null) {
     return <NotFound />;
   }
+  if (isClass(result)) {
+    return <Class data={result} />;
+  }
   return <Entity data={result} />;
 };
 
 export default EntityPage;
+
+function isClass(result: EntityData): boolean {
+  const types = result["@type"]?.values || [];
+  return types.some(
+    record =>
+      typeof record.value === "object" &&
+      "@id" in record.value &&
+      record.value["@id"] === RDFS_CLASS
+  );
+}
