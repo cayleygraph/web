@@ -81,6 +81,13 @@ export type Entity = {
   };
 };
 
+function escapeID(id: string): string {
+  if (id.startsWith("_:")) {
+    return id;
+  }
+  return `<${id}>`;
+}
+
 export async function getEntity(
   serverURL: string,
   entityID: string
@@ -93,7 +100,7 @@ export async function getEntity(
     `
       g.addDefaultNamespaces();
 
-      var entity = g.V(g.IRI("${entityID}"));
+      var entity = g.V("${escapeID(entityID)}");
       
       entity
       .out(g.V(), "property")
@@ -227,7 +234,7 @@ export async function getInstancesPage(
   const query = `
 g.addDefaultNamespaces();
 
-var instances = g.V().has(g.IRI("rdf:type"), g.IRI("${classID}"))
+var instances = g.V().has(g.IRI("rdf:type"), "${escapeID(classID)}")
 
 g.emit(instances.count());
 
