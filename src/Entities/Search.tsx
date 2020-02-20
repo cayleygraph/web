@@ -3,7 +3,6 @@ import AsyncSelect from "react-select/async";
 import { Theme } from "react-select";
 import "./Search.css";
 import { getAutoCompletionSuggestions, JsonLdReference } from "./data";
-import useEntityID from "./useEntityID";
 import { PRIMARY, LIST_ITEM_ACTIVE, LIST_ITEM_HOVER } from "./colors";
 import EntityValue from "./EntityValue";
 
