@@ -1,12 +1,9 @@
 .Search {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
   position: relative;
   height: 60px;
   overflow: hidden;
 }
-
+/* 
 .Search input[type="text"] {
   font: inherit;
   padding: 8px 16px;
@@ -52,4 +49,4 @@
   position: absolute;
   top: -9999px;
   left: -9999px;
-}
+} */

@@ -29,8 +29,8 @@ export const OWL_DATA_PROPERTY = OWL + "DataProperty";
 export const OWL_ANNOTATION_PROPERTY = OWL + "AnnotationProperty";
 
 export type Suggestion = {
-  value: string;
-  label: string | { "@value": string; "@type": string };
+  value: JsonLdReference;
+  label: Label;
 };
 
 export type JsonLdReference = { "@id": string };
@@ -140,11 +140,10 @@ export async function getEntity(
   return properties;
 }
 
-const AUTO_SUGGESTION_RESULT_LIMIT = 12;
-
 export async function getAutoCompletionSuggestions(
   serverURL: string,
-  entityIDPrefix: string
+  entityIDPrefix: string,
+  limit: number
 ): Promise<Suggestion[]> {
   const result = await runQuery(
     serverURL,
@@ -157,16 +156,17 @@ export async function getAutoCompletionSuggestions(
     .out(g.IRI("rdfs:label"))
     .tag("label")
     .filter(like("${entityIDPrefix}%"))
-    .limit(${AUTO_SUGGESTION_RESULT_LIMIT});
+    .limit(${limit});
   
   var iriResults = g.V()
     .tag("entity")
     .filter(like("${entityIDPrefix}%"))
-    .limit(${AUTO_SUGGESTION_RESULT_LIMIT});
+    .limit(${limit});
   
   labelResults
     .union(iriResults)
-    .getLimit(${AUTO_SUGGESTION_RESULT_LIMIT});
+    .unique()
+    .getLimit(${limit});
     `
   );
   if ("error" in result) {
@@ -180,12 +180,8 @@ export async function getAutoCompletionSuggestions(
     .map(
       (result): Suggestion => {
         return {
-          label: result.label
-            ? typeof result.label === "object" && "@value" in result.label
-              ? result.label["@value"]
-              : result.label
-            : result.entity["@id"],
-          value: result.entity["@id"]
+          label: result.label,
+          value: result.entity
         };
       }
     );

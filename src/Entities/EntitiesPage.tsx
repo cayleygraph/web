@@ -22,8 +22,8 @@ const EntitiesPage = ({ serverURL }: Props) => {
   const [error, setError] = useState<Error | null>(null);
 
   const goToEntity = useCallback(
-    entityID => {
-      history.push(entityLink(entityID));
+    reference => {
+      history.push(entityLink(reference["@id"]));
     },
     [history]
   );
@@ -31,7 +31,7 @@ const EntitiesPage = ({ serverURL }: Props) => {
   return (
     <>
       {error && <Snackbar open message={String(error)} />}
-      <Drawer>
+      <Drawer className="ClassesDrawer">
         <DrawerHeader>
           <Search
             serverURL={serverURL}

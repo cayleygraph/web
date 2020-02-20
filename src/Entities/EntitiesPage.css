@@ -6,6 +6,12 @@
   background: white;
 }
 
+.ClassesDrawer .mdc-drawer__header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .EntitiesPage a:link,
 .EntitiesPage a:visited {
   color: rgb(98, 49, 233);

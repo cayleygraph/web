@@ -1,82 +1,66 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
+import AsyncSelect from "react-select/async";
+import { Theme } from "react-select";
 import "./Search.css";
-import { getAutoCompletionSuggestions, Suggestion } from "./data";
+import { getAutoCompletionSuggestions, JsonLdReference } from "./data";
 import useEntityID from "./useEntityID";
+import { PRIMARY, LIST_ITEM_ACTIVE, LIST_ITEM_HOVER } from "./colors";
+import EntityValue from "./EntityValue";
 
-type OnSelect = (entityID: string) => void;
+const OPTIONS_LIMIT = 10;
 
 type Props = {
+  onSelect: (value: JsonLdReference) => void;
   onError: (error: Error) => void;
-  onSelect: OnSelect;
   serverURL: string;
 };
 
 const Search = ({ onError, serverURL, onSelect }: Props) => {
-  const [query, setQuery] = useState();
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const entityID = useEntityID();
-  const handleSubmit = useCallback(
-    event => {
-      event.preventDefault();
-      onSelect(query);
+  const loadOptions = useCallback(
+    (query: string) => {
+      /** @todo handle non string results */
+      return getAutoCompletionSuggestions(
+        serverURL,
+        query,
+        OPTIONS_LIMIT
+      ).catch(onError);
     },
-    [query, onSelect]
+    [serverURL, onError]
   );
 
   const handleChange = useCallback(
-    event => {
-      setQuery(event.target.value);
+    selection => {
+      const { value } = selection;
+      onSelect(value);
     },
-    [setQuery]
+    [onSelect]
   );
 
-  useEffect(() => {
-    getAutoCompletionSuggestions(serverURL, query)
-      .then(setSuggestions)
-      .catch(onError);
-  }, [query, setSuggestions, onError, serverURL]);
-
-  // Reset query on entity change
-  useEffect(() => {
-    setQuery("");
-  }, [entityID]);
-
-  const shouldHideSuggestions =
-    suggestions.length === 1 && suggestions[0].value === entityID;
+  const formatOptionLabel = useCallback(option => {
+    return <EntityValue value={option.value} label={option.label} />;
+  }, []);
 
   return (
-    <form onSubmit={handleSubmit} className="Search">
-      <input type="text" onChange={handleChange} value={query} />
-      <input type="submit" />
-      {!shouldHideSuggestions && (
-        <div className="suggestions">
-          {suggestions.length === 0 && <div className="result">No results</div>}
-          {suggestions.map((suggestion, i) => {
-            return (
-              <SearchItem key={i} suggestion={suggestion} onSelect={onSelect} />
-            );
-          })}
-        </div>
-      )}
-    </form>
+    <AsyncSelect
+      loadOptions={loadOptions}
+      defaultOptions
+      theme={modifySelectTheme}
+      onChange={handleChange}
+      value={null}
+      placeholder="Search Entity..."
+      formatOptionLabel={formatOptionLabel}
+    />
   );
 };
 
 export default Search;
 
-const SearchItem = ({
-  suggestion,
-  onSelect
-}: {
-  suggestion: Suggestion;
-  onSelect: OnSelect;
-}) => {
-  const handleSelect = () => {
-    onSelect(suggestion.value);
-  };
-  return (
-    <div className="result" onClick={handleSelect}>
-      {suggestion.label}
-    </div>
-  );
-};
+const modifySelectTheme = (theme: Theme): Theme => ({
+  ...theme,
+  colors: {
+    ...theme.colors,
+    primary25: LIST_ITEM_HOVER,
+    primary50: LIST_ITEM_ACTIVE,
+    primary: PRIMARY
+  }
+});
