@@ -47,6 +47,7 @@ const EntityPage = ({ serverURL, onError, error }: Props) => {
   if (error) {
     return null;
   }
+  /** @todo better loading */
   if (loading) {
     return <div>Loading...</div>;
   }
