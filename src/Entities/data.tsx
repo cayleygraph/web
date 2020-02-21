@@ -213,12 +213,14 @@ g.V(g.IRI("rdfs:Class"))
   return result;
 }
 
+export type Page<T> = { total: number; data: T[] };
+
 export type InstanceRecord = {
   id: JsonLdReference;
   label?: Label;
 };
 
-export type InstancesPage = { total: number; data: InstanceRecord[] };
+export type InstancesPage = Page<InstanceRecord>;
 
 export async function getInstancesPage(
   serverURL: string,
@@ -228,17 +230,57 @@ export async function getInstancesPage(
 ): Promise<InstancesPage> {
   const skip = pageNumber * pageSize;
   const query = `
-g.addDefaultNamespaces();
+    g.addDefaultNamespaces();
+    
+    var instances = g.V().has(g.IRI("rdf:type"), "${escapeID(classID)}")
+    
+    g.emit(instances.count());
+    
+    instances
+    .saveOpt(g.IRI("rdfs:label"), "label")
+    .skip(${skip})
+    .getLimit(${pageSize});
+    `;
+  const response = await runQuery(serverURL, "gizmo", query);
+  const result = getResult(response);
+  const [total, ...items] = result || [];
+  return {
+    total,
+    data: items.map(record => {
+      return {
+        id: record.id,
+        label: record.label
+      };
+    })
+  };
+}
 
-var instances = g.V().has(g.IRI("rdf:type"), "${escapeID(classID)}")
+type SubClassRecord = {
+  id: JsonLdReference;
+  label?: Label;
+};
 
-g.emit(instances.count());
+export type SubClassesPage = Page<SubClassRecord>;
 
-instances
-.saveOpt(g.IRI("rdfs:label"), "label")
-.skip(${skip})
-.getLimit(${pageSize});
-  `;
+export async function getSubClassesPage(
+  serverURL: string,
+  classID: string,
+  pageNumber: number,
+  pageSize: number
+): Promise<SubClassesPage> {
+  const skip = pageNumber * pageSize;
+  const query = `
+    g.addDefaultNamespaces();
+    
+    var subClasses = g.V().has(g.IRI("rdfs:subClassOf"), "${escapeID(classID)}")
+    
+    g.emit(subClasses.count());
+    
+    subClasses
+    .saveOpt(g.IRI("rdfs:label"), "label")
+    .skip(${skip})
+    .getLimit(${pageSize});
+    `;
   const response = await runQuery(serverURL, "gizmo", query);
   const result = getResult(response);
   const [total, ...items] = result || [];

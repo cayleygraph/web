@@ -5,6 +5,7 @@ import EntityComment from "./EntityComment";
 import EntityID from "./EntityID";
 import Properties from "./Properties";
 import Instances from "./Instances";
+import SubClasses from "./SubClasses";
 
 type Props = {
   serverURL: string;
@@ -25,6 +26,7 @@ const Class = ({ serverURL, onError, id, data }: Props) => {
       <EntityComment data={data} />
       <EntityID id={id} />
       <Properties data={data} noSingleType />
+      <SubClasses serverURL={serverURL} classID={id} onError={onError} />
       <Instances serverURL={serverURL} classID={id} onError={onError} />
     </div>
   );
