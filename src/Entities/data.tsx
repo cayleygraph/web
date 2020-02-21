@@ -289,6 +289,37 @@ export async function getSubClassesPage(
   };
 }
 
+export async function getSuperClassesPage(
+  serverURL: string,
+  classID: string,
+  pageNumber: number,
+  pageSize: number
+): Promise<Page<Labeled>> {
+  const skip = pageNumber * pageSize;
+  const query = `
+    g.addDefaultNamespaces();
+    
+    var subClasses = g.V().hasR(g.IRI("rdfs:subClassOf"), "${escapeID(
+      classID
+    )}")
+    
+    g.emit(subClasses.count());
+    
+    subClasses
+    .saveOpt(g.IRI("rdfs:label"), "label")
+    .skip(${skip})
+    .getLimit(${pageSize});
+    `;
+  const response = await runQuery(serverURL, "gizmo", query);
+  const result = getResult(response);
+  const [total, ...items] = result || [];
+  return {
+    total,
+    // @ts-ignore
+    data: normalizeID(items) || []
+  };
+}
+
 export function isClass(types: Set<string>): boolean {
   return types.has(RDFS_CLASS) || types.has(OWL_CLASS);
 }

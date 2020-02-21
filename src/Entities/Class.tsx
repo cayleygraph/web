@@ -2,7 +2,8 @@ import React, { useCallback } from "react";
 import {
   Entity as EntityData,
   getSubClassesPage,
-  getInstancesPage
+  getInstancesPage,
+  getSuperClassesPage
 } from "./data";
 import EntityTitle from "./EntityTitle";
 import EntityComment from "./EntityComment";
@@ -17,6 +18,7 @@ type Props = {
   data: EntityData;
 };
 
+const SUPER_CLASSES_PAGE_SIZE = 10;
 const SUB_CLASSES_PAGE_SIZE = 10;
 const INSTANCES_PAGE_SIZE = 10;
 
@@ -38,12 +40,24 @@ const Class = ({ serverURL, onError, id, data }: Props) => {
     },
     [serverURL, id]
   );
+  const superClassesQuery = useCallback(
+    (pageNumber, pageSize) => {
+      return getSuperClassesPage(serverURL, id, pageNumber, pageSize);
+    },
+    [serverURL, id]
+  );
   return (
     <div className="Entity">
       <EntityTitle id={id} data={data} type="Class" />
       <EntityComment data={data} />
       <EntityID id={id} />
       <Properties data={data} noSingleType />
+      <EntityList
+        title="Super Classes"
+        query={superClassesQuery}
+        onError={onError}
+        pageSize={SUPER_CLASSES_PAGE_SIZE}
+      />
       <EntityList
         title="Sub Classes"
         query={subClassesQuery}
