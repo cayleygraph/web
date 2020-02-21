@@ -259,6 +259,7 @@ export function isClass(types: Set<string>): boolean {
 
 export function isProperty(types: Set<string>): boolean {
   return (
+    types.has(RDF_PROPERTY) ||
     types.has(OWL_OBJECT_PROPERTY) ||
     types.has(OWL_DATA_PROPERTY) ||
     types.has(OWL_ANNOTATION_PROPERTY)
