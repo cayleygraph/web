@@ -18,9 +18,9 @@ type Props = {
   data: EntityData;
 };
 
-const SUPER_CLASSES_PAGE_SIZE = 10;
-const SUB_CLASSES_PAGE_SIZE = 10;
-const INSTANCES_PAGE_SIZE = 10;
+const SUPER_CLASSES_PAGE_SIZE = 5;
+const SUB_CLASSES_PAGE_SIZE = 5;
+const INSTANCES_PAGE_SIZE = 5;
 
 /**
  * @todo show super classes in the bottom with a special view
