@@ -1,9 +1,9 @@
-.Instances h3 {
+.EntityList h3 {
   margin-top: 32px;
   margin-bottom: 8px;
 }
 
-.Instances a {
+.EntityList a {
   color: inherit;
   text-decoration: none;
 }

@@ -1,47 +1,46 @@
 import React, { useState, useEffect } from "react";
-import { getSubClassesPage, SubClassesPage } from "./data";
+import { Labeled, Page } from "./data";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
-
-import EntityValue from "./EntityValue";
 import Paginator from "./Paginator";
+import ID from "./ID";
+import "./EntityList.css";
 
 type Props = {
-  classID: string;
-  serverURL: string;
+  title: string;
+  query: (page: number, pageSize: number) => Promise<Page<Labeled>>;
   onError: (error: Error) => void;
+  pageSize: number;
 };
 
-const PAGE_SIZE = 10;
-
-const SubClasses = ({ classID, serverURL, onError }: Props) => {
-  const [data, setData] = useState<SubClassesPage | null>(null);
+const EntityList = ({ title, query, pageSize, onError }: Props) => {
+  const [data, setData] = useState<Page<Labeled> | null>(null);
   const [page, setPage] = useState<number>(0);
   useEffect(() => {
-    getSubClassesPage(serverURL, classID, page, PAGE_SIZE)
+    query(page, pageSize)
       .then(setData)
       .catch(onError);
-  }, [serverURL, classID, setData, onError, page]);
+  }, [query, setData, onError, page, pageSize]);
   if (data === null) {
     return <span>"Loading..."</span>;
   }
   const itemNodes = data.data.map(record => {
     return (
-      <EntityValue
-        key={record.id["@id"]}
-        value={record.id}
+      <ID
+        key={record["@id"]}
+        id={record["@id"]}
         label={record.label}
         Component={ListItem}
       />
     );
   });
   return (
-    <div className="SubClasses">
-      <h3>SubClasses</h3>
-      <List>{data.data.length === 0 ? "No sub classes" : itemNodes}</List>
+    <div className="EntityList">
+      <h3>{title}</h3>
+      <List>{data.data.length === 0 ? `No ${title} found` : itemNodes}</List>
       {data.data.length !== 0 && (
         <Paginator
-          pageSize={PAGE_SIZE}
+          pageSize={pageSize}
           value={page}
           length={data.total}
           onChange={setPage}
@@ -51,4 +50,4 @@ const SubClasses = ({ classID, serverURL, onError }: Props) => {
   );
 };
 
-export default SubClasses;
+export default EntityList;

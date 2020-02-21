@@ -56,8 +56,24 @@ function getResult<T>(response: GizmoQueryResponse<T>): T[] | null {
   return response.result;
 }
 
+function normalizeID<T extends { id: JsonLdReference }>(
+  result: T[] | null
+): Array<JsonLdReference & Pick<T, Exclude<keyof T, "id">>> | null {
+  if (result !== null) {
+    return result.map(({ id, ...rest }) => ({ "@id": id["@id"], ...rest }));
+  }
+  return result;
+}
+
 export type EntityValue = JsonLdReference | JsonLdValue | string;
 export type Label = string | JsonLdValue;
+
+/**
+ * An entity with identifier and label
+ */
+export type Labeled = JsonLdReference & {
+  label: Label;
+};
 
 export type EntityValueRecord = {
   id: JsonLdReference;
@@ -215,19 +231,12 @@ g.V(g.IRI("rdfs:Class"))
 
 export type Page<T> = { total: number; data: T[] };
 
-export type InstanceRecord = {
-  id: JsonLdReference;
-  label?: Label;
-};
-
-export type InstancesPage = Page<InstanceRecord>;
-
 export async function getInstancesPage(
   serverURL: string,
   classID: string,
   pageNumber: number,
   pageSize: number
-): Promise<InstancesPage> {
+): Promise<Page<Labeled>> {
   const skip = pageNumber * pageSize;
   const query = `
     g.addDefaultNamespaces();
@@ -246,28 +255,17 @@ export async function getInstancesPage(
   const [total, ...items] = result || [];
   return {
     total,
-    data: items.map(record => {
-      return {
-        id: record.id,
-        label: record.label
-      };
-    })
+    // @ts-ignore
+    data: normalizeID(items) || []
   };
 }
-
-type SubClassRecord = {
-  id: JsonLdReference;
-  label?: Label;
-};
-
-export type SubClassesPage = Page<SubClassRecord>;
 
 export async function getSubClassesPage(
   serverURL: string,
   classID: string,
   pageNumber: number,
   pageSize: number
-): Promise<SubClassesPage> {
+): Promise<Page<Labeled>> {
   const skip = pageNumber * pageSize;
   const query = `
     g.addDefaultNamespaces();
@@ -286,12 +284,8 @@ export async function getSubClassesPage(
   const [total, ...items] = result || [];
   return {
     total,
-    data: items.map(record => {
-      return {
-        id: record.id,
-        label: record.label
-      };
-    })
+    // @ts-ignore
+    data: normalizeID(items) || []
   };
 }
 
