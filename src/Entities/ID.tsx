@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
+import noCase from "no-case";
 import { Label, XSD, RDFS_CLASS, RDF_PROPERTY } from "./data";
 import { entityLink } from "./navigation";
 import Value from "./Value";
@@ -43,15 +44,23 @@ const ID = ({
 
 export default ID;
 
+/** @todo use a library for this */
+const formatName = (name: string): string => {
+  return noCase(name)
+    .split(" ")
+    .map(part => part[0].toUpperCase() + part.substr(1))
+    .join(" ");
+};
+
 export function idToDisplay(id: string): string {
   try {
     const url = new URL(id);
     if (url.hash) {
-      return url.hash.substr(1);
+      return formatName(url.hash.substr(1));
     }
     if (url.pathname.length > 1) {
       const parts = url.pathname.split("/");
-      return parts[parts.length - 1];
+      return formatName(parts[parts.length - 1]);
     }
     return id;
   } catch {
