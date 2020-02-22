@@ -17,7 +17,10 @@ import logo from "./logo.svg";
 import "./App.css";
 import("./icon-font");
 
-const { REACT_APP_SERVER_URL: SERVER_URL } = process.env;
+// window.SERVER_URL can be undefined or empty string. In any of these cases
+// it should default.
+// @ts-ignore
+const SERVER_URL = window.SERVER_URL || "http://localhost:64210";
 
 const Nav = () => {
   const isQuery = useRouteMatch("/query");

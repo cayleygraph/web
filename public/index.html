@@ -5,10 +5,7 @@
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="The Open Source Knowledge Graph"
-    />
+    <meta name="description" content="The Open Source Knowledge Graph" />
     <link rel="apple-touch-icon" href="logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -25,6 +22,12 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Cayley</title>
+    <script>
+      // Allow to inject SERVER_URL, if not set ignore.
+      try {
+        window.SERVER_URL = __SERVER_URL__;
+      } catch (error) {}
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
