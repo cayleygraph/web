@@ -1,5 +1,7 @@
 # Cayley Web
 
+![Docker build status](https://img.shields.io/docker/cloud/build/cayleygraph/web)
+
 Web interface for [Cayley](https://cayley.io)
 
 ### Run with Docker
