@@ -4,6 +4,8 @@
 
 Web interface for [Cayley](https://cayley.io)
 
+![Demo Screenshot](docs/demo.png)
+
 ### Run with Docker
 ```bash
 docker run -p 3000:80 cayleygraph/web
