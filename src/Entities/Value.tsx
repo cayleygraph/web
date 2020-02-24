@@ -31,9 +31,6 @@ const Value = ({ value, Component = Fragment }: Props) => {
 
   if (isJsonLDTypedPrimitiveValue(value)) {
     const type = value["@type"];
-    if (type === XSD_STRING) {
-      return <Component>{value["@value"]}</Component>;
-    }
     return (
       <Component>
         {value["@value"]} (<ID id={type} />)
