@@ -370,8 +370,8 @@ const nativeIDDescriptors: { [id: string]: NativeIDDescriptor } = {
     link: "https://www.w3.org/TR/rdf-schema/#ch_class"
   },
   RDF_PROPERTY: {
-    label: "https://www.w3.org/TR/rdf-schema/#ch_property",
-    link: "Property"
+    label: "Property",
+    link: "https://www.w3.org/TR/rdf-schema/#ch_property"
   }
 };
 
