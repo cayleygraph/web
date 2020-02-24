@@ -1,0 +1,12 @@
+.EntityTitle {
+  width: 692px;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.EntityTitle .type {
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 400;
+  color: #666;
+}

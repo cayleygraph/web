@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import QueryPage from "./QueryPage";
 import DataPage from "./DataPage";
+import EntitiesPage from "./Entities/EntitiesPage";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
@@ -25,6 +26,7 @@ const SERVER_URL = window.SERVER_URL || "http://localhost:64210";
 const Nav = () => {
   const isQuery = useRouteMatch("/query");
   const isData = useRouteMatch("/data");
+  const isEntities = useRouteMatch("/entities");
   return (
     <Drawer>
       <DrawerHeader>
@@ -40,6 +42,9 @@ const Nav = () => {
           </Link>
           <Link to="/data">
             <ListItem activated={Boolean(isData)}>Data</ListItem>
+          </Link>
+          <Link to="/entities">
+            <ListItem activated={Boolean(isEntities)}>Entities</ListItem>
           </Link>
         </List>
       </DrawerContent>
@@ -62,6 +67,9 @@ function App() {
           </Route>
           <Route path="/data">
             <DataPage serverURL={SERVER_URL} />
+          </Route>
+          <Route path="/entities">
+            <EntitiesPage serverURL={SERVER_URL} />
           </Route>
           <Route path="/">
             <Redirect to="/query" />

@@ -1,0 +1,23 @@
+.EntitiesPage {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 0 16px;
+  background: white;
+}
+
+.ClassesDrawer .mdc-drawer__header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.EntitiesPage a:link,
+.EntitiesPage a:visited {
+  color: rgb(98, 49, 233);
+}
+
+.EntitiesPage .Property {
+  max-width: 50em;
+  margin-bottom: 1em;
+}

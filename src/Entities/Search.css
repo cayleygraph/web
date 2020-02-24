@@ -1,0 +1,8 @@
+.Search {
+  z-index: 10000;
+}
+
+.Search a {
+  text-decoration: none;
+  color: inherit;
+}
