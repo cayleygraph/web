@@ -1,5 +1,4 @@
 import React, { Fragment } from "react";
-import { XSD_STRING } from "./data";
 import {
   JsonLdPrimitiveValue,
   normalizePrimitiveValue,
