@@ -1,5 +1,5 @@
 import React from "react";
-import { Entity as EntityData, RDFS_COMMENT } from "./data";
+import { Entity as EntityData, commentPropertyID } from "./data";
 import EntityValue from "./EntityValue";
 
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
 };
 
 const EntityComment = ({ data }: Props) => {
-  const comments = data[RDFS_COMMENT]?.values || [];
+  const comments = data[commentPropertyID]?.values || [];
   return (
     <>
       {comments.map(record => {

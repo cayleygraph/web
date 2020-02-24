@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import noCase from "no-case";
-import { Label, XSD, RDFS_CLASS, RDF_PROPERTY } from "./data";
+import { Label, getNativeIDDescriptor } from "./data";
 import { entityLink } from "./navigation";
 import Value from "./Value";
 
@@ -14,24 +14,11 @@ const ID = ({
   label?: Label | null | undefined;
   Component?: React.ComponentType;
 }) => {
-  if (id === RDFS_CLASS) {
+  const nativeIDDescriptor = getNativeIDDescriptor(id);
+  if (nativeIDDescriptor) {
     return (
-      <a href="https://www.w3.org/TR/rdf-schema/#ch_class">
-        <Component>Class</Component>
-      </a>
-    );
-  }
-  if (id === RDF_PROPERTY) {
-    return (
-      <a href="https://www.w3.org/TR/rdf-schema/#ch_property">
-        <Component>Property</Component>
-      </a>
-    );
-  }
-  if (id.startsWith(XSD)) {
-    return (
-      <a href={id}>
-        <Component>{id.substr(XSD.length)}</Component>
+      <a href={nativeIDDescriptor.link}>
+        <Component>{nativeIDDescriptor.label}</Component>
       </a>
     );
   }

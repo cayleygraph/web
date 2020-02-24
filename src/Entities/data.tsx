@@ -13,10 +13,8 @@ import { JsonLdReference, JsonLdPrimitiveValue, JsonLdValue } from "./json-ld";
 import { GizmoQueryResponse, getResult, normalizeID, escapeID } from "./gizmo";
 
 export {
-  RDFS_CLASS,
-  RDFS_COMMENT,
-  RDF_PROPERTY,
-  XSD,
+  RDFS_COMMENT as commentPropertyID,
+  RDF_PROPERTY as propertyTypeID,
   XSD_STRING,
   RDFS_LABEL,
   JSON_LD_TYPE,
@@ -360,4 +358,26 @@ export function isProperty(types: Set<string>): boolean {
     types.has(OWL_DATA_PROPERTY) ||
     types.has(OWL_ANNOTATION_PROPERTY)
   );
+}
+
+type NativeIDDescriptor = {
+  label: string;
+  link: string;
+};
+
+const nativeIDDescriptors: { [id: string]: NativeIDDescriptor } = {
+  RDFS_CLASS: {
+    label: "Class",
+    link: "https://www.w3.org/TR/rdf-schema/#ch_class"
+  },
+  RDF_PROPERTY: {
+    label: "https://www.w3.org/TR/rdf-schema/#ch_property",
+    link: "Property"
+  }
+};
+
+export function getNativeIDDescriptor(
+  id: string
+): NativeIDDescriptor | undefined {
+  return nativeIDDescriptors[id];
 }

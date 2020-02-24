@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Entity as EntityData, RDFS_LABEL, RDFS_COMMENT } from "./data";
+import { Entity as EntityData, RDFS_LABEL, commentPropertyID } from "./data";
 import PropertyName from "./PropertyName";
 import EntityValue from "./EntityValue";
 
@@ -20,7 +20,7 @@ const Properties = ({ data, noSingleType, excluding }: Props) => {
           // For single labels there's no need to render as they are visible in EntityTitle
           (propertyID === RDFS_LABEL && values.length === 1) ||
           // Comments are rendered separately
-          propertyID === RDFS_COMMENT ||
+          propertyID === commentPropertyID ||
           // If noSingleType is set to true hide single Type properties
           (noSingleType && propertyID === "@type" && values.length === 1)
         ) {

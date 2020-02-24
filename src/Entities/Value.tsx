@@ -1,28 +1,35 @@
 import React, { Fragment } from "react";
 import { XSD_STRING } from "./data";
-import { JsonLdPrimitiveValue } from "./json-ld";
+import {
+  JsonLdPrimitiveValue,
+  normalizePrimitiveValue,
+  isJsonLDLocalizedPrimitiveValue,
+  isJsonLDTypedPrimitiveValue
+} from "./json-ld";
 import ID from "./ID";
 
 type Props = {
-  value: string | JsonLdPrimitiveValue;
+  value: JsonLdPrimitiveValue;
   Component?: React.ComponentType;
 };
 
 const Value = ({ value, Component = Fragment }: Props) => {
-  // Text values
+  // Normalize value to handle less edge cases
+  value = normalizePrimitiveValue(value);
+
   if (typeof value === "string") {
     return <Component>{value}</Component>;
   }
-  // Localized text
-  if ("@language" in value) {
+
+  if (isJsonLDLocalizedPrimitiveValue(value)) {
     return (
       <Component>
         {value["@value"]} ({value["@language"]})
       </Component>
     );
   }
-  // Literal values
-  if ("@type" in value) {
+
+  if (isJsonLDTypedPrimitiveValue(value)) {
     const type = value["@type"];
     if (type === XSD_STRING) {
       return <Component>{value["@value"]}</Component>;
@@ -33,6 +40,7 @@ const Value = ({ value, Component = Fragment }: Props) => {
       </Component>
     );
   }
+
   throw new Error(`Can not render ${JSON.stringify(value)}`);
 };
 
