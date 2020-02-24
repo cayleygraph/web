@@ -13,6 +13,7 @@ import Class from "./Class";
 import Property from "./Property";
 import NotFound from "./NotFound";
 import useEntityID from "./useEntityID";
+import { EntityLoading } from "./EntityLoading";
 
 type Props = {
   serverURL: string;
@@ -49,9 +50,8 @@ const EntityPage = ({ serverURL, setError, error }: Props) => {
   if (error) {
     return null;
   }
-  /** @todo better loading */
   if (loading) {
-    return <div>Loading...</div>;
+    return <EntityLoading />;
   }
   if (result === null) {
     return <NotFound id={entityID} />;
