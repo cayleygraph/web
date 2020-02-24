@@ -26,7 +26,7 @@ export type Suggestion = {
 };
 
 /** Supported label value, represents allowed value for the rdfs:label property */
-export type Label = string | jsonLd.PrimitiveValue;
+export type Label = jsonLd.PrimitiveValue;
 
 /**
  * An entity with identifier and label
@@ -144,6 +144,7 @@ export async function getEntity(
       .out(g.V(), "property")
       .tag("value")
       .saveOpt(g.IRI("rdfs:label"), "label")
+      .saveOpt(g.IRI("rdf:type"), "type")
       .getLimit(-1);
 
       entity
