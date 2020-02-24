@@ -3,7 +3,8 @@ import {
   Entity as EntityData,
   getSubClassesPage,
   getInstancesPage,
-  getSuperClassesPage
+  getSuperClassesPage,
+  RDFS_SUB_CLASS_OF
 } from "./data";
 import EntityTitle from "./EntityTitle";
 import EntityComment from "./EntityComment";
@@ -21,6 +22,8 @@ type Props = {
 const SUPER_CLASSES_PAGE_SIZE = 5;
 const SUB_CLASSES_PAGE_SIZE = 5;
 const INSTANCES_PAGE_SIZE = 5;
+
+const EXCLUDED_PROPERTIES = new Set([RDFS_SUB_CLASS_OF]);
 
 /**
  * @todo show properties with domain of class
@@ -50,7 +53,7 @@ const Class = ({ serverURL, onError, id, data }: Props) => {
       <EntityTitle id={id} data={data} type="Class" />
       <EntityComment data={data} />
       <EntityID id={id} />
-      <Properties data={data} noSingleType />
+      <Properties data={data} noSingleType excluding={EXCLUDED_PROPERTIES} />
       <EntityList
         title="Super Classes"
         query={superClassesQuery}

@@ -6,14 +6,17 @@ import EntityValue from "./EntityValue";
 type Props = {
   data: EntityData;
   noSingleType?: boolean;
+  excluding?: Set<string>;
 };
 
-const Properties = ({ data, noSingleType }: Props) => {
+const Properties = ({ data, noSingleType, excluding }: Props) => {
   return (
     <>
       {Object.entries(data).map(([propertyID, property]) => {
         const values = property.values;
         if (
+          // Skip excluded properties
+          (excluding && excluding.has(propertyID)) ||
           // For single labels there's no need to render as they are visible in EntityTitle
           (propertyID === RDFS_LABEL && values.length === 1) ||
           // Comments are rendered separately
