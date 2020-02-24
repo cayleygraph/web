@@ -16,32 +16,33 @@ import useEntityID from "./useEntityID";
 
 type Props = {
   serverURL: string;
-  onError: (error: Error | null) => void;
+  setError: (error: Error | null) => void;
   error: Error | null;
 };
 
-const EntityPage = ({ serverURL, onError, error }: Props) => {
+const EntityPage = ({ serverURL, setError, error }: Props) => {
   const [result, setResult] = useState<EntityData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const entityID = useEntityID();
 
   useEffect(() => {
-    onError(null);
+    setError(null);
     setResult(null);
-    setLoading(true);
+
     if (entityID) {
+      setLoading(true);
       getEntity(serverURL, entityID)
         .then(result => {
           setResult(result);
         })
         .catch(error => {
-          onError(error);
+          setError(error);
         })
         .finally(() => {
           setLoading(false);
         });
     }
-  }, [entityID, serverURL, setResult, onError]);
+  }, [entityID, serverURL, setResult, setError]);
   if (!entityID) {
     return null;
   }
@@ -62,7 +63,7 @@ const EntityPage = ({ serverURL, onError, error }: Props) => {
     return (
       <Class
         serverURL={serverURL}
-        onError={onError}
+        onError={setError}
         id={entityID}
         data={result}
       />

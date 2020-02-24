@@ -48,7 +48,7 @@ const EntitiesPage = ({ serverURL }: Props) => {
           Write an entity's IRI in the text box to view the entity
         </Route>
         <Route path="/entities/:entity">
-          <EntityPage serverURL={serverURL} onError={setError} error={error} />
+          <EntityPage serverURL={serverURL} setError={setError} error={error} />
         </Route>
       </div>
     </>
