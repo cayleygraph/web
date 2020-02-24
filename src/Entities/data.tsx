@@ -7,7 +7,9 @@ import {
   OWL_CLASS,
   OWL_OBJECT_PROPERTY,
   OWL_DATA_PROPERTY,
-  OWL_ANNOTATION_PROPERTY
+  OWL_ANNOTATION_PROPERTY,
+  RDFS_LABEL,
+  RDFS_SUB_CLASS_OF
 } from "./constants";
 import * as jsonLd from "./json-ld";
 import { GizmoQueryResponse, getResult, normalizeID, escapeID } from "./gizmo";
@@ -366,13 +368,25 @@ type NativeIDDescriptor = {
 };
 
 const nativeIDDescriptors: { [id: string]: NativeIDDescriptor } = {
-  RDFS_CLASS: {
+  [RDFS_CLASS]: {
     label: "Class",
     link: "https://www.w3.org/TR/rdf-schema/#ch_class"
   },
-  RDF_PROPERTY: {
+  [RDF_PROPERTY]: {
     label: "Property",
     link: "https://www.w3.org/TR/rdf-schema/#ch_property"
+  },
+  [RDFS_LABEL]: {
+    label: "Label",
+    link: "https://www.w3.org/TR/rdf-schema/#ch_label"
+  },
+  [RDFS_SUB_CLASS_OF]: {
+    label: "Sub Class Of",
+    link: "https://www.w3.org/TR/rdf-schema/#ch_subclassof"
+  },
+  [JSON_LD_TYPE]: {
+    label: "Type",
+    link: "https://w3c.github.io/json-ld-syntax/#specifying-the-type"
   }
 };
 

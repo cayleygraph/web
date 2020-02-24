@@ -14,6 +14,7 @@
     "@types/react-router-dom": "^5.1.3",
     "@types/react-select": "^3.0.10",
     "@vx/network": "^0.0.190",
+    "capital-case": "^1.0.3",
     "d3-force": "^2.0.1",
     "downloadjs": "^1.4.7",
     "lodash.sortby": "^4.7.0",

@@ -4,8 +4,9 @@ import {
   labelPropertyID,
   commentPropertyID
 } from "./data";
-import PropertyName from "./PropertyName";
 import EntityValue from "./EntityValue";
+import ID, { getRenderInfo } from "./ID";
+import sortBy from "lodash.sortby";
 
 type Props = {
   data: EntityData;
@@ -14,22 +15,32 @@ type Props = {
 };
 
 const Properties = ({ data, noSingleType, excluding }: Props) => {
-  return (
-    <>
-      {Object.entries(data).map(([propertyID, property]) => {
-        const values = property.values;
-        if (
-          // Skip excluded properties
+  const entries = Object.entries(data);
+  const filtered = entries.filter(
+    ([propertyID, property]) =>
+      !(
+        // Skip excluded properties
+        (
           (excluding && excluding.has(propertyID)) ||
           // For single labels there's no need to render as they are visible in EntityTitle
-          (propertyID === labelPropertyID && values.length === 1) ||
+          (propertyID === labelPropertyID && property.values.length === 1) ||
           // Comments are rendered separately
           propertyID === commentPropertyID ||
           // If noSingleType is set to true hide single Type properties
-          (noSingleType && propertyID === "@type" && values.length === 1)
-        ) {
-          return null;
-        }
+          (noSingleType &&
+            propertyID === "@type" &&
+            property.values.length === 1)
+        )
+      )
+  );
+  const sorted = sortBy(
+    filtered,
+    ([propertyID, property]) => getRenderInfo(propertyID, property.label).label
+  );
+  return (
+    <>
+      {sorted.map(([propertyID, property]) => {
+        const values = property.values;
         const valueNodes = values.map((record, i) => {
           if (Array.isArray(record)) {
             return (
@@ -58,8 +69,10 @@ const Properties = ({ data, noSingleType, excluding }: Props) => {
         });
         return (
           <div className="Property" key={propertyID}>
-            <PropertyName property={propertyID} label={property.label} />:{" "}
-            {valueNodes}
+            <b>
+              <ID id={propertyID} label={property.label} />
+            </b>
+            : {valueNodes}
           </div>
         );
       })}
