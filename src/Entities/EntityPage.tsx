@@ -7,7 +7,7 @@ import {
   isProperty,
   LabeledEntityValue
 } from "./data";
-import { isReference } from "./json-ld";
+import * as jsonLd from "./json-ld";
 import Entity from "./Entity";
 import Class from "./Class";
 import Property from "./Property";
@@ -80,7 +80,7 @@ function getTypeIDs(result: EntityData): Set<string> {
     types
       .filter((record): record is LabeledEntityValue => !Array.isArray(record))
       .map(record => record.value)
-      .filter(isReference)
+      .filter(jsonLd.isReference)
       .map(value => value["@id"])
   );
 }

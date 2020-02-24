@@ -1,5 +1,10 @@
 import React from "react";
-import { RDFS_LABEL, JSON_LD_TYPE, RDFS_SUB_CLASS_OF, Label } from "./data";
+import {
+  labelPropertyID,
+  typePropertyID,
+  subClassOfPropertyID,
+  Label
+} from "./data";
 import ID from "./ID";
 
 const PropertyName = ({
@@ -9,14 +14,14 @@ const PropertyName = ({
   property: string;
   label?: Label;
 }) => {
-  if (property === RDFS_LABEL) {
+  if (property === labelPropertyID) {
     // Will only render if there are multiple labels
     return <b>Labels</b>;
   }
-  if (property === JSON_LD_TYPE) {
+  if (property === typePropertyID) {
     return <b>Types</b>;
   }
-  if (property === RDFS_SUB_CLASS_OF) {
+  if (property === subClassOfPropertyID) {
     return <b>Sub Class Of</b>;
   }
   return (

@@ -4,7 +4,7 @@ import {
   getSubClassesPage,
   getInstancesPage,
   getSuperClassesPage,
-  RDFS_SUB_CLASS_OF
+  subClassOfPropertyID
 } from "./data";
 import EntityTitle from "./EntityTitle";
 import EntityComment from "./EntityComment";
@@ -23,7 +23,7 @@ const SUPER_CLASSES_PAGE_SIZE = 5;
 const SUB_CLASSES_PAGE_SIZE = 5;
 const INSTANCES_PAGE_SIZE = 5;
 
-const EXCLUDED_PROPERTIES = new Set([RDFS_SUB_CLASS_OF]);
+const EXCLUDED_PROPERTIES = new Set([subClassOfPropertyID]);
 
 /**
  * @todo show properties with domain of class

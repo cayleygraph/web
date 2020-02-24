@@ -1,26 +1,21 @@
 import React, { Fragment } from "react";
-import {
-  JsonLdPrimitiveValue,
-  normalizePrimitiveValue,
-  isJsonLDLocalizedPrimitiveValue,
-  isJsonLDTypedPrimitiveValue
-} from "./json-ld";
+import * as jsonLd from "./json-ld";
 import ID from "./ID";
 
 type Props = {
-  value: JsonLdPrimitiveValue;
+  value: jsonLd.PrimitiveValue;
   Component?: React.ComponentType;
 };
 
 const Value = ({ value, Component = Fragment }: Props) => {
   // Normalize value to handle less edge cases
-  value = normalizePrimitiveValue(value);
+  value = jsonLd.normalizePrimitiveValue(value);
 
   if (typeof value === "string") {
     return <Component>{value}</Component>;
   }
 
-  if (isJsonLDLocalizedPrimitiveValue(value)) {
+  if (jsonLd.isLocalizedText(value)) {
     return (
       <Component>
         {value["@value"]} ({value["@language"]})
@@ -28,7 +23,7 @@ const Value = ({ value, Component = Fragment }: Props) => {
     );
   }
 
-  if (isJsonLDTypedPrimitiveValue(value)) {
+  if (jsonLd.isTypedPrimitiveValue(value)) {
     const type = value["@type"];
     return (
       <Component>

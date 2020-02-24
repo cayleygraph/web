@@ -1,37 +1,30 @@
 import { XSD_STRING } from "./constants";
 
-export type JsonLdReference = { "@id": string };
+export type Reference = { "@id": string };
 
-type JsonLDTypedPrimitiveValue = { "@value": string; "@type": string };
-type JsonLDLocalizedPrimitiveValue = { "@value": string; "@language": string };
+type TypedPrimitiveValue = { "@value": string; "@type": string };
+type LocalizedText = { "@value": string; "@language": string };
 
-export type JsonLdPrimitiveValue =
-  | string
-  | JsonLDLocalizedPrimitiveValue
-  | JsonLDTypedPrimitiveValue;
+export type PrimitiveValue = string | LocalizedText | TypedPrimitiveValue;
 
-export type JsonLdValue = JsonLdReference | JsonLdPrimitiveValue;
+export type Value = Reference | PrimitiveValue;
 
-export function isReference(value: JsonLdValue): value is JsonLdReference {
+export function isReference(value: Value): value is Reference {
   return typeof value === "object" && "@id" in value;
 }
 
-export function isJsonLDTypedPrimitiveValue(
-  value: JsonLdValue
-): value is JsonLDTypedPrimitiveValue {
+export function isTypedPrimitiveValue(
+  value: Value
+): value is TypedPrimitiveValue {
   return typeof value === "object" && "@type" in value;
 }
 
-export function isJsonLDLocalizedPrimitiveValue(
-  value: JsonLdValue
-): value is JsonLDLocalizedPrimitiveValue {
+export function isLocalizedText(value: Value): value is LocalizedText {
   return typeof value === "object" && "@language" in value;
 }
 
-export function normalizePrimitiveValue(
-  value: JsonLdPrimitiveValue
-): JsonLdPrimitiveValue {
-  if (isJsonLDTypedPrimitiveValue(value) && value["@type"] === XSD_STRING) {
+export function normalizePrimitiveValue(value: PrimitiveValue): PrimitiveValue {
+  if (isTypedPrimitiveValue(value) && value["@type"] === XSD_STRING) {
     return value["@value"];
   }
   return value;

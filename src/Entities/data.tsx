@@ -9,51 +9,50 @@ import {
   OWL_DATA_PROPERTY,
   OWL_ANNOTATION_PROPERTY
 } from "./constants";
-import { JsonLdReference, JsonLdPrimitiveValue, JsonLdValue } from "./json-ld";
+import * as jsonLd from "./json-ld";
 import { GizmoQueryResponse, getResult, normalizeID, escapeID } from "./gizmo";
 
 export {
   RDFS_COMMENT as commentPropertyID,
   RDF_PROPERTY as propertyTypeID,
-  XSD_STRING,
-  RDFS_LABEL,
-  JSON_LD_TYPE,
-  RDFS_SUB_CLASS_OF
+  RDFS_LABEL as labelPropertyID,
+  JSON_LD_TYPE as typePropertyID,
+  RDFS_SUB_CLASS_OF as subClassOfPropertyID
 } from "./constants";
 
 export type Suggestion = {
-  value: JsonLdReference;
+  value: jsonLd.Reference;
   label: Label;
 };
 
 /** Supported label value, represents allowed value for the rdfs:label property */
-export type Label = string | JsonLdPrimitiveValue;
+export type Label = string | jsonLd.PrimitiveValue;
 
 /**
  * An entity with identifier and label
  */
-export type Labeled = JsonLdReference & {
+export type Labeled = jsonLd.Reference & {
   label: Label;
 };
 
 export type LabeledEntityValue = {
-  value: JsonLdValue;
+  value: jsonLd.Value;
   label?: Label;
 };
 
 export type EntityValueRecord = LabeledEntityValue & {
-  id: JsonLdReference;
-  property: JsonLdReference;
+  id: jsonLd.Reference;
+  property: jsonLd.Reference;
 };
 
 type PropertyRecord = {
-  id: JsonLdReference;
+  id: jsonLd.Reference;
   label: Label;
 };
 
 type ListItemRecord = {
-  value: JsonLdReference;
-  item: JsonLdValue;
+  value: jsonLd.Reference;
+  item: jsonLd.Value;
   itemLabel?: Label;
 };
 
@@ -85,7 +84,7 @@ function normalizeGetEntityQueryResult(
   result: GetEntityResultRecord[]
 ): Entity {
   const lists: {
-    [id: string]: Array<{ value: JsonLdValue; label?: Label }>;
+    [id: string]: Array<{ value: jsonLd.Value; label?: Label }>;
   } = {};
   const properties: Entity = {};
   for (const record of result) {
@@ -223,7 +222,7 @@ export async function getAutoCompletionSuggestions(
 }
 
 export type ClassRecord = {
-  id: JsonLdReference;
+  id: jsonLd.Reference;
   label: Label;
 };
 

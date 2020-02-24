@@ -1,4 +1,4 @@
-import { JsonLdReference } from "./json-ld";
+import * as jsonLd from "./json-ld";
 
 type GizmoQueryResult<T extends Object> = {
   result: T[] | null;
@@ -19,9 +19,9 @@ export function getResult<T>(response: GizmoQueryResponse<T>): T[] | null {
   return response.result;
 }
 
-export function normalizeID<T extends { id: JsonLdReference }>(
+export function normalizeID<T extends { id: jsonLd.Reference }>(
   result: T[] | null
-): Array<JsonLdReference & Pick<T, Exclude<keyof T, "id">>> | null {
+): Array<jsonLd.Reference & Pick<T, Exclude<keyof T, "id">>> | null {
   if (result !== null) {
     return result.map(({ id, ...rest }) => ({ "@id": id["@id"], ...rest }));
   }

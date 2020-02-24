@@ -2,10 +2,10 @@ import React, { Fragment } from "react";
 import ID from "./ID";
 import Value from "./Value";
 import { Label } from "./data";
-import { JsonLdValue, isReference } from "./json-ld";
+import * as jsonLd from "./json-ld";
 
 type Props = {
-  value: JsonLdValue;
+  value: jsonLd.Value;
   label?: Label | null | undefined;
   Component?: React.ComponentType;
 };
@@ -19,7 +19,7 @@ type Props = {
  */
 const EntityValue = ({ value, label, Component = Fragment }: Props) => {
   // Entity values
-  if (isReference(value)) {
+  if (jsonLd.isReference(value)) {
     return <ID id={value["@id"]} label={label} Component={Component} />;
   }
   return <Value value={value} Component={Component} />;

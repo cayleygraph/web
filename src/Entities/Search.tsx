@@ -4,14 +4,14 @@ import { Theme } from "react-select";
 import "./Search.css";
 
 import { getAutoCompletionSuggestions } from "./data";
-import { JsonLdReference } from "./json-ld";
+import * as jsonLd from "./json-ld";
 import { PRIMARY, LIST_ITEM_ACTIVE, LIST_ITEM_HOVER } from "./colors";
 import EntityValue from "./EntityValue";
 
 const OPTIONS_LIMIT = 10;
 
 type Props = {
-  onSelect: (value: JsonLdReference) => void;
+  onSelect: (value: jsonLd.Reference) => void;
   onError: (error: Error) => void;
   serverURL: string;
 };

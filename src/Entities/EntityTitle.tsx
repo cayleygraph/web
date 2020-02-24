@@ -1,5 +1,9 @@
 import React, { useRef, useEffect } from "react";
-import { Entity as EntityData, RDFS_LABEL, LabeledEntityValue } from "./data";
+import {
+  Entity as EntityData,
+  labelPropertyID,
+  LabeledEntityValue
+} from "./data";
 import EntityValue from "./EntityValue";
 import { idToDisplay } from "./ID";
 import "./EntityTitle.css";
@@ -35,7 +39,7 @@ const EntityTitle = ({ id, type, data }: Props) => {
 export default EntityTitle;
 
 function getText(id: string, data: EntityData): Array<{ value: any }> {
-  const labels = data[RDFS_LABEL]?.values;
+  const labels = data[labelPropertyID]?.values;
   if (!labels) {
     return [{ value: idToDisplay(id) }];
   }
