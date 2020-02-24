@@ -27,6 +27,7 @@ const EXCLUDED_PROPERTIES = new Set([subClassOfPropertyID]);
 
 /**
  * @todo show properties with domain of class
+ * @todo show restrictions
  */
 
 const Class = ({ serverURL, onError, id, data }: Props) => {
