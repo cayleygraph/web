@@ -1,9 +1,10 @@
 import React, { Fragment } from "react";
-import { JsonLdValue, XSD_STRING } from "./data";
+import { XSD_STRING } from "./data";
+import { JsonLdPrimitiveValue } from "./json-ld";
 import ID from "./ID";
 
 type Props = {
-  value: string | JsonLdValue;
+  value: string | JsonLdPrimitiveValue;
   Component?: React.ComponentType;
 };
 

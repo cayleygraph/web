@@ -1,46 +1,31 @@
 import { runQuery } from "../queries";
+import {
+  RDF_TYPE,
+  RDF_PROPERTY,
+  RDFS_CLASS,
+  JSON_LD_TYPE,
+  OWL_CLASS,
+  OWL_OBJECT_PROPERTY,
+  OWL_DATA_PROPERTY,
+  OWL_ANNOTATION_PROPERTY
+} from "./constants";
+import { JsonLdReference, JsonLdPrimitiveValue, JsonLdValue } from "./json-ld";
 
-// Namespaces
-export const RDFS = "http://www.w3.org/2000/01/rdf-schema#";
-export const RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-export const XSD = "http://www.w3.org/2001/XMLSchema#";
-export const OWL = "http://www.w3.org/2002/07/owl#";
-
-// RDF
-export const RDF_TYPE = RDF + "type";
-export const RDF_PROPERTY = RDF + "Property";
-
-// RDFS
-export const RDFS_LABEL = RDFS + "label";
-export const RDFS_CLASS = RDFS + "Class";
-export const RDFS_SUB_CLASS_OF = RDFS + "subClassOf";
-export const RDFS_COMMENT = RDFS + "comment";
-
-// XSD
-export const XSD_STRING = XSD + "string";
-
-// JSON LD
-export const JSON_LD_TYPE = "@type";
-
-// OWL
-export const OWL_CLASS = OWL + "Class";
-export const OWL_OBJECT_PROPERTY = OWL + "ObjectProperty";
-export const OWL_DATA_PROPERTY = OWL + "DataProperty";
-export const OWL_ANNOTATION_PROPERTY = OWL + "AnnotationProperty";
+export {
+  RDFS_CLASS,
+  RDFS_COMMENT,
+  RDF_PROPERTY,
+  XSD,
+  XSD_STRING,
+  RDFS_LABEL,
+  JSON_LD_TYPE,
+  RDFS_SUB_CLASS_OF
+} from "./constants";
 
 export type Suggestion = {
   value: JsonLdReference;
   label: Label;
 };
-
-export type JsonLdReference = { "@id": string };
-export type JsonLdValue =
-  | { "@value": string; "@language": string }
-  | { "@value": string; "@type": string };
-
-export function isReference(value: EntityValue): value is JsonLdReference {
-  return typeof value === "object" && "@id" in value;
-}
 
 type GizmoQueryResult<T extends Object> = { result: T[] | null };
 type GizmoQueryError = { error: string };
@@ -65,8 +50,7 @@ function normalizeID<T extends { id: JsonLdReference }>(
   return result;
 }
 
-export type EntityValue = JsonLdReference | JsonLdValue | string;
-export type Label = string | JsonLdValue;
+export type Label = string | JsonLdPrimitiveValue;
 
 /**
  * An entity with identifier and label
@@ -76,7 +60,7 @@ export type Labeled = JsonLdReference & {
 };
 
 export type LabeledEntityValue = {
-  value: EntityValue;
+  value: JsonLdValue;
   label?: Label;
 };
 
@@ -92,7 +76,7 @@ type PropertyRecord = {
 
 type ListItemRecord = {
   value: JsonLdReference;
-  item: EntityValue;
+  item: JsonLdValue;
   itemLabel?: Label;
 };
 
@@ -131,7 +115,7 @@ function normalizeGetEntityQueryResult(
   result: GetEntityResultRecord[]
 ): Entity {
   const lists: {
-    [id: string]: Array<{ value: EntityValue; label?: Label }>;
+    [id: string]: Array<{ value: JsonLdValue; label?: Label }>;
   } = {};
   const properties: Entity = {};
   for (const record of result) {

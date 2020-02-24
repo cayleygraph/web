@@ -1,10 +1,11 @@
 import React, { Fragment } from "react";
 import ID from "./ID";
 import Value from "./Value";
-import { EntityValue as EntityValueData, Label, isReference } from "./data";
+import { Label } from "./data";
+import { JsonLdValue, isReference } from "./json-ld";
 
 type Props = {
-  value: EntityValueData;
+  value: JsonLdValue;
   label?: Label | null | undefined;
   Component?: React.ComponentType;
 };

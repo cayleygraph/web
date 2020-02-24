@@ -5,9 +5,9 @@ import {
   Entity as EntityData,
   isClass,
   isProperty,
-  isReference,
   LabeledEntityValue
 } from "./data";
+import { isReference } from "./json-ld";
 import Entity from "./Entity";
 import Class from "./Class";
 import Property from "./Property";
