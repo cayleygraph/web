@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { Entity as EntityData, RDFS_LABEL, LabeledEntityValue } from "./data";
 import EntityValue from "./EntityValue";
 import { idToDisplay } from "./ID";
@@ -11,11 +11,19 @@ type Props = {
 };
 
 const EntityTitle = ({ id, type, data }: Props) => {
+  const headingRef = useRef<HTMLHeadingElement | null>(null);
   const text = getText(id, data);
+
+  // Autofocus heading
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, [headingRef]);
+
   return (
     <div className="EntityTitle">
       <span className="type">{type}</span>
-      <h1>
+      {/* @ts-ignore */}
+      <h1 ref={headingRef} tabIndex={0}>
         {text.map((record, i) => (
           <EntityValue key={i} value={record.value} />
         ))}
