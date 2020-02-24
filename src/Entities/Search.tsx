@@ -3,7 +3,7 @@ import AsyncSelect from "react-select/async";
 import { Theme } from "react-select";
 import "./Search.css";
 
-import { getAutoCompletionSuggestions } from "./data";
+import { getAutoCompletionSuggestions, Label } from "./data";
 import * as jsonLd from "./json-ld";
 import { PRIMARY, LIST_ITEM_ACTIVE, LIST_ITEM_HOVER } from "./colors";
 import EntityValue from "./EntityValue";
@@ -19,7 +19,6 @@ type Props = {
 const Search = ({ onError, serverURL, onSelect }: Props) => {
   const loadOptions = useCallback(
     (query: string) => {
-      /** @todo handle non string results */
       return getAutoCompletionSuggestions(
         serverURL,
         query,
@@ -37,15 +36,10 @@ const Search = ({ onError, serverURL, onSelect }: Props) => {
     [onSelect]
   );
 
-  const formatOptionLabel = useCallback(option => {
-    return <EntityValue value={option.value} label={option.label} />;
-  }, []);
-
   return (
     <AsyncSelect
       className="Search"
       loadOptions={loadOptions}
-      defaultOptions
       theme={modifySelectTheme}
       onChange={handleChange}
       value={null}
@@ -56,6 +50,10 @@ const Search = ({ onError, serverURL, onSelect }: Props) => {
 };
 
 export default Search;
+
+const formatOptionLabel = (option: { value: jsonLd.Value; label: Label }) => (
+  <EntityValue value={option.value} label={option.label} />
+);
 
 const modifySelectTheme = (theme: Theme): Theme => ({
   ...theme,
