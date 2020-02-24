@@ -10,6 +10,7 @@ import {
   OWL_ANNOTATION_PROPERTY
 } from "./constants";
 import { JsonLdReference, JsonLdPrimitiveValue, JsonLdValue } from "./json-ld";
+import { GizmoQueryResponse, getResult, normalizeID, escapeID } from "./gizmo";
 
 export {
   RDFS_CLASS,
@@ -27,29 +28,7 @@ export type Suggestion = {
   label: Label;
 };
 
-type GizmoQueryResult<T extends Object> = { result: T[] | null };
-type GizmoQueryError = { error: string };
-
-type GizmoQueryResponse<T extends Object> =
-  | GizmoQueryResult<T>
-  | GizmoQueryError;
-
-function getResult<T>(response: GizmoQueryResponse<T>): T[] | null {
-  if ("error" in response) {
-    throw new Error(response.error);
-  }
-  return response.result;
-}
-
-function normalizeID<T extends { id: JsonLdReference }>(
-  result: T[] | null
-): Array<JsonLdReference & Pick<T, Exclude<keyof T, "id">>> | null {
-  if (result !== null) {
-    return result.map(({ id, ...rest }) => ({ "@id": id["@id"], ...rest }));
-  }
-  return result;
-}
-
+/** Supported label value, represents allowed value for the rdfs:label property */
 export type Label = string | JsonLdPrimitiveValue;
 
 /**
@@ -102,13 +81,6 @@ function isListItemRecord(
   record: GetEntityResultRecord
 ): record is ListItemRecord {
   return "item" in record;
-}
-
-function escapeID(id: string): string {
-  if (id.startsWith("_:")) {
-    return id;
-  }
-  return `<${id}>`;
 }
 
 function normalizeGetEntityQueryResult(
