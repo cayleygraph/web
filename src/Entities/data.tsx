@@ -310,6 +310,9 @@ export async function getSubClassesPage(
   };
 }
 
+/**
+ * Get super classes of given class, excluding restrictions.
+ */
 export async function getSuperClassesPage(
   serverURL: string,
   classID: string,
@@ -319,10 +322,15 @@ export async function getSuperClassesPage(
   const skip = pageNumber * pageSize;
   const query = `
     g.addDefaultNamespaces();
-    
-    var subClasses = g.V().hasR(g.IRI("rdfs:subClassOf"), "${escapeID(
-      classID
-    )}")
+    g.addNamespace("owl", "http://www.w3.org/2002/07/owl#");
+
+    var subClasses = (
+      g.V()
+      .hasR(g.IRI("rdfs:subClassOf"), "${escapeID(classID)}")
+      .out(g.IRI("rdf:type"))
+      .except(g.V(g.IRI("owl:Restriction")))
+      .back()
+    );
     
     g.emit(subClasses.count());
     

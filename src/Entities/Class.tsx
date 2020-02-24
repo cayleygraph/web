@@ -23,7 +23,6 @@ const SUB_CLASSES_PAGE_SIZE = 5;
 const INSTANCES_PAGE_SIZE = 5;
 
 /**
- * @todo show super classes in the bottom with a special view
  * @todo show properties with domain of class
  */
 
