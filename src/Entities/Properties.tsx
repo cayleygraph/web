@@ -24,6 +24,23 @@ const Properties = ({ data, noSingleType }: Props) => {
           return null;
         }
         const valueNodes = values.map((record, i) => {
+          if (Array.isArray(record)) {
+            return (
+              <ol>
+                {record.map(item => {
+                  return (
+                    <li>
+                      <EntityValue
+                        key={i}
+                        value={item.value}
+                        label={item.label}
+                      />
+                    </li>
+                  );
+                })}
+              </ol>
+            );
+          }
           const suffix = i === values.length - 1 ? null : ", ";
           return (
             <Fragment key={i}>

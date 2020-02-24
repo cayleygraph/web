@@ -75,11 +75,14 @@ export type Labeled = JsonLdReference & {
   label: Label;
 };
 
-export type EntityValueRecord = {
-  id: JsonLdReference;
-  property: JsonLdReference;
+export type LabeledEntityValue = {
   value: EntityValue;
   label?: Label;
+};
+
+export type EntityValueRecord = LabeledEntityValue & {
+  id: JsonLdReference;
+  property: JsonLdReference;
 };
 
 type PropertyRecord = {
@@ -87,15 +90,35 @@ type PropertyRecord = {
   label: Label;
 };
 
+type ListItemRecord = {
+  value: JsonLdReference;
+  item: EntityValue;
+  itemLabel?: Label;
+};
+
+type GetEntityResultRecord =
+  | EntityValueRecord
+  | PropertyRecord
+  | ListItemRecord;
+
 export type Entity = {
   [id: string]: {
     label?: Label;
-    values: Array<{
-      value: EntityValue;
-      label?: Label;
-    }>;
+    values: Array<LabeledEntityValue | LabeledEntityValue[]>;
   };
 };
+
+function isEntityValueRecord(
+  record: GetEntityResultRecord
+): record is EntityValueRecord {
+  return "property" in record;
+}
+
+function isListItemRecord(
+  record: GetEntityResultRecord
+): record is ListItemRecord {
+  return "item" in record;
+}
 
 function escapeID(id: string): string {
   if (id.startsWith("_:")) {
@@ -104,13 +127,59 @@ function escapeID(id: string): string {
   return `<${id}>`;
 }
 
+function normalizeGetEntityQueryResult(
+  result: GetEntityResultRecord[]
+): Entity {
+  const lists: {
+    [id: string]: Array<{ value: EntityValue; label?: Label }>;
+  } = {};
+  const properties: Entity = {};
+  for (const record of result) {
+    if (isListItemRecord(record)) {
+      // list item record
+      const list = lists[record.value["@id"]] || [];
+      list.push({ value: record.item, label: record.itemLabel });
+      lists[record.value["@id"]] = list;
+    }
+  }
+  for (const record of result) {
+    if (isListItemRecord(record)) {
+      continue;
+    }
+    if (isEntityValueRecord(record)) {
+      // entity value record
+      const propertyID =
+        record.property["@id"] === RDF_TYPE
+          ? JSON_LD_TYPE
+          : record.property["@id"];
+      const property = properties[propertyID] || { values: [] };
+      if (
+        typeof record.value === "object" &&
+        "@id" in record.value &&
+        record.value["@id"] in lists
+      ) {
+        property.values.push(lists[record.value["@id"]]);
+      } else {
+        property.values.push({
+          value: record.value,
+          label: record.label
+        });
+      }
+      properties[propertyID] = property;
+    } else {
+      // A property label record
+      const property = properties[record.id["@id"]];
+      property.label = record.label;
+    }
+  }
+  return properties;
+}
+
 export async function getEntity(
   serverURL: string,
   entityID: string
 ): Promise<Entity | null> {
-  const response: GizmoQueryResponse<
-    EntityValueRecord | PropertyRecord
-  > = await runQuery(
+  const response: GizmoQueryResponse<GetEntityResultRecord> = await runQuery(
     serverURL,
     "gizmo",
     `
@@ -125,6 +194,21 @@ export async function getEntity(
       .getLimit(-1);
 
       entity
+      .out(g.V())
+      .tag("value")
+      .followRecursive(
+        g
+        .M()
+        .tag("cursor")
+        .out(g.IRI("rdf:first"))
+        .tag("item")
+        .saveOpt(g.IRI("rdfs:label"), "itemLabel")
+        .back("cursor")
+        .out(g.IRI("rdf:rest"))
+      )
+      .getLimit(-1);
+
+      entity
       .outPredicates()
       .save(g.IRI("rdfs:label"), "label")
       .getLimit(-1);
@@ -134,26 +218,7 @@ export async function getEntity(
   if (result === null) {
     return null;
   }
-  const properties: Entity = {};
-  for (const record of result) {
-    if ("property" in record) {
-      const propertyID =
-        record.property["@id"] === RDF_TYPE
-          ? JSON_LD_TYPE
-          : record.property["@id"];
-      const property = properties[propertyID] || { values: [] };
-      property.values.push({
-        value: record.value,
-        label: record.label
-      });
-      properties[propertyID] = property;
-    } else {
-      console.log(record);
-      const property = properties[record.id["@id"]];
-      property.label = record.label;
-    }
-  }
-  return properties;
+  return normalizeGetEntityQueryResult(result);
 }
 
 export async function getAutoCompletionSuggestions(

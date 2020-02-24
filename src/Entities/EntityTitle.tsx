@@ -1,5 +1,5 @@
 import React from "react";
-import { Entity as EntityData, RDFS_LABEL } from "./data";
+import { Entity as EntityData, RDFS_LABEL, LabeledEntityValue } from "./data";
 import EntityValue from "./EntityValue";
 import { idToDisplay } from "./ID";
 import "./EntityTitle.css";
@@ -31,5 +31,7 @@ function getText(id: string, data: EntityData): Array<{ value: any }> {
   if (!labels) {
     return [{ value: idToDisplay(id) }];
   }
-  return labels;
+  return labels.filter(
+    (record): record is LabeledEntityValue => !Array.isArray(record)
+  );
 }

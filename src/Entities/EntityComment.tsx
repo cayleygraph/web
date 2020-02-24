@@ -11,6 +11,9 @@ const EntityComment = ({ data }: Props) => {
   return (
     <>
       {comments.map(record => {
+        if (Array.isArray(record)) {
+          return null;
+        }
         return (
           <p>
             <EntityValue value={record.value} />

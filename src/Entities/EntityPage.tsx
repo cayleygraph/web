@@ -5,7 +5,8 @@ import {
   Entity as EntityData,
   isClass,
   isProperty,
-  isReference
+  isReference,
+  LabeledEntityValue
 } from "./data";
 import Entity from "./Entity";
 import Class from "./Class";
@@ -76,6 +77,7 @@ function getTypeIDs(result: EntityData): Set<string> {
   const types = result["@type"]?.values || [];
   return new Set(
     types
+      .filter((record): record is LabeledEntityValue => !Array.isArray(record))
       .map(record => record.value)
       .filter(isReference)
       .map(value => value["@id"])
