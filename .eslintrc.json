@@ -1,12 +1,3 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "jsx": true,
-    "useJSXTextNode": true
-  },
-  "extends": ["plugin:@typescript-eslint/recommended"],
-  "plugins": ["@typescript-eslint", "react-hooks"],
-  "parserOptions": {
-    "warnOnUnsupportedTypeScriptVersion": false
-  }
+  "extends": ["react-app"]
 }
