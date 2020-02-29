@@ -5,10 +5,11 @@ import { Icon } from "@rmwc/icon";
 import "@rmwc/icon/icon.css";
 import { Query, languageOptions } from "../queries";
 import "./QueryHistory.css";
+import { useQueryHistory } from "./query-history-service";
 
 type OnRecovery = (query: Query) => void;
 
-type Props = { queries: Query[]; onRecovery: OnRecovery };
+type Props = { onRecovery: OnRecovery };
 
 const TIME_OPTIONS = {
   hour: "2-digit",
@@ -54,7 +55,8 @@ const QueryHistoryItem = ({
   );
 };
 
-const QueryHistory = ({ queries, onRecovery }: Props) => {
+const QueryHistory = ({ onRecovery }: Props) => {
+  const queries = useQueryHistory();
   const groupedQueries = groupQueriesByTime(queries);
   return (
     <List className="QueryHistory">

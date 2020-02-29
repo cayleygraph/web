@@ -16,7 +16,7 @@ export const languageOptions: LanguageOption[] = [
 export type QueryResult = { result: any[] | null } | { error: string };
 
 export type Query = {
-  id: number;
+  id: string;
   text: string;
   language: Language;
   result: QueryResult | null;

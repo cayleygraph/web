@@ -52,7 +52,7 @@ const DEFAULT_QUERIES: { [language in Language]: string } = {
     nodes(first: 10){
       id
     }
-  }`,
+}`,
   mql: `[{"id": null}]`
 };
 
