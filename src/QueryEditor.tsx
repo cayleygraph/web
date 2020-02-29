@@ -86,28 +86,30 @@ const options: monaco.editor.IDiffEditorConstructionOptions = {
 };
 
 type Props = {
+  activeQuery: { text: string; language: Language } | null;
   onRun: (query: string, language: Language, onDone: () => void) => void;
 };
 
-const QueryEditor = ({ onRun }: Props) => {
+const QueryEditor = ({ onRun, activeQuery }: Props) => {
+  const [language, setLanguage] = useState<Language | undefined>();
   const [onEditorMount, editor] = useEditor();
-  const [language, setLanguage] = useState();
   const { time, start, pause, reset } = useTimer({
     interval: 1
   });
-
-  const setValue = useCallback(
-    (value: string) => {
-      editor?.setValue(value);
-    },
-    [editor]
-  );
+  const lastQuery = getLastQuery(language);
 
   const handleEditorMount = useCallback(
     (_, editor) => {
       onEditorMount(_, editor);
     },
     [onEditorMount]
+  );
+
+  const setValue = useCallback(
+    (value: string) => {
+      editor?.setValue(value);
+    },
+    [editor]
   );
 
   const handleLanguageChange = useCallback(
@@ -118,48 +120,59 @@ const QueryEditor = ({ onRun }: Props) => {
   );
 
   const run = useCallback(() => {
-    if (editor) {
+    if (editor && language) {
       reset();
       start();
       onRun(editor.getValue(), language, pause);
     }
   }, [editor, language, onRun, reset, start, pause]);
 
-  // Set initial value for language based on lastQuery
-  useEffect(() => {
-    const lastQuery = getLastQuery();
-    setLanguage(lastQuery.language);
-  }, [setLanguage]);
+  const commitLastQuery = useCallback(() => {
+    if (editor && language) {
+      const text = editor.getValue();
+      setLastQuery({ text, language });
+    }
+  }, [editor, language]);
 
+  const updateQuery = useCallback(
+    ({ text, language }: { text: string; language: Language }) => {
+      setLanguage(language);
+      setValue(text);
+    },
+    [setLanguage, setValue]
+  );
+
+  // Define keyboard shortcuts
   useEffect(() => {
     if (editor) {
       registerRunShortcut(editor, run);
     }
   }, [editor, run]);
 
+  // Set initial value for language based on lastQuery
   useEffect(() => {
-    let didChangeModelContentDisposable: monaco.IDisposable | null = null;
-    if (editor && language) {
-      setValue(getLastQuery(language).text);
-      didChangeModelContentDisposable = editor.onDidChangeModelContent(() => {
-        setLastQuery({
-          text: editor.getValue(),
-          language
-        });
-      });
+    updateQuery(lastQuery);
+  }, [updateQuery, lastQuery]);
+
+  // Set initial value for language based on activeQuery
+  /** @todo to enable need to make sure to use the correct language */
+  // useEffect(() => {
+  //   if (activeQuery) {
+  //     updateQuery(activeQuery);
+  //   }
+  // }, [activeQuery, updateQuery]);
+
+  // Commit last query on editor model change and un-mount
+  useEffect(() => {
+    let disposable: monaco.IDisposable | null = null;
+    if (editor) {
+      disposable = editor.onDidChangeModelContent(commitLastQuery);
     }
     return () => {
-      if (didChangeModelContentDisposable) {
-        didChangeModelContentDisposable.dispose();
-      }
-      if (editor) {
-        setLastQuery({
-          text: editor.getValue(),
-          language
-        });
-      }
+      disposable?.dispose();
+      commitLastQuery();
     };
-  }, [editor, language, setValue]);
+  }, [editor, commitLastQuery]);
 
   return (
     <div className="QueryEditor">

@@ -16,7 +16,6 @@ import QueryHistory from "./QueryHistory";
 import Visualize from "./Visualize";
 import { Query, runQuery, getShape, QueryResult } from "./queries";
 
-const ACTIVE_QUERY_INITIAL_STATE: number | null = null;
 const QUERIES_INITIAL_STATE: Query[] = [];
 
 type Props = {
@@ -27,7 +26,7 @@ function QueryPage({ serverURL }: Props) {
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
 
-  const [activeQuery, setActiveQuery] = useState(ACTIVE_QUERY_INITIAL_STATE);
+  const [activeQuery, setActiveQuery] = useState<number | null>(null);
   const [queries, setQueries] = useState<Query[]>(QUERIES_INITIAL_STATE);
   const [shapeResult, setShapeResult] = useState<QueryResult | null>(null);
 
@@ -93,9 +92,12 @@ function QueryPage({ serverURL }: Props) {
 
   const [ref, { width, height }] = useDimensions();
 
-  const handleRecovery = useCallback((query: Query) => {
-    /** @todo recover query */
-  }, []);
+  const handleRecovery = useCallback(
+    (query: Query) => {
+      setActiveQuery(query.id);
+    },
+    [setActiveQuery]
+  );
 
   const currentQuery = queries.find(query => query.id === activeQuery);
   const result = currentQuery ? currentQuery.result : null;
@@ -107,7 +109,10 @@ function QueryPage({ serverURL }: Props) {
         onClose={unsetSnackbarMessage}
         message={snackbarMessage}
       />
-      <QueryEditor onRun={handleRun} />
+      <QueryEditor
+        onRun={handleRun}
+        activeQuery={activeQuery === null ? null : queries[activeQuery]}
+      />
       <TabBar
         style={{ maxWidth: "35em" }}
         activeTabIndex={activeTabIndex}
