@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useTimer } from "use-timer";
 
 type Props = {
@@ -6,17 +6,23 @@ type Props = {
 };
 
 const Timer = ({ running }: Props) => {
+  const lastRunning = useRef<boolean>(false);
   const { time, start, pause, reset } = useTimer({
     interval: 1
   });
+
   useEffect(() => {
-    if (running) {
-      reset();
-      start();
-    } else {
-      pause();
+    if (lastRunning.current !== running) {
+      lastRunning.current = running;
+      if (running) {
+        reset();
+        start();
+      } else {
+        pause();
+      }
     }
-  }, [running, reset, start, pause]);
+  }, [lastRunning, running, reset, start, pause]);
+
   return (
     <span className="timer">
       {time ? `${formatQueryTime(time)} elapsed` : null}
