@@ -7,7 +7,7 @@ import {
   Redirect,
   useRouteMatch
 } from "react-router-dom";
-import QueryPage from "./QueryPage";
+import QueryPage from "./Query/QueryPage";
 import DataPage from "./DataPage";
 import EntitiesPage from "./Entities/EntitiesPage";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";

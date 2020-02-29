@@ -2,7 +2,7 @@
  * Service for saving and retrieving the last query written
  */
 
-import { Language, languageOptions } from "./queries";
+import { Language, languageOptions } from "../queries";
 
 /**
  * Represents the last state of the query editor

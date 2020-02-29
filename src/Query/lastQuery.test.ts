@@ -1,5 +1,5 @@
 import { getLastQuery, setLastQuery } from "./lastQuery";
-import { Language } from "./queries";
+import { Language } from "../queries";
 
 describe("lastQuery", () => {
   it("Defaults language", () => {

@@ -16,10 +16,10 @@ import JSONCodeViewer from "./JSONCodeViewer";
 import useQueryHistory from "./use-query-history";
 import QueryHistory from "./QueryHistory";
 import Visualize from "./Visualize";
-import RunButton from "./RunButton";
+import RunButton from "../RunButton";
 import Timer from "./Timer";
 import LanguageSelect from "./LanguageSelect";
-import { Query, runQuery, getShape, QueryResult, Language } from "./queries";
+import { Query, runQuery, getShape, QueryResult, Language } from "../queries";
 import { getLastQuery, setLastQuery } from "./lastQuery";
 import "./QueryPage.css";
 

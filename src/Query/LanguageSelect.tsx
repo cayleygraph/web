@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { Select } from "@rmwc/select";
-import { languageOptions, Language } from "./queries";
+import { languageOptions, Language } from "../queries";
 
 type Props = {
   value: Language;

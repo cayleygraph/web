@@ -3,7 +3,7 @@
  */
 
 import { useState, useCallback } from "react";
-import { Query, QueryResult, Language } from "./queries";
+import { Query, QueryResult, Language } from "../queries";
 
 type AddQuery = (query: { text: string; language: Language }) => number;
 type SetResult = (id: number, result: QueryResult) => void;

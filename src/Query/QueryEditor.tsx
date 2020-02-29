@@ -3,10 +3,10 @@ import React, { useCallback, useEffect } from "react";
 import * as monaco from "monaco-editor";
 import { monaco as monacoInit } from "@monaco-editor/react";
 import MonacoEditor from "@monaco-editor/react";
-import { Language } from "./queries";
+import { Language } from "../queries";
 import { Typography } from "@rmwc/typography";
 import "@material/typography/dist/mdc.typography.css";
-import { useEditor } from "./monaco-util";
+import { useEditor } from "../monaco-util";
 
 // Setup monaco to use local monaco instead of CDN
 monacoInit.config({

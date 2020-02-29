@@ -13,7 +13,7 @@ import RunButton from "./RunButton";
 import download from "downloadjs";
 import { useEditor } from "./monaco-util";
 import * as mime from "./mime";
-import "./QueryPage.css";
+import "./Query/QueryPage.css";
 
 type Props = {
   serverURL: string;

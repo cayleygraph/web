@@ -3,7 +3,7 @@ import { List, ListItem, ListGroup, ListGroupSubheader } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
 import { Icon } from "@rmwc/icon";
 import "@rmwc/icon/icon.css";
-import { Query, languageOptions } from "./queries";
+import { Query, languageOptions } from "../queries";
 import "./QueryHistory.css";
 
 type OnRecovery = (query: Query) => void;
