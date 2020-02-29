@@ -13,6 +13,7 @@ import RunButton from "./RunButton";
 import download from "downloadjs";
 import { useEditor } from "./monaco-util";
 import * as mime from "./mime";
+import "./QueryPage.css";
 
 type Props = {
   serverURL: string;
@@ -130,7 +131,7 @@ const WritePage = ({ serverURL }: Props) => {
         style={{ display: "none" }}
         onChange={handleFileInputChange}
       />
-      <main>
+      <main className="QueryPage">
         <Typography use="headline6">Data</Typography>
         <MonacoEditor
           editorDidMount={handleEditorMount}
