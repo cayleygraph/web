@@ -38,13 +38,14 @@ function QueryPage({ serverURL }: Props) {
   const [initialValue, setInitialValue] = useState<string | null>(null);
   const [language, setLanguage] = useState<Language>("gizmo");
   const [running, setRunning] = useState<boolean>(false);
-  const [result, setResult] = useState<QueryResult | null>(null);
+  const [activeQueryID, setActiveQueryID] = useState<string | null>(null);
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
   const [activeTabIndex, setActiveTabIndex] = useState<ActiveTab>(
     ActiveTab.Result
   );
-
   const [shapeResult, setShapeResult] = useState<QueryResult | null>(null);
+
+  const result = queryHistoryService.useQueryResult(activeQueryID);
 
   const unsetSnackbarMessage = useCallback(() => {
     setSnackbarMessage(null);
@@ -76,11 +77,11 @@ function QueryPage({ serverURL }: Props) {
         .catch(handleError)
         .finally(() => setRunning(false));
     } else {
-      const id = queryHistoryService.add(query);
+      const id = queryHistoryService.addQuery(query);
+      setActiveQueryID(id);
       runQuery(serverURL, language, query.text)
         .then(result => {
-          setResult(result);
-          queryHistoryService.setResult(id, result);
+          queryHistoryService.addResult(id, result);
         })
         .catch(handleError)
         .finally(() => setRunning(false));
@@ -118,6 +119,16 @@ function QueryPage({ serverURL }: Props) {
     const lastQuery = getLastQuery(language);
     setInitialValue(lastQuery.text);
   }, [language]);
+
+  useEffect(() => {
+    setActiveQueryID(queryHistoryService.getActiveQueryID());
+  }, [setActiveQueryID]);
+
+  useEffect(() => {
+    if (activeQueryID) {
+      queryHistoryService.setActiveQueryID(activeQueryID);
+    }
+  }, [activeQueryID]);
 
   return (
     <main className="QueryPage">
