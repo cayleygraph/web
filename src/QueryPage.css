@@ -1,0 +1,50 @@
+.QueryPage {
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.QueryPage .mdc-typography--headline6 {
+  margin: 0 30px;
+  padding: 12px 0;
+  display: block;
+}
+
+.QueryPage .actions {
+  background: white;
+  padding: 8px 24px;
+  border-color: #d3d3d3;
+  border-style: solid;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  border-left-width: 0;
+  border-right-width: 0;
+}
+
+.QueryPage .actions .timer {
+  margin-left: 16px;
+}
+
+.QueryPage .actions > .mdc-button {
+  margin-right: 24px;
+}
+
+.QueryPage .actions > .mdc-button:not(:first-child) {
+  margin-left: 24px;
+}
+
+.QueryPage .actions > .mdc-button + .mdc-button {
+  margin-left: 0;
+}
+
+.QueryPage .mdc-tab-bar {
+  max-width: 35em;
+}
+
+.QueryPage .query-results {
+  flex: 1;
+  overflow: hidden;
+}

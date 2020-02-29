@@ -1,9 +1,10 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Snackbar } from "@rmwc/snackbar";
 import "@material/snackbar/dist/mdc.snackbar.css";
 import "@material/button/dist/mdc.button.css";
 import { Card } from "@rmwc/card";
 import "@material/card/dist/mdc.card.css";
+import "@material/select/dist/mdc.select.css";
 import { TabBar, Tab } from "@rmwc/tabs";
 import "@material/tab-scroller/dist/mdc.tab-scroller.css";
 import "@material/tab-indicator/dist/mdc.tab-indicator.css";
@@ -12,23 +13,38 @@ import "@material/tab/dist/mdc.tab.css";
 import useDimensions from "react-use-dimensions";
 import QueryEditor from "./QueryEditor";
 import JSONCodeViewer from "./JSONCodeViewer";
+import useQueryHistory from "./use-query-history";
 import QueryHistory from "./QueryHistory";
 import Visualize from "./Visualize";
-import { Query, runQuery, getShape, QueryResult } from "./queries";
-
-const ACTIVE_QUERY_INITIAL_STATE: number | null = null;
-const QUERIES_INITIAL_STATE: Query[] = [];
+import RunButton from "./RunButton";
+import Timer from "./Timer";
+import LanguageSelect from "./LanguageSelect";
+import { Query, runQuery, getShape, QueryResult, Language } from "./queries";
+import { getLastQuery, setLastQuery } from "./lastQuery";
+import "./QueryPage.css";
 
 type Props = {
   serverURL: string;
 };
 
-function QueryPage({ serverURL }: Props) {
-  const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
-  const [activeTabIndex, setActiveTabIndex] = useState(0);
+enum ActiveTab {
+  Result = 0,
+  QueryHistory,
+  Shape,
+  Visualize
+}
 
-  const [activeQuery, setActiveQuery] = useState(ACTIVE_QUERY_INITIAL_STATE);
-  const [queries, setQueries] = useState<Query[]>(QUERIES_INITIAL_STATE);
+function QueryPage({ serverURL }: Props) {
+  const [initialValue, setInitialValue] = useState<string | null>(null);
+  const [queryHistory, addQuery, setResultForQuery] = useQueryHistory();
+  const [language, setLanguage] = useState<Language>("gizmo");
+  const [running, setRunning] = useState<boolean>(false);
+  const [result, setResult] = useState<QueryResult | null>(null);
+  const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
+  const [activeTabIndex, setActiveTabIndex] = useState<ActiveTab>(
+    ActiveTab.Result
+  );
+
   const [shapeResult, setShapeResult] = useState<QueryResult | null>(null);
 
   const unsetSnackbarMessage = useCallback(() => {
@@ -49,86 +65,96 @@ function QueryPage({ serverURL }: Props) {
     [setActiveTabIndex]
   );
 
-  const handleRun = useCallback(
-    (query, language, onDone) => {
-      if (activeTabIndex === 1) {
-        setActiveTabIndex(0);
-      }
-      if (activeTabIndex === 2) {
-        getShape(serverURL, language, query)
-          .then(result => setShapeResult(result))
-          .catch(handleError)
-          .finally(onDone);
-      } else {
-        const id = queries.length;
-        setActiveQuery(id);
-        setQueries(queries => [
-          ...queries,
-          {
-            id,
-            text: query,
-            result: null,
-            language,
-            time: new Date()
-          }
-        ]);
-        runQuery(serverURL, language, query)
-          .then(result => {
-            setQueries(queries =>
-              queries.map(query => {
-                if (query.id === id) {
-                  return { ...query, result };
-                } else {
-                  return query;
-                }
-              })
-            );
-          })
-          .catch(handleError)
-          .finally(onDone);
-      }
+  const run = useCallback(() => {
+    const query = getLastQuery(language);
+    setRunning(true);
+    if (activeTabIndex === ActiveTab.QueryHistory) {
+      setActiveTabIndex(ActiveTab.Result);
+    }
+    if (activeTabIndex === 2) {
+      getShape(serverURL, language, query.text)
+        .then(result => setShapeResult(result))
+        .catch(handleError)
+        .finally(() => setRunning(false));
+    } else {
+      const id = addQuery(query);
+      runQuery(serverURL, language, query.text)
+        .then(result => {
+          setResult(result);
+          setResultForQuery(id, result);
+        })
+        .catch(handleError)
+        .finally(() => setRunning(false));
+    }
+  }, [
+    language,
+    serverURL,
+    activeTabIndex,
+    setActiveTabIndex,
+    handleError,
+    setRunning,
+    addQuery,
+    setResultForQuery
+  ]);
+
+  const [resultsCardRef, { width, height }] = useDimensions();
+
+  const handleRecovery = useCallback(
+    (query: Query) => {
+      setInitialValue(query.text);
+      setLanguage(query.language);
     },
-    [queries, serverURL, activeTabIndex, setActiveTabIndex, handleError]
+    [setInitialValue, setLanguage]
   );
 
-  const [ref, { width, height }] = useDimensions();
+  const handleEditorChange = useCallback(
+    query => {
+      setInitialValue(null);
+      setLastQuery({ text: query, language });
+    },
+    [language]
+  );
 
-  const handleRecovery = useCallback((query: Query) => {
-    /** @todo recover query */
-  }, []);
-
-  const currentQuery = queries.find(query => query.id === activeQuery);
-  const result = currentQuery ? currentQuery.result : null;
+  useEffect(() => {
+    const lastQuery = getLastQuery(language);
+    setInitialValue(lastQuery.text);
+  }, [language]);
 
   return (
-    <main>
+    <main className="QueryPage">
       <Snackbar
         open={snackbarMessage !== null}
         onClose={unsetSnackbarMessage}
         message={snackbarMessage}
       />
-      <QueryEditor onRun={handleRun} />
-      <TabBar
-        style={{ maxWidth: "35em" }}
-        activeTabIndex={activeTabIndex}
-        onActivate={handleTabActive}
-      >
+      <QueryEditor
+        initialValue={initialValue}
+        language={language}
+        onChange={handleEditorChange}
+        onRun={run}
+      />
+      <div className="actions">
+        <RunButton onClick={run} />
+        <LanguageSelect value={language} onChange={setLanguage} />
+        <Timer running={running} />
+      </div>
+      <TabBar activeTabIndex={activeTabIndex} onActivate={handleTabActive}>
         <Tab>Results</Tab>
         <Tab>Query History</Tab>
         <Tab>Shape</Tab>
         <Tab>Visualize</Tab>
       </TabBar>
-      <Card ref={ref} className="query-results">
-        {activeTabIndex === 0 && (
+      <Card ref={resultsCardRef} className="query-results">
+        {activeTabIndex === ActiveTab.Result && (
           <JSONCodeViewer height={height} value={result} />
         )}
-        {activeTabIndex === 1 && (
-          <QueryHistory queries={queries} onRecovery={handleRecovery} />
+        {activeTabIndex === ActiveTab.QueryHistory && (
+          <QueryHistory queries={queryHistory} onRecovery={handleRecovery} />
         )}
-        {activeTabIndex === 2 && (
+        {activeTabIndex === ActiveTab.Shape && (
           <JSONCodeViewer height={height} value={shapeResult} />
         )}
-        {activeTabIndex === 3 && (
+        {activeTabIndex === ActiveTab.Visualize && (
           <Visualize height={height} width={width} value={result} />
         )}
       </Card>
