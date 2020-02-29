@@ -28,7 +28,9 @@ const formatQueryTime = (queryTime: number): string => {
   return `${(queryTime / 1000).toFixed(2)} seconds`;
 };
 
-const queryLanguageToMonacoLanguage = (language: Language): string => {
+const queryLanguageToMonacoLanguage = (
+  language: Language | undefined
+): string => {
   switch (language) {
     case "gizmo": {
       return "javascript";
@@ -38,6 +40,9 @@ const queryLanguageToMonacoLanguage = (language: Language): string => {
     }
     case "mql": {
       return "json";
+    }
+    case undefined: {
+      return "text";
     }
     default: {
       throw new Error(`Unexpected value ${language}`);
@@ -85,28 +90,27 @@ type Props = {
 };
 
 const QueryEditor = ({ onRun }: Props) => {
-  const lastQuery = getLastQuery();
   const [onEditorMount, editor] = useEditor();
-  const [language, setLanguage] = useState(lastQuery.language);
+  const [language, setLanguage] = useState();
   const { time, start, pause, reset } = useTimer({
     interval: 1
   });
 
-  useEffect(() => {
-    const lastQuery = getLastQuery();
-    setLanguage(lastQuery.language);
-  }, [setLanguage]);
+  const setValue = useCallback(
+    (value: string) => {
+      editor?.setValue(value);
+    },
+    [editor]
+  );
 
   const handleEditorMount = useCallback(
     (_, editor) => {
-      const lastQuery = getLastQuery();
-      editor.setValue(lastQuery.text);
       onEditorMount(_, editor);
     },
     [onEditorMount]
   );
 
-  const handleLanguageChange = React.useCallback(
+  const handleLanguageChange = useCallback(
     (event: any) => {
       setLanguage(event.target.value);
     },
@@ -121,6 +125,12 @@ const QueryEditor = ({ onRun }: Props) => {
     }
   }, [editor, language, onRun, reset, start, pause]);
 
+  // Set initial value for language based on lastQuery
+  useEffect(() => {
+    const lastQuery = getLastQuery();
+    setLanguage(lastQuery.language);
+  }, [setLanguage]);
+
   useEffect(() => {
     if (editor) {
       registerRunShortcut(editor, run);
@@ -128,8 +138,10 @@ const QueryEditor = ({ onRun }: Props) => {
   }, [editor, run]);
 
   useEffect(() => {
-    if (editor) {
-      editor.onDidChangeModelContent(() => {
+    let didChangeModelContentDisposable: monaco.IDisposable | null = null;
+    if (editor && language) {
+      setValue(getLastQuery(language).text);
+      didChangeModelContentDisposable = editor.onDidChangeModelContent(() => {
         setLastQuery({
           text: editor.getValue(),
           language
@@ -137,6 +149,9 @@ const QueryEditor = ({ onRun }: Props) => {
       });
     }
     return () => {
+      if (didChangeModelContentDisposable) {
+        didChangeModelContentDisposable.dispose();
+      }
       if (editor) {
         setLastQuery({
           text: editor.getValue(),
@@ -144,17 +159,17 @@ const QueryEditor = ({ onRun }: Props) => {
         });
       }
     };
-  }, [editor, language]);
+  }, [editor, language, setValue]);
 
   return (
     <div className="QueryEditor">
       <Typography use="headline6">Query Editor</Typography>
       <MonacoEditor
-        key={language}
         height={300}
         editorDidMount={handleEditorMount}
         language={queryLanguageToMonacoLanguage(language)}
         options={options}
+        value={null}
       />
       <div className="actions">
         <RunButton onClick={run} />
