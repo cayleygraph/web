@@ -13,7 +13,7 @@ import "@material/tab/dist/mdc.tab.css";
 import useDimensions from "react-use-dimensions";
 import QueryEditor from "./QueryEditor";
 import JSONCodeViewer from "./JSONCodeViewer";
-import useQueryHistory from "./use-query-history";
+import * as queryHistoryService from "./query-history-service";
 import QueryHistory from "./QueryHistory";
 import Visualize from "./Visualize";
 import RunButton from "../RunButton";
@@ -36,7 +36,6 @@ enum ActiveTab {
 
 function QueryPage({ serverURL }: Props) {
   const [initialValue, setInitialValue] = useState<string | null>(null);
-  const [queryHistory, addQuery, setResultForQuery] = useQueryHistory();
   const [language, setLanguage] = useState<Language>("gizmo");
   const [running, setRunning] = useState<boolean>(false);
   const [result, setResult] = useState<QueryResult | null>(null);
@@ -77,11 +76,11 @@ function QueryPage({ serverURL }: Props) {
         .catch(handleError)
         .finally(() => setRunning(false));
     } else {
-      const id = addQuery(query);
+      const id = queryHistoryService.add(query);
       runQuery(serverURL, language, query.text)
         .then(result => {
           setResult(result);
-          setResultForQuery(id, result);
+          queryHistoryService.setResult(id, result);
         })
         .catch(handleError)
         .finally(() => setRunning(false));
@@ -92,9 +91,7 @@ function QueryPage({ serverURL }: Props) {
     activeTabIndex,
     setActiveTabIndex,
     handleError,
-    setRunning,
-    addQuery,
-    setResultForQuery
+    setRunning
   ]);
 
   const [resultsCardRef, { width, height }] = useDimensions();
@@ -114,6 +111,8 @@ function QueryPage({ serverURL }: Props) {
     },
     [language]
   );
+
+  queryHistoryService.useQueryHistoryTracking();
 
   useEffect(() => {
     const lastQuery = getLastQuery(language);
@@ -149,7 +148,7 @@ function QueryPage({ serverURL }: Props) {
           <JSONCodeViewer height={height} value={result} />
         )}
         {activeTabIndex === ActiveTab.QueryHistory && (
-          <QueryHistory queries={queryHistory} onRecovery={handleRecovery} />
+          <QueryHistory onRecovery={handleRecovery} />
         )}
         {activeTabIndex === ActiveTab.Shape && (
           <JSONCodeViewer height={height} value={shapeResult} />
