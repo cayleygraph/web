@@ -35,6 +35,7 @@ enum ActiveTab {
 }
 
 function QueryPage({ serverURL }: Props) {
+  const [initialValue, setInitialValue] = useState<string | null>(null);
   const [queryHistory, addQuery, setResultForQuery] = useQueryHistory();
   const [language, setLanguage] = useState<Language>("gizmo");
   const [running, setRunning] = useState<boolean>(false);
@@ -45,8 +46,6 @@ function QueryPage({ serverURL }: Props) {
   );
 
   const [shapeResult, setShapeResult] = useState<QueryResult | null>(null);
-
-  const lastQuery = getLastQuery(language);
 
   const unsetSnackbarMessage = useCallback(() => {
     setSnackbarMessage(null);
@@ -100,16 +99,26 @@ function QueryPage({ serverURL }: Props) {
 
   const [resultsCardRef, { width, height }] = useDimensions();
 
-  const handleRecovery = useCallback((query: Query) => {
-    /** @todo */
-  }, []);
+  const handleRecovery = useCallback(
+    (query: Query) => {
+      setInitialValue(query.text);
+      setLanguage(query.language);
+    },
+    [setInitialValue, setLanguage]
+  );
 
   const handleEditorChange = useCallback(
     query => {
+      setInitialValue(null);
       setLastQuery({ text: query, language });
     },
     [language]
   );
+
+  useEffect(() => {
+    const lastQuery = getLastQuery(language);
+    setInitialValue(lastQuery.text);
+  }, [language]);
 
   return (
     <main className="QueryPage">
@@ -119,7 +128,7 @@ function QueryPage({ serverURL }: Props) {
         message={snackbarMessage}
       />
       <QueryEditor
-        initialValue={lastQuery.text}
+        initialValue={initialValue}
         language={language}
         onChange={handleEditorChange}
         onRun={run}
