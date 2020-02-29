@@ -39,6 +39,7 @@ const Search = ({ onError, serverURL, onSelect }: Props) => {
   return (
     <AsyncSelect
       className="Search"
+      classNamePrefix="Select"
       loadOptions={loadOptions}
       theme={modifySelectTheme}
       onChange={handleChange}

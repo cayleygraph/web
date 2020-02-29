@@ -6,3 +6,9 @@
   text-decoration: none;
   color: inherit;
 }
+
+.Search .Select__control,
+.Search .Select__menu {
+  background: var(--mdc-theme-surface);
+  color: var(--mdc-theme-on-surface);
+}

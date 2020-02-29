@@ -11,7 +11,7 @@ import { Button } from "@rmwc/button";
 import "@material/button/dist/mdc.button.css";
 import RunButton from "./RunButton";
 import download from "downloadjs";
-import { useEditor } from "./monaco-util";
+import { useEditor, DEFAULT_OPTIONS, theme } from "./monaco-util";
 import * as mime from "./mime";
 import "./Query/QueryPage.css";
 
@@ -136,7 +136,8 @@ const WritePage = ({ serverURL }: Props) => {
         <MonacoEditor
           editorDidMount={handleEditorMount}
           language="nquads"
-          options={{ minimap: { enabled: false } }}
+          theme={theme}
+          options={DEFAULT_OPTIONS}
         />
         <div className="actions">
           <RunButton onClick={handleRunButtonClick} />

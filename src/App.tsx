@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -16,6 +16,10 @@ import "@material/list/dist/mdc.list.css";
 import "@material/drawer/dist/mdc.drawer.css";
 import logo from "./logo.svg";
 import "./App.css";
+import "@material/theme/dist/mdc.theme.css";
+import classNames from "classnames";
+import SettingsPage from "./Settings";
+import { setTheme } from "./monaco-util";
 import("./icon-font");
 
 // window.SERVER_URL can be undefined or empty string. In any of these cases
@@ -27,6 +31,7 @@ const Nav = () => {
   const isQuery = useRouteMatch("/query");
   const isData = useRouteMatch("/data");
   const isEntities = useRouteMatch("/entities");
+  const isSettings = useRouteMatch("/settings");
   return (
     <Drawer>
       <DrawerHeader>
@@ -46,6 +51,9 @@ const Nav = () => {
           <Link to="/entities">
             <ListItem activated={Boolean(isEntities)}>Entities</ListItem>
           </Link>
+          <Link to="/settings">
+            <ListItem activated={Boolean(isSettings)}>Settings</ListItem>
+          </Link>
         </List>
       </DrawerContent>
     </Drawer>
@@ -53,13 +61,23 @@ const Nav = () => {
 };
 
 function App() {
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+
   if (SERVER_URL === undefined) {
     throw new Error(`SERVER_URL environment variable must be provided`);
   }
 
+  useEffect(() => {
+    if (darkMode) {
+      setTheme("dark");
+    } else {
+      setTheme("light");
+    }
+  }, [darkMode]);
+
   return (
     <Router>
-      <div className="App">
+      <div className={classNames("App", { "dark-mode": darkMode })}>
         <Nav />
         <Switch>
           <Route path="/query">
@@ -70,6 +88,9 @@ function App() {
           </Route>
           <Route path="/entities">
             <EntitiesPage serverURL={SERVER_URL} />
+          </Route>
+          <Route path="/settings">
+            <SettingsPage onDarkModeChange={setDarkMode} darkMode={darkMode} />
           </Route>
           <Route path="/">
             <Redirect to="/query" />

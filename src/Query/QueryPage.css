@@ -5,6 +5,11 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  background: var(--theme-surface-1);
+}
+
+.dark-mode .QueryPage {
+  background: var(--mdc-theme-background);
 }
 
 .QueryPage .mdc-typography--headline6 {
@@ -14,7 +19,8 @@
 }
 
 .QueryPage .actions {
-  background: white;
+  background: var(--mdc-theme-background);
+  color: var(--mdc-theme-on-background);
   padding: 8px 24px;
   border-color: #d3d3d3;
   border-style: solid;
@@ -47,4 +53,12 @@
 .QueryPage .query-results {
   flex: 1;
   overflow: hidden;
+}
+
+.dark-mode .QueryPage .query-results {
+  background: var(--theme-surface-1);
+}
+
+.QueryPage .QueryEditor {
+  color: var(--mdc-theme-on-surface);
 }
