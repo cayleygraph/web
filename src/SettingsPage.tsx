@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { Checkbox } from "@rmwc/checkbox";
 import "@material/checkbox/dist/mdc.checkbox.css";
 import "@material/form-field/dist/mdc.form-field.css";
-import "./Settings.css";
+import "./SettingsPage.css";
 
 type Props = {
   darkMode: boolean;

@@ -18,7 +18,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import "@material/theme/dist/mdc.theme.css";
 import classNames from "classnames";
-import SettingsPage from "./Settings";
+import SettingsPage from "./SettingsPage";
 import { setTheme } from "./monaco-util";
 import("./icon-font");
 
