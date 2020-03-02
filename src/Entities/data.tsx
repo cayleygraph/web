@@ -325,7 +325,7 @@ export async function getSuperClassesPage(
     g.addNamespace("owl", "http://www.w3.org/2002/07/owl#");
 
     var Restriction = g.IRI("owl:Restriction");
-    var graphHasRestrictions = g.V(Restriction).count() === 0;
+    var graphHasRestrictions = g.V(Restriction).count() !== 0;
 
     var subClasses = (
         g.V()
@@ -343,9 +343,14 @@ export async function getSuperClassesPage(
         )
         : subClasses;
     
-    g.emit(subClasses.count());
+    // In case there are no sub classes count() will throw an Error.
+    try {
+        g.emit(filteredSubClasses.count());
+    } catch (error) {
+        g.emit(0);
+    }
     
-    subClasses
+    filteredSubClasses
     .saveOpt(g.IRI("rdfs:label"), "label")
     .skip(${skip})
     .getLimit(${pageSize});
