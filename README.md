@@ -1,7 +1,7 @@
 # Cayley Web
 
-![Docker build status](https://img.shields.io/docker/cloud/build/cayleygraph/web)
-![TravisCI build status](https://travis-ci.com/cayleygraph/web.svg?branch=master)
+[![Docker build status](https://img.shields.io/docker/cloud/build/cayleygraph/web)](https://hub.docker.com/repository/docker/cayleygraph/web/)
+[![TravisCI build status](https://travis-ci.com/cayleygraph/web.svg?branch=master)](https://travis-ci.com/cayleygraph/web)
 
 Web interface for [Cayley](https://cayley.io)
 
