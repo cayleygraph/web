@@ -223,13 +223,8 @@ export async function getAutoCompletionSuggestions(
     );
 }
 
-export type ClassRecord = {
-  id: jsonLd.Reference;
-  label: Label;
-};
-
-export async function getClasses(serverURL: string): Promise<ClassRecord[]> {
-  const response: GizmoQueryResponse<ClassRecord> = await runQuery(
+export async function getClasses(serverURL: string): Promise<Labeled[]> {
+  const response: GizmoQueryResponse<Labeled> = await runQuery(
     serverURL,
     "gizmo",
     `
@@ -243,10 +238,8 @@ g.V(g.IRI("rdfs:Class"))
   `
   );
   const result = getResult(response);
-  if (result === null) {
-    return [];
-  }
-  return result;
+  // @ts-ignore
+  return normalizeID(result) || [];
 }
 
 export type Page<T> = { total: number; data: T[] };

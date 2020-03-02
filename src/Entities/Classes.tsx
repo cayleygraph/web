@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import sortBy from "lodash.sortby";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
-import { getClasses, ClassRecord } from "./data";
+import { getClasses, Labeled, Label } from "./data";
 import useEntityID from "./useEntityID";
 import ID, { getRenderInfo } from "./ID";
 import "./Classes.css";
@@ -14,7 +14,7 @@ type Props = {
 };
 
 const Classes = ({ serverURL, onError }: Props) => {
-  const [classes, setClasses] = useState<ClassRecord[]>([]);
+  const [classes, setClasses] = useState<Labeled[]>([]);
   const entityID = useEntityID();
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const Classes = ({ serverURL, onError }: Props) => {
         <ListItem activated={entityID === ""}>All</ListItem>
       </Link>
       {orderedClasses.map(record => {
-        const classID = record.id["@id"];
+        const classID = record["@id"];
         const Component = (props: Object) => (
           <ListItem {...props} activated={classID === entityID} />
         );
@@ -49,9 +49,9 @@ const Classes = ({ serverURL, onError }: Props) => {
 
 export default Classes;
 
-function sortClasses(classes: ClassRecord[]) {
+function sortClasses(classes: Labeled[]) {
   return sortBy(classes, cls => {
-    const info = getRenderInfo(cls.id["@id"], cls.label);
+    const info = getRenderInfo(cls["@id"], cls.label);
     const { label } = info;
     if (typeof label === "string") {
       return label;
