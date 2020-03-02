@@ -8,7 +8,7 @@ import {
   useRouteMatch
 } from "react-router-dom";
 import QueryPage from "./Query/QueryPage";
-import DataPage from "./DataPage";
+import DataPage from "./Data/DataPage";
 import EntitiesPage from "./Entities/EntitiesPage";
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from "@rmwc/drawer";
 import { List, ListItem } from "@rmwc/list";

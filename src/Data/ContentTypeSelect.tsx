@@ -1,23 +1,20 @@
 import React, { useCallback } from "react";
 import Select from "react-select";
-import { useSelectTheme } from "./colors";
-
-export enum Mode {
-  write = "write",
-  delete = "delete"
-}
+import { useSelectTheme } from "../colors";
+import { ContentType } from "./data";
+import * as mime from "../mime";
 
 type Props = {
-  value: Mode;
-  onChange: (mode: Mode) => void;
+  value: ContentType;
+  onChange: (contentType: ContentType) => void;
 };
 
-const OPTIONS = [
-  { label: "Write", value: Mode.write },
-  { label: "Delete", value: Mode.delete }
+const OPTIONS: Array<{ label: string; value: ContentType }> = [
+  { label: "JSON-LD", value: mime.JSON_LD },
+  { label: "N-Quads", value: mime.N_QUADS }
 ];
 
-export const ModeSelect = ({ value, onChange }: Props) => {
+export const ContentTypeSelect = ({ value, onChange }: Props) => {
   const selectTheme = useSelectTheme();
   const handleChange = useCallback(
     selection => {
