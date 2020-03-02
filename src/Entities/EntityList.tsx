@@ -21,6 +21,7 @@ type Props = {
 
 const EntityList = ({ title, query, pageSize, onError }: Props) => {
   const [q, setQ] = useState("");
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Page<Labeled> | null>(null);
   const [page, setPage] = useState<number>(0);
 
@@ -32,30 +33,35 @@ const EntityList = ({ title, query, pageSize, onError }: Props) => {
   );
 
   useEffect(() => {
-    setData(null);
+    setLoading(true);
     query(q, page, pageSize)
       .then(setData)
-      .catch(onError);
+      .catch(onError)
+      .finally(() => {
+        setLoading(false);
+      });
   }, [query, q, setData, onError, page, pageSize]);
 
   const hasItems = data && data.data.length !== 0;
   let content;
 
-  if (data === null) {
+  if (loading) {
     content = <span>Loading...</span>;
   } else if (!hasItems) {
     content = `No ${title} found`;
   } else {
-    content = data.data.map(record => {
-      return (
-        <ID
-          key={record["@id"]}
-          id={record["@id"]}
-          label={record.label}
-          Component={ListItem}
-        />
-      );
-    });
+    content =
+      data &&
+      data.data.map(record => {
+        return (
+          <ID
+            key={record["@id"]}
+            id={record["@id"]}
+            label={record.label}
+            Component={ListItem}
+          />
+        );
+      });
   }
 
   return (
