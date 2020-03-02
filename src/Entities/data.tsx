@@ -146,7 +146,6 @@ export async function getEntity(
       .out(g.V(), "property")
       .tag("value")
       .saveOpt(g.IRI("rdfs:label"), "label")
-      .saveOpt(g.IRI("rdf:type"), "type")
       .getLimit(-1);
 
       entity
