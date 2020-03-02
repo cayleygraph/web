@@ -324,13 +324,24 @@ export async function getSuperClassesPage(
     g.addDefaultNamespaces();
     g.addNamespace("owl", "http://www.w3.org/2002/07/owl#");
 
+    var Restriction = g.IRI("owl:Restriction");
+    var graphHasRestrictions = g.V(Restriction).count() === 0;
+
     var subClasses = (
-      g.V()
-      .hasR(g.IRI("rdfs:subClassOf"), "${escapeID(classID)}")
-      .out(g.IRI("rdf:type"))
-      .except(g.V(g.IRI("owl:Restriction")))
-      .back()
+        g.V()
+        .hasR(g.IRI("rdfs:subClassOf"), "<${classID}>")
     );
+    
+    // Gizmo crashes if calling except with a non-existing IRI.
+    // To avoid it except is only called if graphHasRestrictions.
+    var filteredSubClasses = graphHasRestrictions
+        ? filteredSubClasses = (
+            subClasses
+            .out(g.IRI("rdf:type"))
+            .except(g.V(Restriction))
+            .back()
+        )
+        : subClasses;
     
     g.emit(subClasses.count());
     
