@@ -1,0 +1,17 @@
+/** Reference: https://www.kohei.dev/posts/react-content-loader?hl=en-US */
+
+.EntityLoading > defs > linearGradient > stop:nth-of-type(2n) {
+  stop-color: #e0e4e9;
+}
+
+.EntityLoading > defs > linearGradient > stop:nth-of-type(2n + 1) {
+  stop-color: #eff2f4;
+}
+
+.dark-mode .EntityLoading > defs > linearGradient > stop:nth-of-type(2n) {
+  stop-color: #1e2730;
+}
+
+.dark-mode .EntityLoading > defs > linearGradient > stop:nth-of-type(2n + 1) {
+  stop-color: #2d3641;
+}

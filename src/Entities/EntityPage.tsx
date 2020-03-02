@@ -50,26 +50,26 @@ const EntityPage = ({ serverURL, setError, error }: Props) => {
   if (error) {
     return null;
   }
-  if (loading) {
+  if (true) {
     return <EntityLoading />;
   }
-  if (result === null) {
-    return <NotFound id={entityID} />;
-  }
-  if (hasPropertyType(result)) {
-    return <Property id={entityID} data={result} />;
-  }
-  if (hasClassType(result)) {
-    return (
-      <Class
-        serverURL={serverURL}
-        onError={setError}
-        id={entityID}
-        data={result}
-      />
-    );
-  }
-  return <Entity id={entityID} data={result} />;
+  // if (result === null) {
+  //   return <NotFound id={entityID} />;
+  // }
+  // if (hasPropertyType(result)) {
+  //   return <Property id={entityID} data={result} />;
+  // }
+  // if (hasClassType(result)) {
+  //   return (
+  //     <Class
+  //       serverURL={serverURL}
+  //       onError={setError}
+  //       id={entityID}
+  //       data={result}
+  //     />
+  //   );
+  // }
+  // return <Entity id={entityID} data={result} />;
 };
 
 export default EntityPage;

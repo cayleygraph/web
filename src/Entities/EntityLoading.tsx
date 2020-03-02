@@ -1,9 +1,10 @@
 import React from "react";
 import ContentLoader from "react-content-loader";
+import "./EntityLoading.css";
 
 // A rectangle illustration of the entity view
 export const EntityLoading = () => (
-  <ContentLoader viewBox="0 0 510 906">
+  <ContentLoader className="EntityLoading" viewBox="0 0 510 906">
     {/* Only SVG elements */}
     <rect x="0" y="35" width="52" height="23" />
     <rect x="0" y="80" width="692" height="38" />
