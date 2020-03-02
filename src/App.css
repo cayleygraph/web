@@ -80,3 +80,19 @@
 .mdc-tab:not(.mdc-tab--active) .mdc-tab__text-label {
   color: var(--theme-dimmed-text-color);
 }
+
+/** Navigation */
+.App > .mdc-drawer > .mdc-drawer__content {
+  display: flex;
+  flex-direction: column;
+}
+
+.App .mdc-drawer > .mdc-drawer__content > .mdc-list {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.App .mdc-drawer > .mdc-drawer__content > .mdc-list a:last-child {
+  margin-top: auto;
+}
