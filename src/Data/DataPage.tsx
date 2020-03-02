@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from "react";
+import React, { useCallback, useState } from "react";
 import { Snackbar } from "@rmwc/snackbar";
 import "@material/snackbar/dist/mdc.snackbar.css";
 import "@material/button/dist/mdc.button.css";
@@ -7,39 +7,58 @@ import { Typography } from "@rmwc/typography";
 import "@material/typography/dist/mdc.typography.css";
 import { Button } from "@rmwc/button";
 import "@material/button/dist/mdc.button.css";
-import RunButton from "./RunButton";
+import RunButton from "../RunButton";
 import download from "downloadjs";
-import { useEditor, DEFAULT_OPTIONS, theme } from "./monaco-util";
-import * as mime from "./mime";
-import "./Query/QueryPage.css";
+import { useEditor, DEFAULT_OPTIONS, theme } from "../monaco-util";
+import * as mime from "../mime";
+import { write, runDelete, read, ContentType } from "./data";
+import "../Query/QueryPage.css";
+import "./DataPage.css";
 import { ModeSelect, Mode } from "./ModeSelect";
+import { ContentTypeSelect } from "./ContentTypeSelect";
+import { useFileMenu } from "./use-file-menu";
 
 type Props = {
   serverURL: string;
 };
 
-const write = (serverURL: string, value: string | File): Promise<Response> =>
-  fetch(`${serverURL}/api/v2/write`, {
-    method: "POST",
-    body: value
-  });
-
-const runDelete = (serverURL: string, value: string): Promise<Response> =>
-  fetch(`${serverURL}/api/v2/delete`, {
-    method: "POST",
-    body: value
-  });
-
-const read = (serverURL: string): Promise<Response> =>
-  fetch(`${serverURL}/api/v2/read`, {
-    headers: {
-      Accept: mime.N_QUADS
+function run(
+  serverURL: string,
+  mode: Mode,
+  contentType: ContentType,
+  value: string
+) {
+  switch (mode) {
+    case Mode.write: {
+      return write(serverURL, contentType, value);
     }
-  });
+    case Mode.delete: {
+      return runDelete(serverURL, contentType, value);
+    }
+    default: {
+      throw new Error(`Unexpected mode ${mode}`);
+    }
+  }
+}
 
-const WritePage = ({ serverURL }: Props) => {
+function contentTypeToLanguage(contentType: string): string {
+  switch (contentType) {
+    case mime.JSON_LD: {
+      return "json";
+    }
+    case mime.N_QUADS: {
+      return "nquads";
+    }
+    default: {
+      throw new Error(`Unknown content type ${contentType}`);
+    }
+  }
+}
+
+const DataPage = ({ serverURL }: Props) => {
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
   const [mode, setMode] = useState(Mode.write);
+  const [contentType, setContentType] = useState(mime.JSON_LD);
   const [handleEditorMount, editor] = useEditor();
 
   const unsetSnackbarMessage = useCallback(() => {
@@ -51,38 +70,15 @@ const WritePage = ({ serverURL }: Props) => {
       return;
     }
     const value = editor.getValue();
-    switch (mode) {
-      case "write": {
-        write(serverURL, value).catch(error => {
-          setSnackbarMessage(error.toString());
-        });
-        return;
-      }
-      case "delete": {
-        runDelete(serverURL, value).catch(error => {
-          setSnackbarMessage(error.toString());
-        });
-        return;
-      }
-      default: {
-        throw new Error(`Unexpected mode ${mode}`);
-      }
-    }
-  }, [serverURL, editor, mode]);
+    run(serverURL, mode, contentType, value).catch(error => {
+      setSnackbarMessage(error.toString());
+    });
+  }, [serverURL, editor, mode, contentType]);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const openFileMenu = useCallback(() => {
-    const fileInput = fileInputRef.current;
-    if (fileInput) {
-      fileInput.click();
-    }
-  }, [fileInputRef]);
-
-  const handleFileInputChange = useCallback(
-    event => {
-      for (const file of event.currentTarget.files) {
-        write(serverURL, file)
+  const handleFilesChange = useCallback(
+    files => {
+      for (const file of files) {
+        write(serverURL, contentType, file)
           .then(() => {
             setSnackbarMessage(`Uploaded ${file.name}`);
           })
@@ -91,11 +87,13 @@ const WritePage = ({ serverURL }: Props) => {
           });
       }
     },
-    [serverURL]
+    [serverURL, contentType]
   );
 
+  const [fileInput, openFileMenu] = useFileMenu(handleFilesChange);
+
   const downloadDump = useCallback(() => {
-    read(serverURL)
+    read(serverURL, contentType)
       .then(res => res.blob())
       .then(blob => {
         download(blob, "data.nq", mime.N_QUADS);
@@ -103,7 +101,7 @@ const WritePage = ({ serverURL }: Props) => {
       .catch(error => {
         setSnackbarMessage(error.toString());
       });
-  }, [serverURL]);
+  }, [serverURL, contentType]);
 
   return (
     <>
@@ -112,23 +110,21 @@ const WritePage = ({ serverURL }: Props) => {
         onClose={unsetSnackbarMessage}
         message={snackbarMessage}
       />
-      <input
-        type="file"
-        ref={fileInputRef}
-        style={{ display: "none" }}
-        onChange={handleFileInputChange}
-      />
+      {fileInput}
       <main className="QueryPage DataPage">
         <Typography use="headline6">Data</Typography>
         <MonacoEditor
+          loading={null}
+          value={null}
           editorDidMount={handleEditorMount}
-          language="nquads"
+          language={contentTypeToLanguage(contentType)}
           theme={theme}
           options={DEFAULT_OPTIONS}
         />
         <div className="actions">
           <RunButton onClick={handleRunButtonClick} />
           <ModeSelect value={mode} onChange={setMode} />
+          <ContentTypeSelect value={contentType} onChange={setContentType} />
           <Button
             icon="cloud_upload"
             label="Upload file"
@@ -145,4 +141,4 @@ const WritePage = ({ serverURL }: Props) => {
   );
 };
 
-export default WritePage;
+export default DataPage;

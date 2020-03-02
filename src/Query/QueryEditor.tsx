@@ -70,12 +70,12 @@ const QueryEditor = ({ initialValue, language, onChange, onRun }: Props) => {
       <Typography use="headline6">Query Editor</Typography>
       <MonacoEditor
         loading={null}
+        value={null}
         height={300}
         theme={theme}
         editorDidMount={handleEditorMount}
         language={queryLanguageToMonacoLanguage(language)}
         options={options}
-        value={null}
       />
     </div>
   );
