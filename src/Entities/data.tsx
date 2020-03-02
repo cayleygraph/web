@@ -22,6 +22,7 @@ export {
   RDFS_SUB_CLASS_OF as subClassOfPropertyID
 } from "./constants";
 
+/** @todo normalize to Labeled */
 export type Suggestion = {
   value: jsonLd.Reference;
   label: Label;
@@ -130,6 +131,7 @@ function normalizeGetEntityQueryResult(
   return properties;
 }
 
+/** @todo normalize data to documents with the Compact API of JSON-LD */
 export async function getEntity(
   serverURL: string,
   entityID: string

@@ -55,6 +55,10 @@ function contentTypeToLanguage(contentType: string): string {
   }
 }
 
+/**
+ * @todo keyboard shortcut to run
+ * @todo snackbar indication for successful write
+ */
 const DataPage = ({ serverURL }: Props) => {
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
   const [mode, setMode] = useState(Mode.write);
