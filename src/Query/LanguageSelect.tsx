@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
-import { Select } from "@rmwc/select";
+import Select from "react-select";
+import { useSelectTheme } from "../colors";
 import { languageOptions, Language } from "../queries";
 
 type Props = {
@@ -8,17 +9,20 @@ type Props = {
 };
 
 const LanguageSelect = ({ value, onChange }: Props) => {
+  const selectTheme = useSelectTheme();
+  const selected = languageOptions.find(option => option.value === value);
   const handleLanguageChange = useCallback(
-    (event: any) => {
-      onChange(event.target.value);
+    selection => {
+      onChange(selection.value);
     },
     [onChange]
   );
   return (
     <Select
-      outlined
+      className="Select"
+      theme={selectTheme}
       options={languageOptions}
-      value={value}
+      value={selected}
       onChange={handleLanguageChange}
     />
   );

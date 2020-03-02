@@ -4,7 +4,6 @@ import "@material/snackbar/dist/mdc.snackbar.css";
 import "@material/button/dist/mdc.button.css";
 import { Card } from "@rmwc/card";
 import "@material/card/dist/mdc.card.css";
-import "@material/select/dist/mdc.select.css";
 import { TabBar, Tab } from "@rmwc/tabs";
 import "@material/tab-scroller/dist/mdc.tab-scroller.css";
 import "@material/tab-indicator/dist/mdc.tab-indicator.css";

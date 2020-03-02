@@ -5,15 +5,14 @@ import "@material/button/dist/mdc.button.css";
 import MonacoEditor from "@monaco-editor/react";
 import { Typography } from "@rmwc/typography";
 import "@material/typography/dist/mdc.typography.css";
-import { Select } from "@rmwc/select";
-import "@material/select/dist/mdc.select.css";
 import { Button } from "@rmwc/button";
 import "@material/button/dist/mdc.button.css";
 import RunButton from "./RunButton";
 import download from "downloadjs";
-import { useEditor } from "./monaco-util";
+import { useEditor, DEFAULT_OPTIONS, theme } from "./monaco-util";
 import * as mime from "./mime";
 import "./Query/QueryPage.css";
+import { ModeSelect, Mode } from "./ModeSelect";
 
 type Props = {
   serverURL: string;
@@ -38,14 +37,9 @@ const read = (serverURL: string): Promise<Response> =>
     }
   });
 
-const options = [
-  { label: "Write", value: "write" },
-  { label: "Delete", value: "delete" }
-];
-
 const WritePage = ({ serverURL }: Props) => {
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
-  const [mode, setMode] = useState(options[0].value);
+  const [mode, setMode] = useState(Mode.write);
   const [handleEditorMount, editor] = useEditor();
 
   const unsetSnackbarMessage = useCallback(() => {
@@ -75,13 +69,6 @@ const WritePage = ({ serverURL }: Props) => {
       }
     }
   }, [serverURL, editor, mode]);
-
-  const handleModeChange = useCallback(
-    event => {
-      setMode(event.target.value);
-    },
-    [setMode]
-  );
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -131,21 +118,17 @@ const WritePage = ({ serverURL }: Props) => {
         style={{ display: "none" }}
         onChange={handleFileInputChange}
       />
-      <main className="QueryPage">
+      <main className="QueryPage DataPage">
         <Typography use="headline6">Data</Typography>
         <MonacoEditor
           editorDidMount={handleEditorMount}
           language="nquads"
-          options={{ minimap: { enabled: false } }}
+          theme={theme}
+          options={DEFAULT_OPTIONS}
         />
         <div className="actions">
           <RunButton onClick={handleRunButtonClick} />
-          <Select
-            outlined
-            options={options}
-            value={mode}
-            onChange={handleModeChange}
-          />
+          <ModeSelect value={mode} onChange={setMode} />
           <Button
             icon="cloud_upload"
             label="Upload file"

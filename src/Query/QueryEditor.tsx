@@ -6,7 +6,7 @@ import MonacoEditor from "@monaco-editor/react";
 import { Language } from "../queries";
 import { Typography } from "@rmwc/typography";
 import "@material/typography/dist/mdc.typography.css";
-import { useEditor } from "../monaco-util";
+import { useEditor, DEFAULT_OPTIONS, theme } from "../monaco-util";
 
 // Setup monaco to use local monaco instead of CDN
 monacoInit.config({
@@ -16,9 +16,7 @@ monacoInit.config({
   }
 });
 
-const options: monaco.editor.IDiffEditorConstructionOptions = {
-  minimap: { enabled: false }
-};
+const options: monaco.editor.IDiffEditorConstructionOptions = DEFAULT_OPTIONS;
 
 type Props = {
   initialValue: string | null;
@@ -71,7 +69,9 @@ const QueryEditor = ({ initialValue, language, onChange, onRun }: Props) => {
     <div className="QueryEditor">
       <Typography use="headline6">Query Editor</Typography>
       <MonacoEditor
+        loading={null}
         height={300}
+        theme={theme}
         editorDidMount={handleEditorMount}
         language={queryLanguageToMonacoLanguage(language)}
         options={options}

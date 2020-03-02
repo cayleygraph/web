@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -16,6 +16,10 @@ import "@material/list/dist/mdc.list.css";
 import "@material/drawer/dist/mdc.drawer.css";
 import logo from "./logo.svg";
 import "./App.css";
+import "@material/theme/dist/mdc.theme.css";
+import SettingsPage from "./SettingsPage";
+import useDarkMode from "use-dark-mode";
+import { setTheme, Theme } from "./monaco-util";
 import("./icon-font");
 
 // window.SERVER_URL can be undefined or empty string. In any of these cases
@@ -27,6 +31,7 @@ const Nav = () => {
   const isQuery = useRouteMatch("/query");
   const isData = useRouteMatch("/data");
   const isEntities = useRouteMatch("/entities");
+  const isSettings = useRouteMatch("/settings");
   return (
     <Drawer>
       <DrawerHeader>
@@ -46,6 +51,9 @@ const Nav = () => {
           <Link to="/entities">
             <ListItem activated={Boolean(isEntities)}>Entities</ListItem>
           </Link>
+          <Link to="/settings">
+            <ListItem activated={Boolean(isSettings)}>Settings</ListItem>
+          </Link>
         </List>
       </DrawerContent>
     </Drawer>
@@ -53,6 +61,21 @@ const Nav = () => {
 };
 
 function App() {
+  const darkMode = useDarkMode();
+  const [darkModeEnabled, setDarkModeEnabled] = useState(darkMode.value);
+  useEffect(() => {
+    if (darkModeEnabled) {
+      setTheme(Theme.dark);
+    } else {
+      setTheme(Theme.light);
+    }
+    if (darkModeEnabled) {
+      darkMode.enable();
+    } else {
+      darkMode.disable();
+    }
+  }, [darkModeEnabled, darkMode]);
+
   if (SERVER_URL === undefined) {
     throw new Error(`SERVER_URL environment variable must be provided`);
   }
@@ -70,6 +93,12 @@ function App() {
           </Route>
           <Route path="/entities">
             <EntitiesPage serverURL={SERVER_URL} />
+          </Route>
+          <Route path="/settings">
+            <SettingsPage
+              darkModeEnabled={darkModeEnabled}
+              onDarkModeEnabledChange={setDarkModeEnabled}
+            />
           </Route>
           <Route path="/">
             <Redirect to="/query" />
