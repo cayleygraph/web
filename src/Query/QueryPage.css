@@ -28,11 +28,9 @@
   border-bottom-width: 1px;
   border-left-width: 0;
   border-right-width: 0;
-}
-
-.DataPage .actions {
-  height: 10em;
-  border-bottom: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .QueryPage .actions .timer {
@@ -43,8 +41,9 @@
   margin-right: 24px;
 }
 
-.QueryPage .actions > .mdc-button:not(:first-child) {
-  margin-left: 24px;
+.QueryPage .actions > .mdc-button:not(:last-child),
+.QueryPage .actions > .Select:not(:last-child) {
+  margin-right: 24px;
 }
 
 .QueryPage .actions > .mdc-button + .mdc-button {

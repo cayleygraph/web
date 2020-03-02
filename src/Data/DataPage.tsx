@@ -13,7 +13,9 @@ import { useEditor, DEFAULT_OPTIONS, theme } from "../monaco-util";
 import * as mime from "../mime";
 import { write, runDelete, read } from "./data";
 import "../Query/QueryPage.css";
+import "./DataPage.css";
 import { ModeSelect, Mode } from "./ModeSelect";
+import { ContentTypeSelect } from "./ContentTypeSelect";
 import { useFileMenu } from "./use-file-menu";
 
 type Props = {
@@ -37,6 +39,7 @@ function run(serverURL: string, mode: Mode, value: string) {
 const DataPage = ({ serverURL }: Props) => {
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
   const [mode, setMode] = useState(Mode.write);
+  const [contentType, setContentType] = useState(mime.JSON_LD);
   const [handleEditorMount, editor] = useEditor();
 
   const unsetSnackbarMessage = useCallback(() => {
@@ -100,6 +103,7 @@ const DataPage = ({ serverURL }: Props) => {
         <div className="actions">
           <RunButton onClick={handleRunButtonClick} />
           <ModeSelect value={mode} onChange={setMode} />
+          <ContentTypeSelect value={contentType} onChange={setContentType} />
           <Button
             icon="cloud_upload"
             label="Upload file"
