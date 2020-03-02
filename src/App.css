@@ -77,11 +77,6 @@
   color: var(--mdc-theme-on-background);
 }
 
-.mdc-select:not(.mdc-select--disabled) .mdc-select__native-control,
-.mdc-select:not(.mdc-select--disabled) .mdc-select__selected-text {
-  color: var(--mdc-theme-on-background);
-}
-
 .mdc-tab:not(.mdc-tab--active) .mdc-tab__text-label {
   color: var(--theme-dimmed-text-color);
 }

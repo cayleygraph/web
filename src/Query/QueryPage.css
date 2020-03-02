@@ -22,12 +22,17 @@
   background: var(--mdc-theme-background);
   color: var(--mdc-theme-on-background);
   padding: 8px 24px;
-  border-color: #d3d3d3;
+  border-color: var(--theme-border-color);
   border-style: solid;
   border-top-width: 1px;
   border-bottom-width: 1px;
   border-left-width: 0;
   border-right-width: 0;
+}
+
+.DataPage .actions {
+  height: 10em;
+  border-bottom: 0;
 }
 
 .QueryPage .actions .timer {
@@ -53,6 +58,11 @@
 .QueryPage .query-results {
   flex: 1;
   overflow: hidden;
+}
+
+.QueryPage .Select {
+  display: inline-block;
+  width: 10em;
 }
 
 .dark-mode .QueryPage .query-results {
