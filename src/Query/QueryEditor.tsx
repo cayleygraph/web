@@ -7,6 +7,7 @@ import { Language } from "../queries";
 import { Typography } from "@rmwc/typography";
 import "@material/typography/dist/mdc.typography.css";
 import { useEditor, DEFAULT_OPTIONS, theme } from "../monaco-util";
+import useDimensions from "react-use-dimensions";
 
 // Setup monaco to use local monaco instead of CDN
 monacoInit.config({
@@ -29,6 +30,7 @@ type Props = {
  * The query text editor
  */
 const QueryEditor = ({ initialValue, language, onChange, onRun }: Props) => {
+  const [ref, { height }] = useDimensions();
   const [onEditorMount, editor] = useEditor();
 
   const handleEditorMount = useCallback(
@@ -68,15 +70,17 @@ const QueryEditor = ({ initialValue, language, onChange, onRun }: Props) => {
   return (
     <div className="QueryEditor">
       <Typography use="headline6">Query Editor</Typography>
-      <MonacoEditor
-        loading={null}
-        value={null}
-        height={300}
-        theme={theme}
-        editorDidMount={handleEditorMount}
-        language={queryLanguageToMonacoLanguage(language)}
-        options={options}
-      />
+      <div className="editor-wrapper" ref={ref}>
+        <MonacoEditor
+          loading={null}
+          value={null}
+          height={height}
+          theme={theme}
+          editorDidMount={handleEditorMount}
+          language={queryLanguageToMonacoLanguage(language)}
+          options={options}
+        />
+      </div>
     </div>
   );
 };
