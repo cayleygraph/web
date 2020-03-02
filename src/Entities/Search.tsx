@@ -5,7 +5,7 @@ import "./Search.css";
 
 import { getAutoCompletionSuggestions, Label } from "./data";
 import * as jsonLd from "./json-ld";
-import { PRIMARY, LIST_ITEM_ACTIVE, LIST_ITEM_HOVER } from "./colors";
+import { useColors } from "./colors";
 import EntityValue from "./EntityValue";
 
 const OPTIONS_LIMIT = 10;
@@ -17,6 +17,7 @@ type Props = {
 };
 
 const Search = ({ onError, serverURL, onSelect }: Props) => {
+  const colors = useColors();
   const loadOptions = useCallback(
     (query: string) => {
       return getAutoCompletionSuggestions(
@@ -34,6 +35,22 @@ const Search = ({ onError, serverURL, onSelect }: Props) => {
       onSelect(value);
     },
     [onSelect]
+  );
+
+  const modifySelectTheme = useCallback(
+    (theme: Theme): Theme => ({
+      ...theme,
+      colors: {
+        ...theme.colors,
+        primary25: colors.LIST_ITEM_HOVER,
+        primary50: colors.LIST_ITEM_ACTIVE,
+        primary: colors.PRIMARY,
+        neutral80: colors.TEXT_COLOR,
+        neutral20: colors.CHEVRON_COLOR,
+        neutral50: colors.ACTIVE_CHEVRON_COLOR
+      }
+    }),
+    [colors]
   );
 
   return (
@@ -55,13 +72,3 @@ export default Search;
 const formatOptionLabel = (option: { value: jsonLd.Value; label: Label }) => (
   <EntityValue value={option.value} label={option.label} />
 );
-
-const modifySelectTheme = (theme: Theme): Theme => ({
-  ...theme,
-  colors: {
-    ...theme.colors,
-    primary25: LIST_ITEM_HOVER,
-    primary50: LIST_ITEM_ACTIVE,
-    primary: PRIMARY
-  }
-});
