@@ -1,11 +1,10 @@
 import React, { useCallback } from "react";
 import AsyncSelect from "react-select/async";
-import { Theme } from "react-select";
 import "./Search.css";
 
 import { getAutoCompletionSuggestions, Label } from "./data";
 import * as jsonLd from "./json-ld";
-import { useColors } from "./colors";
+import { useSelectTheme } from "../colors";
 import EntityValue from "./EntityValue";
 
 const OPTIONS_LIMIT = 10;
@@ -17,7 +16,7 @@ type Props = {
 };
 
 const Search = ({ onError, serverURL, onSelect }: Props) => {
-  const colors = useColors();
+  const selectTheme = useSelectTheme();
   const loadOptions = useCallback(
     (query: string) => {
       return getAutoCompletionSuggestions(
@@ -37,28 +36,12 @@ const Search = ({ onError, serverURL, onSelect }: Props) => {
     [onSelect]
   );
 
-  const modifySelectTheme = useCallback(
-    (theme: Theme): Theme => ({
-      ...theme,
-      colors: {
-        ...theme.colors,
-        primary25: colors.LIST_ITEM_HOVER,
-        primary50: colors.LIST_ITEM_ACTIVE,
-        primary: colors.PRIMARY,
-        neutral80: colors.TEXT_COLOR,
-        neutral20: colors.CHEVRON_COLOR,
-        neutral50: colors.ACTIVE_CHEVRON_COLOR
-      }
-    }),
-    [colors]
-  );
-
   return (
     <AsyncSelect
       className="Search"
       classNamePrefix="Select"
       loadOptions={loadOptions}
-      theme={modifySelectTheme}
+      theme={selectTheme}
       onChange={handleChange}
       value={null}
       placeholder="Search Entity..."

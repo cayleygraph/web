@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { Theme as SelectTheme } from "react-select";
 import useDarkMode from "use-dark-mode";
 
 const LIGHT_COLORS = {
@@ -32,4 +33,21 @@ export const useColors = () => {
   return colors;
 };
 
-export default useColors;
+export const useSelectTheme = () => {
+  const colors = useColors();
+  return useCallback(
+    (theme: SelectTheme): SelectTheme => ({
+      ...theme,
+      colors: {
+        ...theme.colors,
+        primary25: colors.LIST_ITEM_HOVER,
+        primary50: colors.LIST_ITEM_ACTIVE,
+        primary: colors.PRIMARY,
+        neutral80: colors.TEXT_COLOR,
+        neutral20: colors.CHEVRON_COLOR,
+        neutral50: colors.ACTIVE_CHEVRON_COLOR
+      }
+    }),
+    [colors]
+  );
+};
