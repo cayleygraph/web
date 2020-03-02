@@ -10,6 +10,7 @@ import "@material/tab-indicator/dist/mdc.tab-indicator.css";
 import "@material/tab-bar/dist/mdc.tab-bar.css";
 import "@material/tab/dist/mdc.tab.css";
 import useDimensions from "react-use-dimensions";
+import classNames from "classnames";
 import QueryEditor from "./QueryEditor";
 import JSONCodeViewer from "./JSONCodeViewer";
 import * as queryHistoryService from "./query-history-service";
@@ -24,6 +25,7 @@ import "./QueryPage.css";
 
 type Props = {
   serverURL: string;
+  verticalLayout: boolean;
 };
 
 enum ActiveTab {
@@ -33,7 +35,7 @@ enum ActiveTab {
   Visualize
 }
 
-function QueryPage({ serverURL }: Props) {
+function QueryPage({ serverURL, verticalLayout }: Props) {
   const [initialValue, setInitialValue] = useState<string | null>(null);
   const [language, setLanguage] = useState<Language>("gizmo");
   const [running, setRunning] = useState<boolean>(false);
@@ -130,43 +132,47 @@ function QueryPage({ serverURL }: Props) {
   }, [activeQueryID]);
 
   return (
-    <main className="QueryPage">
+    <main className={classNames("QueryPage", { vertical: verticalLayout })}>
       <Snackbar
         open={snackbarMessage !== null}
         onClose={unsetSnackbarMessage}
         message={snackbarMessage}
       />
-      <QueryEditor
-        initialValue={initialValue}
-        language={language}
-        onChange={handleEditorChange}
-        onRun={run}
-      />
-      <div className="actions">
-        <RunButton onClick={run} />
-        <LanguageSelect value={language} onChange={setLanguage} />
-        <Timer running={running} />
+      <div className="query-editor-group">
+        <QueryEditor
+          initialValue={initialValue}
+          language={language}
+          onChange={handleEditorChange}
+          onRun={run}
+        />
+        <div className="actions">
+          <RunButton onClick={run} />
+          <LanguageSelect value={language} onChange={setLanguage} />
+          <Timer running={running} />
+        </div>
       </div>
-      <TabBar activeTabIndex={activeTabIndex} onActivate={handleTabActive}>
-        <Tab>Results</Tab>
-        <Tab>Query History</Tab>
-        <Tab>Shape</Tab>
-        <Tab>Visualize</Tab>
-      </TabBar>
-      <Card ref={resultsCardRef} className="query-results">
-        {activeTabIndex === ActiveTab.Result && (
-          <JSONCodeViewer height={height} value={result} />
-        )}
-        {activeTabIndex === ActiveTab.QueryHistory && (
-          <QueryHistory onRecovery={handleRecovery} />
-        )}
-        {activeTabIndex === ActiveTab.Shape && (
-          <JSONCodeViewer height={height} value={shapeResult} />
-        )}
-        {activeTabIndex === ActiveTab.Visualize && (
-          <Visualize height={height} width={width} value={result} />
-        )}
-      </Card>
+      <div className="query-result-group">
+        <TabBar activeTabIndex={activeTabIndex} onActivate={handleTabActive}>
+          <Tab>Results</Tab>
+          <Tab>Query History</Tab>
+          <Tab>Shape</Tab>
+          <Tab>Visualize</Tab>
+        </TabBar>
+        <Card ref={resultsCardRef} className="query-results">
+          {activeTabIndex === ActiveTab.Result && (
+            <JSONCodeViewer height={height} value={result} />
+          )}
+          {activeTabIndex === ActiveTab.QueryHistory && (
+            <QueryHistory onRecovery={handleRecovery} />
+          )}
+          {activeTabIndex === ActiveTab.Shape && (
+            <JSONCodeViewer height={height} value={shapeResult} />
+          )}
+          {activeTabIndex === ActiveTab.Visualize && (
+            <Visualize height={height} width={width} value={result} />
+          )}
+        </Card>
+      </div>
     </main>
   );
 }

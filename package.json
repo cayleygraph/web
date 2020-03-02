@@ -60,6 +60,7 @@
     ]
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.9",
     "eslint-plugin-react-hooks": "^2.0.1",
     "fs-extra": "^8.1.0"
   }

@@ -63,6 +63,9 @@ const Nav = () => {
 function App() {
   const darkMode = useDarkMode();
   const [darkModeEnabled, setDarkModeEnabled] = useState(darkMode.value);
+  const [queryEditorVerticalLayout, setQueryEditorVerticalLayout] = useState(
+    false
+  );
   useEffect(() => {
     if (darkModeEnabled) {
       setTheme(Theme.dark);
@@ -86,7 +89,10 @@ function App() {
         <Nav />
         <Switch>
           <Route path="/query">
-            <QueryPage serverURL={SERVER_URL} />
+            <QueryPage
+              serverURL={SERVER_URL}
+              verticalLayout={queryEditorVerticalLayout}
+            />
           </Route>
           <Route path="/data">
             <DataPage serverURL={SERVER_URL} />
@@ -98,6 +104,8 @@ function App() {
             <SettingsPage
               darkModeEnabled={darkModeEnabled}
               onDarkModeEnabledChange={setDarkModeEnabled}
+              queryEditorVerticalLayout={queryEditorVerticalLayout}
+              onQueryEditorVerticalLayoutChange={setQueryEditorVerticalLayout}
             />
           </Route>
           <Route path="/">
