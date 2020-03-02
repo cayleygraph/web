@@ -32,20 +32,20 @@ const EXCLUDED_PROPERTIES = new Set([subClassOfPropertyID]);
 
 const Class = ({ serverURL, onError, id, data }: Props) => {
   const subClassesQuery = useCallback(
-    (pageNumber, pageSize) => {
-      return getSubClassesPage(serverURL, id, pageNumber, pageSize);
+    (query: string, pageNumber: number, pageSize: number) => {
+      return getSubClassesPage(serverURL, id, query, pageNumber, pageSize);
     },
     [serverURL, id]
   );
   const instancesQuery = useCallback(
-    (pageNumber, pageSize) => {
-      return getInstancesPage(serverURL, id, pageNumber, pageSize);
+    (query: string, pageNumber: number, pageSize: number) => {
+      return getInstancesPage(serverURL, id, query, pageNumber, pageSize);
     },
     [serverURL, id]
   );
   const superClassesQuery = useCallback(
-    (pageNumber, pageSize) => {
-      return getSuperClassesPage(serverURL, id, pageNumber, pageSize);
+    (query: string, pageNumber: number, pageSize: number) => {
+      return getSuperClassesPage(serverURL, id, query, pageNumber, pageSize);
     },
     [serverURL, id]
   );

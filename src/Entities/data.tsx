@@ -254,6 +254,7 @@ export type Page<T> = { total: number; data: T[] };
 export async function getInstancesPage(
   serverURL: string,
   classID: string,
+  q: string,
   pageNumber: number,
   pageSize: number
 ): Promise<Page<Labeled>> {
@@ -261,7 +262,12 @@ export async function getInstancesPage(
   const query = `
     g.addDefaultNamespaces();
     
-    var instances = g.V().has(g.IRI("rdf:type"), "${escapeID(classID)}")
+    var instances = g.V().has(g.IRI("rdf:type"), "${escapeID(classID)}");
+    
+    var q = ${JSON.stringify(q)};
+    if (q) {
+      instances = instances.filter(like("%" + q + "%"));
+    }
     
     g.emit(instances.count());
     
@@ -283,6 +289,7 @@ export async function getInstancesPage(
 export async function getSubClassesPage(
   serverURL: string,
   classID: string,
+  q: string,
   pageNumber: number,
   pageSize: number
 ): Promise<Page<Labeled>> {
@@ -291,6 +298,11 @@ export async function getSubClassesPage(
     g.addDefaultNamespaces();
     
     var subClasses = g.V().has(g.IRI("rdfs:subClassOf"), "${escapeID(classID)}")
+
+    var q = ${JSON.stringify(q)};
+    if (q) {
+      subClasses = subClasses.filter(like("%" + q + "%"));
+    }
     
     g.emit(subClasses.count());
     
@@ -315,6 +327,7 @@ export async function getSubClassesPage(
 export async function getSuperClassesPage(
   serverURL: string,
   classID: string,
+  q: string,
   pageNumber: number,
   pageSize: number
 ): Promise<Page<Labeled>> {
@@ -330,6 +343,11 @@ export async function getSuperClassesPage(
         g.V()
         .hasR(g.IRI("rdfs:subClassOf"), "<${classID}>")
     );
+
+    var q = ${JSON.stringify(q)};
+    if (q) {
+      subClasses = subClasses.filter(like("%" + q + "%"));
+    }
     
     // Gizmo crashes if calling except with a non-existing IRI.
     // To avoid it except is only called if graphHasRestrictions.

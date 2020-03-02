@@ -96,3 +96,21 @@
 .App .mdc-drawer:first-of-type > .mdc-drawer__content > .mdc-list a:last-child {
   margin-top: auto;
 }
+
+.App .mdc-text-field {
+  background: var(--theme-surface-1);
+}
+
+.App .mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__input {
+  color: var(--mdc-theme-on-background);
+}
+
+.App .mdc-floating-label,
+.mdc-text-field:not(.mdc-text-field--disabled) .mdc-floating-label {
+  color: var(--mdc-theme-on-background);
+}
+
+.App .mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__icon,
+.App .mdc-text-field__icon {
+  color: var(--mdc-theme-on-background);
+}

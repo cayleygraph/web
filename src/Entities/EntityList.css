@@ -1,6 +1,15 @@
+.EntityList {
+  max-width: 800px;
+}
+
+.EntityList header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .EntityList h3 {
-  margin-top: 32px;
-  margin-bottom: 8px;
+  margin-right: auto;
 }
 
 .EntityList a {
