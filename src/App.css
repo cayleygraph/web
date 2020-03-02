@@ -93,6 +93,6 @@
   flex: 1;
 }
 
-.App .mdc-drawer > .mdc-drawer__content > .mdc-list a:last-child {
+.App .mdc-drawer:first-of-type > .mdc-drawer__content > .mdc-list a:last-child {
   margin-top: auto;
 }
