@@ -8,6 +8,35 @@
   background: var(--theme-surface-1);
 }
 
+.QueryPage.vertical {
+  flex-direction: row;
+}
+
+.QueryPage.vertical .query-editor-group,
+.QueryPage.vertical .query-result-group {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.QueryPage.vertical .query-editor-group {
+  border-right-color: var(--theme-border-color);
+  border-right-style: solid;
+  border-right-width: 1px;
+}
+
+.QueryPage:not(.vertical) .query-editor-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.QueryPage:not(.vertical) .query-result-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .dark-mode .QueryPage {
   background: var(--mdc-theme-background);
 }
@@ -70,4 +99,12 @@
 
 .QueryPage .QueryEditor {
   color: var(--mdc-theme-on-surface);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.QueryPage .QueryEditor .editor-wrapper {
+  flex: 1;
+  min-height: 300px;
 }

@@ -19,6 +19,7 @@ import "./App.css";
 import "@material/theme/dist/mdc.theme.css";
 import SettingsPage from "./SettingsPage";
 import useDarkMode from "use-dark-mode";
+import usePersistedState from "use-persisted-state";
 import { setTheme, Theme } from "./monaco-util";
 import("./icon-font");
 
@@ -60,9 +61,18 @@ const Nav = () => {
   );
 };
 
+// eslint-disable-next-line
+const useQueryEditorVerticalLayoutState = usePersistedState(
+  "query-editor-vertical-layout"
+);
+
 function App() {
   const darkMode = useDarkMode();
   const [darkModeEnabled, setDarkModeEnabled] = useState(darkMode.value);
+  const [
+    queryEditorVerticalLayout,
+    setQueryEditorVerticalLayout
+  ] = useQueryEditorVerticalLayoutState(false);
   useEffect(() => {
     if (darkModeEnabled) {
       setTheme(Theme.dark);
@@ -86,7 +96,10 @@ function App() {
         <Nav />
         <Switch>
           <Route path="/query">
-            <QueryPage serverURL={SERVER_URL} />
+            <QueryPage
+              serverURL={SERVER_URL}
+              verticalLayout={queryEditorVerticalLayout}
+            />
           </Route>
           <Route path="/data">
             <DataPage serverURL={SERVER_URL} />
@@ -98,6 +111,8 @@ function App() {
             <SettingsPage
               darkModeEnabled={darkModeEnabled}
               onDarkModeEnabledChange={setDarkModeEnabled}
+              queryEditorVerticalLayout={queryEditorVerticalLayout}
+              onQueryEditorVerticalLayoutChange={setQueryEditorVerticalLayout}
             />
           </Route>
           <Route path="/">
