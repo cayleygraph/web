@@ -32,27 +32,32 @@ const EntityList = ({ title, query, pageSize, onError }: Props) => {
   );
 
   useEffect(() => {
+    setData(null);
     query(q, page, pageSize)
       .then(setData)
       .catch(onError);
   }, [query, q, setData, onError, page, pageSize]);
 
+  const hasItems = data && data.data.length !== 0;
+  let content;
+
   if (data === null) {
-    return <span>"Loading..."</span>;
+    content = <span>Loading...</span>;
+  } else if (!hasItems) {
+    content = `No ${title} found`;
+  } else {
+    content = data.data.map(record => {
+      return (
+        <ID
+          key={record["@id"]}
+          id={record["@id"]}
+          label={record.label}
+          Component={ListItem}
+        />
+      );
+    });
   }
 
-  const noItems = data.data.length === 0;
-
-  const itemNodes = data.data.map(record => {
-    return (
-      <ID
-        key={record["@id"]}
-        id={record["@id"]}
-        label={record.label}
-        Component={ListItem}
-      />
-    );
-  });
   return (
     <div className="EntityList">
       <header>
@@ -60,17 +65,17 @@ const EntityList = ({ title, query, pageSize, onError }: Props) => {
         <TextField
           onChange={handleQueryChange}
           value={q}
-          disabled={noItems && !q}
+          disabled={!hasItems && !q}
           label="Search"
           trailingIcon="search"
         />
       </header>
-      <List>{noItems ? `No ${title} found` : itemNodes}</List>
-      {!noItems && (
+      <List>{content}</List>
+      {hasItems && (
         <Paginator
           pageSize={pageSize}
           value={page}
-          length={data.total}
+          length={data ? data.total : undefined}
           onChange={setPage}
         />
       )}
