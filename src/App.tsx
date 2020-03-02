@@ -19,6 +19,7 @@ import "./App.css";
 import "@material/theme/dist/mdc.theme.css";
 import SettingsPage from "./SettingsPage";
 import useDarkMode from "use-dark-mode";
+import usePersistedState from "use-persisted-state";
 import { setTheme, Theme } from "./monaco-util";
 import("./icon-font");
 
@@ -60,12 +61,18 @@ const Nav = () => {
   );
 };
 
+// eslint-disable-next-line
+const useQueryEditorVerticalLayoutState = usePersistedState(
+  "query-editor-vertical-layout"
+);
+
 function App() {
   const darkMode = useDarkMode();
   const [darkModeEnabled, setDarkModeEnabled] = useState(darkMode.value);
-  const [queryEditorVerticalLayout, setQueryEditorVerticalLayout] = useState(
-    false
-  );
+  const [
+    queryEditorVerticalLayout,
+    setQueryEditorVerticalLayout
+  ] = useQueryEditorVerticalLayoutState(false);
   useEffect(() => {
     if (darkModeEnabled) {
       setTheme(Theme.dark);
