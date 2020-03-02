@@ -66,7 +66,10 @@ export function idToDisplay(id: string): string {
     }
     if (url.pathname.length > 1) {
       const parts = url.pathname.split("/");
-      return capitalCase(parts[parts.length - 1]);
+      const lastPart = parts[parts.length - 1];
+      if (lastPart) {
+        return capitalCase(lastPart);
+      }
     }
     return id;
   } catch {
