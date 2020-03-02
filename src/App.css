@@ -31,7 +31,7 @@
   --theme-code-block: #f9fafa;
 }
 
-.App.dark-mode {
+.dark-mode .App {
   --mdc-theme-primary: #bb86fc;
   --mdc-theme-secondary: #03dac6;
   --mdc-theme-background: #121212;

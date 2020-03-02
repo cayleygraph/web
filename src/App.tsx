@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -17,9 +17,9 @@ import "@material/drawer/dist/mdc.drawer.css";
 import logo from "./logo.svg";
 import "./App.css";
 import "@material/theme/dist/mdc.theme.css";
-import classNames from "classnames";
 import SettingsPage from "./SettingsPage";
-import { setTheme } from "./monaco-util";
+import useDarkMode from "use-dark-mode";
+import { setTheme, Theme } from "./monaco-util";
 import("./icon-font");
 
 // window.SERVER_URL can be undefined or empty string. In any of these cases
@@ -61,23 +61,28 @@ const Nav = () => {
 };
 
 function App() {
-  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const darkMode = useDarkMode();
+  const [darkModeEnabled, setDarkModeEnabled] = useState(darkMode.value);
+  useEffect(() => {
+    if (darkModeEnabled) {
+      setTheme(Theme.dark);
+    } else {
+      setTheme(Theme.light);
+    }
+    if (darkModeEnabled) {
+      darkMode.enable();
+    } else {
+      darkMode.disable();
+    }
+  }, [darkModeEnabled, darkMode]);
 
   if (SERVER_URL === undefined) {
     throw new Error(`SERVER_URL environment variable must be provided`);
   }
 
-  useEffect(() => {
-    if (darkMode) {
-      setTheme("dark");
-    } else {
-      setTheme("light");
-    }
-  }, [darkMode]);
-
   return (
     <Router>
-      <div className={classNames("App", { "dark-mode": darkMode })}>
+      <div className="App">
         <Nav />
         <Switch>
           <Route path="/query">
@@ -90,7 +95,10 @@ function App() {
             <EntitiesPage serverURL={SERVER_URL} />
           </Route>
           <Route path="/settings">
-            <SettingsPage onDarkModeChange={setDarkMode} darkMode={darkMode} />
+            <SettingsPage
+              darkModeEnabled={darkModeEnabled}
+              onDarkModeEnabledChange={setDarkModeEnabled}
+            />
           </Route>
           <Route path="/">
             <Redirect to="/query" />

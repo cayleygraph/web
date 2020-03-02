@@ -2,9 +2,14 @@ import * as React from "react";
 import * as monaco from "monaco-editor";
 import { EditorDidMount } from "@monaco-editor/react";
 
-export let theme = "dark";
+export enum Theme {
+  light = "light",
+  dark = "dark"
+}
 
-export const setTheme = (value: "light" | "dark") => {
+export let theme = Theme.light;
+
+export const setTheme = (value: Theme) => {
   theme = value;
 };
 

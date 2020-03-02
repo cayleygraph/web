@@ -5,28 +5,24 @@ import "@material/form-field/dist/mdc.form-field.css";
 import "./SettingsPage.css";
 
 type Props = {
-  darkMode: boolean;
-  onDarkModeChange: (darkMode: boolean) => void;
+  onDarkModeEnabledChange: (darkMode: boolean) => void;
+  darkModeEnabled: boolean;
 };
 
-/**
- * @todo use `use-dark-mode`
- */
-
-const SettingsPage = ({ onDarkModeChange, darkMode }: Props) => {
-  const handleDarkModeChange = useCallback(
+const SettingsPage = ({ darkModeEnabled, onDarkModeEnabledChange }: Props) => {
+  const handleChange = useCallback(
     event => {
-      onDarkModeChange(event.currentTarget.checked);
+      onDarkModeEnabledChange(event.target.checked);
     },
-    [onDarkModeChange]
+    [onDarkModeEnabledChange]
   );
   return (
     <main className="Settings">
       <h1>Settings</h1>
       <Checkbox
         label="Dark Mode"
-        checked={darkMode}
-        onChange={handleDarkModeChange}
+        checked={darkModeEnabled}
+        onChange={handleChange}
       />
     </main>
   );
