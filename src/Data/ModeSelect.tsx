@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import Select from "react-select";
-import { useSelectTheme } from "./colors";
+import { useSelectTheme } from "../colors";
 
 export enum Mode {
   write = "write",

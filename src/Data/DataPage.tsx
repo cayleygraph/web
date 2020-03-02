@@ -7,10 +7,10 @@ import { Typography } from "@rmwc/typography";
 import "@material/typography/dist/mdc.typography.css";
 import { Button } from "@rmwc/button";
 import "@material/button/dist/mdc.button.css";
-import RunButton from "./RunButton";
+import RunButton from "../RunButton";
 import download from "downloadjs";
-import { useEditor, DEFAULT_OPTIONS, theme } from "./monaco-util";
-import * as mime from "./mime";
+import { useEditor, DEFAULT_OPTIONS, theme } from "../monaco-util";
+import * as mime from "../mime";
 import "./Query/QueryPage.css";
 import { ModeSelect, Mode } from "./ModeSelect";
 
