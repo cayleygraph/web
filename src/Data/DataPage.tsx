@@ -11,7 +11,7 @@ import RunButton from "../RunButton";
 import download from "downloadjs";
 import { useEditor, DEFAULT_OPTIONS, theme } from "../monaco-util";
 import * as mime from "../mime";
-import { write, runDelete, read } from "./data";
+import { write, runDelete, read, ContentType } from "./data";
 import "../Query/QueryPage.css";
 import "./DataPage.css";
 import { ModeSelect, Mode } from "./ModeSelect";
@@ -22,16 +22,35 @@ type Props = {
   serverURL: string;
 };
 
-function run(serverURL: string, mode: Mode, value: string) {
+function run(
+  serverURL: string,
+  mode: Mode,
+  contentType: ContentType,
+  value: string
+) {
   switch (mode) {
     case Mode.write: {
-      return write(serverURL, value);
+      return write(serverURL, contentType, value);
     }
     case Mode.delete: {
-      return runDelete(serverURL, value);
+      return runDelete(serverURL, contentType, value);
     }
     default: {
       throw new Error(`Unexpected mode ${mode}`);
+    }
+  }
+}
+
+function contentTypeToLanguage(contentType: string): string {
+  switch (contentType) {
+    case mime.JSON_LD: {
+      return "json";
+    }
+    case mime.N_QUADS: {
+      return "nquads";
+    }
+    default: {
+      throw new Error(`Unknown content type ${contentType}`);
     }
   }
 }
@@ -51,15 +70,15 @@ const DataPage = ({ serverURL }: Props) => {
       return;
     }
     const value = editor.getValue();
-    run(serverURL, mode, value).catch(error => {
+    run(serverURL, mode, contentType, value).catch(error => {
       setSnackbarMessage(error.toString());
     });
-  }, [serverURL, editor, mode]);
+  }, [serverURL, editor, mode, contentType]);
 
   const handleFilesChange = useCallback(
     files => {
       for (const file of files) {
-        write(serverURL, file)
+        write(serverURL, contentType, file)
           .then(() => {
             setSnackbarMessage(`Uploaded ${file.name}`);
           })
@@ -68,13 +87,13 @@ const DataPage = ({ serverURL }: Props) => {
           });
       }
     },
-    [serverURL]
+    [serverURL, contentType]
   );
 
   const [fileInput, openFileMenu] = useFileMenu(handleFilesChange);
 
   const downloadDump = useCallback(() => {
-    read(serverURL)
+    read(serverURL, contentType)
       .then(res => res.blob())
       .then(blob => {
         download(blob, "data.nq", mime.N_QUADS);
@@ -82,7 +101,7 @@ const DataPage = ({ serverURL }: Props) => {
       .catch(error => {
         setSnackbarMessage(error.toString());
       });
-  }, [serverURL]);
+  }, [serverURL, contentType]);
 
   return (
     <>
@@ -95,8 +114,10 @@ const DataPage = ({ serverURL }: Props) => {
       <main className="QueryPage DataPage">
         <Typography use="headline6">Data</Typography>
         <MonacoEditor
+          loading={null}
+          value={null}
           editorDidMount={handleEditorMount}
-          language="nquads"
+          language={contentTypeToLanguage(contentType)}
           theme={theme}
           options={DEFAULT_OPTIONS}
         />

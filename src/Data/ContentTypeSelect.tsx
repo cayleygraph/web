@@ -1,9 +1,8 @@
 import React, { useCallback } from "react";
 import Select from "react-select";
 import { useSelectTheme } from "../colors";
+import { ContentType } from "./data";
 import * as mime from "../mime";
-
-export type ContentType = string;
 
 type Props = {
   value: ContentType;
