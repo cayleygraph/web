@@ -105,12 +105,18 @@
   color: var(--mdc-theme-on-background);
 }
 
-.App .mdc-floating-label,
-.mdc-text-field:not(.mdc-text-field--disabled) .mdc-floating-label {
-  color: var(--mdc-theme-on-background);
+.App .mdc-text-field--disabled .mdc-floating-label {
+  color: var(--mdc-theme-text-disabled-on-background);
 }
 
-.App .mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__icon,
-.App .mdc-text-field__icon {
-  color: var(--mdc-theme-on-background);
+.App .mdc-text-field:not(.mdc-text-field--disabled) .mdc-floating-label {
+  color: var(--mdc-theme-text-hint-on-background);
+}
+
+.App .mdc-text-field.mdc-text-field--disabled .mdc-text-field__icon {
+  color: var(--mdc-theme-text-disabled-on-background);
+}
+
+.App .mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__icon {
+  color: var(--mdc-theme-text-icon-on-background);
 }
