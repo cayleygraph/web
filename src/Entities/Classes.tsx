@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import sortBy from "lodash.sortby";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
 import { getClasses, ClassRecord } from "./data";
-import EntityValue from "./EntityValue";
-import "./Classes.css";
-import { Link } from "react-router-dom";
 import useEntityID from "./useEntityID";
+import ID, { getRenderInfo } from "./ID";
+import "./Classes.css";
 
 type Props = {
   serverURL: string;
@@ -34,9 +35,9 @@ const Classes = ({ serverURL, onError }: Props) => {
           <ListItem {...props} activated={classID === entityID} />
         );
         return (
-          <EntityValue
+          <ID
             key={classID}
-            value={record.id}
+            id={classID}
             label={record.label}
             Component={Component}
           />
@@ -49,12 +50,12 @@ const Classes = ({ serverURL, onError }: Props) => {
 export default Classes;
 
 function sortClasses(classes: ClassRecord[]) {
-  const orderedClasses = [...classes];
-  orderedClasses.sort((a, b) => {
-    if ((a.label || b.id) < (b.label || b.id)) {
-      return -1;
+  return sortBy(classes, cls => {
+    const info = getRenderInfo(cls.id["@id"], cls.label);
+    const { label } = info;
+    if (typeof label === "string") {
+      return label;
     }
-    return 1;
+    return label["@value"];
   });
-  return orderedClasses;
 }
