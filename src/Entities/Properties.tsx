@@ -14,6 +14,9 @@ type Props = {
   excluding?: Set<string>;
 };
 
+/**
+ * @todo allow excluding property value pairs instead of noSingleType
+ */
 const Properties = ({ data, noSingleType, excluding }: Props) => {
   const entries = Object.entries(data);
   const filtered = entries.filter(
