@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import sortBy from "lodash.sortby";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
-import { getClasses, Labeled, Label } from "./data";
+import { getClasses, Labeled } from "./data";
 import useEntityID from "./useEntityID";
 import ID, { getRenderInfo } from "./ID";
 import "./Classes.css";

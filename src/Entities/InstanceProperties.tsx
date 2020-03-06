@@ -23,7 +23,7 @@ const InstanceProperties = ({ serverURL, id, onError }: Props) => {
       {instanceProperties.length === 0 && "No instance properties found"}
       {instanceProperties.map(property => {
         return (
-          <div className="Property">
+          <div className="Property" key={property["@id"]}>
             <b>
               <ID id={property["@id"]} label={property.label} />
               {": "}
