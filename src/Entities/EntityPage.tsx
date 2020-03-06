@@ -5,12 +5,14 @@ import {
   Entity as EntityData,
   isClass,
   isProperty,
+  isDatatype,
   LabeledEntityValue
 } from "./data";
 import * as jsonLd from "./json-ld";
 import Entity from "./Entity";
 import Class from "./Class";
 import Property from "./Property";
+import Datatype from "./Datatype";
 import NotFound from "./NotFound";
 import useEntityID from "./useEntityID";
 import { EntityLoading } from "./EntityLoading";
@@ -59,6 +61,9 @@ const EntityPage = ({ serverURL, setError, error }: Props) => {
   if (hasPropertyType(result)) {
     return <Property id={entityID} data={result} />;
   }
+  if (hasDatatypeType(result)) {
+    return <Datatype id={entityID} data={result} />;
+  }
   if (hasClassType(result)) {
     return (
       <Class
@@ -91,4 +96,8 @@ function hasClassType(result: EntityData): boolean {
 
 function hasPropertyType(result: EntityData): boolean {
   return isProperty(getTypeIDs(result));
+}
+
+function hasDatatypeType(result: EntityData): boolean {
+  return isDatatype(getTypeIDs(result));
 }

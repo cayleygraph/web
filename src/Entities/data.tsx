@@ -9,7 +9,8 @@ import {
   OWL_DATA_PROPERTY,
   OWL_ANNOTATION_PROPERTY,
   RDFS_LABEL,
-  RDFS_SUB_CLASS_OF
+  RDFS_SUB_CLASS_OF,
+  RDFS_DATATYPE
 } from "./constants";
 import * as jsonLd from "./json-ld";
 import { GizmoQueryResponse, getResult, normalizeID, escapeID } from "./gizmo";
@@ -470,6 +471,10 @@ export function isProperty(types: Set<string>): boolean {
     types.has(OWL_DATA_PROPERTY) ||
     types.has(OWL_ANNOTATION_PROPERTY)
   );
+}
+
+export function isDatatype(types: Set<string>): boolean {
+  return types.has(RDFS_DATATYPE);
 }
 
 type NativeIDDescriptor = {

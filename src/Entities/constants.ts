@@ -13,6 +13,7 @@ export const RDFS_LABEL = RDFS + "label";
 export const RDFS_CLASS = RDFS + "Class";
 export const RDFS_SUB_CLASS_OF = RDFS + "subClassOf";
 export const RDFS_COMMENT = RDFS + "comment";
+export const RDFS_DATATYPE = RDFS + "Datatype";
 
 // XSD
 export const XSD_STRING = XSD + "string";
