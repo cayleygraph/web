@@ -418,44 +418,41 @@ export async function getSuperClassesPage(
 ): Promise<Page<Labeled>> {
   const skip = pageNumber * pageSize;
   const query = `
-g.addDefaultNamespaces();
-g.addNamespace("owl", "http://www.w3.org/2002/07/owl#");
-
-var Restriction = g.IRI("owl:Restriction");
-var graphHasRestrictions = g.V(Restriction).count() !== 0;
-
-var entities = g.V();
-
-var q = ${JSON.stringify(q)};
-if (q) {
-  var matched = g.V().filter(like("%" + q + "%"))
-  entities = matched.union(matched.in(g.IRI("rdfs:label")));
-}
-
-var subClasses = entities.hasR(g.IRI("rdfs:subClassOf"), "<${classID}>");
-
-// Gizmo crashes if calling except with a non-existing IRI.
-// To avoid it except is only called if graphHasRestrictions.
-var filteredSubClasses = graphHasRestrictions
-    ? filteredSubClasses = (
-        subClasses
-        .out(g.IRI("rdf:type"))
-        .except(g.V(Restriction))
-        .back()
-    )
-    : subClasses;
-
-// In case there are no sub classes count() will throw an Error.
-try {
-    g.emit(filteredSubClasses.count());
-} catch (error) {
-    g.emit(0);
-}
-
-filteredSubClasses
-.saveOpt(g.IRI("rdfs:label"), "label")
-.skip(${skip})
-.getLimit(${pageSize});
+  g.addDefaultNamespaces();
+  g.addNamespace("owl", "http://www.w3.org/2002/07/owl#");
+  
+  var Restriction = g.IRI("owl:Restriction");
+  var graphHasRestrictions = g.V(Restriction).count() !== 0;
+  
+  var entities = g.V();
+  
+  var q = ${JSON.stringify(q)};
+  if (q) {
+    var matched = g.V().filter(like("%" + q + "%"))
+    entities = matched.union(matched.in(g.IRI("rdfs:label")));
+  }
+  
+  var superClasses = g.V("${escapeID(classID)}").out(g.IRI("rdfs:subClassOf"));
+  
+  // Gizmo crashes if calling except with a non-existing IRI.
+  // To avoid it except is only called if graphHasRestrictions.
+  var filteredSuperClasses = graphHasRestrictions
+      ? filteredSuperClasses = (
+          superClasses.except(superClasses.has(g.IRI("rdf:type"), Restriction))
+      )
+      : superClasses;
+  
+  // In case there are no sub classes count() will throw an Error.
+  try {
+      g.emit(filteredSuperClasses.count());
+  } catch (error) {
+      g.emit(0);
+  }
+  
+  filteredSuperClasses
+  .saveOpt(g.IRI("rdfs:label"), "label")
+  .skip(${skip})
+  .getLimit(${pageSize});
     `;
   const response = await runQuery(serverURL, "gizmo", query);
   const result = getResult(response);
