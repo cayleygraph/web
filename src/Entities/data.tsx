@@ -337,22 +337,25 @@ export async function getInstancesPage(
 ): Promise<Page<Labeled>> {
   const skip = pageNumber * pageSize;
   const query = `
-    g.addDefaultNamespaces();
-    
-    var instances = g.V().has(g.IRI("rdf:type"), "${escapeID(classID)}");
-    
-    var q = ${JSON.stringify(q)};
-    if (q) {
-      instances = instances.filter(like("%" + q + "%"));
-    }
-    
-    g.emit(instances.count());
-    
-    instances
-    .saveOpt(g.IRI("rdfs:label"), "label")
-    .unique()
-    .skip(${skip})
-    .getLimit(${pageSize});
+g.addDefaultNamespaces();
+
+var entities = g.V();
+var q = ${JSON.stringify(q)};
+
+if (q) {
+    var matched = g.V().filter(like("%" + q + "%"))
+    entities = matched.union(matched.in(g.IRI("rdfs:label")));
+}
+
+var instances = entities.has(g.IRI("rdf:type"), "${escapeID(classID)}")
+
+g.emit(instances.count());
+
+instances
+.saveOpt(g.IRI("rdfs:label"), "label")
+.unique()
+.skip(${skip})
+.getLimit(${pageSize});
     `;
   const response = await runQuery(serverURL, "gizmo", query);
   const result = getResult(response);
@@ -373,21 +376,25 @@ export async function getSubClassesPage(
 ): Promise<Page<Labeled>> {
   const skip = pageNumber * pageSize;
   const query = `
-    g.addDefaultNamespaces();
-    
-    var subClasses = g.V().has(g.IRI("rdfs:subClassOf"), "${escapeID(classID)}")
+g.addDefaultNamespaces();
 
-    var q = ${JSON.stringify(q)};
-    if (q) {
-      subClasses = subClasses.filter(like("%" + q + "%"));
-    }
-    
-    g.emit(subClasses.count());
-    
-    subClasses
-    .saveOpt(g.IRI("rdfs:label"), "label")
-    .skip(${skip})
-    .getLimit(${pageSize});
+var entities = g.V();
+
+var q = ${JSON.stringify(q)};
+
+if (q) {
+  var matched = g.V().filter(like("%" + q + "%"))
+  entities = matched.union(matched.in(g.IRI("rdfs:label")));
+}
+
+var subClasses = entities.has(g.IRI("rdfs:subClassOf"), "${escapeID(classID)}")
+
+g.emit(subClasses.count());
+
+subClasses
+.saveOpt(g.IRI("rdfs:label"), "label")
+.skip(${skip})
+.getLimit(${pageSize});
     `;
   const response = await runQuery(serverURL, "gizmo", query);
   const result = getResult(response);
@@ -411,44 +418,44 @@ export async function getSuperClassesPage(
 ): Promise<Page<Labeled>> {
   const skip = pageNumber * pageSize;
   const query = `
-    g.addDefaultNamespaces();
-    g.addNamespace("owl", "http://www.w3.org/2002/07/owl#");
+g.addDefaultNamespaces();
+g.addNamespace("owl", "http://www.w3.org/2002/07/owl#");
 
-    var Restriction = g.IRI("owl:Restriction");
-    var graphHasRestrictions = g.V(Restriction).count() !== 0;
+var Restriction = g.IRI("owl:Restriction");
+var graphHasRestrictions = g.V(Restriction).count() !== 0;
 
-    var subClasses = (
-        g.V()
-        .hasR(g.IRI("rdfs:subClassOf"), "<${classID}>")
-    );
+var entities = g.V();
 
-    var q = ${JSON.stringify(q)};
-    if (q) {
-      subClasses = subClasses.filter(like("%" + q + "%"));
-    }
-    
-    // Gizmo crashes if calling except with a non-existing IRI.
-    // To avoid it except is only called if graphHasRestrictions.
-    var filteredSubClasses = graphHasRestrictions
-        ? filteredSubClasses = (
-            subClasses
-            .out(g.IRI("rdf:type"))
-            .except(g.V(Restriction))
-            .back()
-        )
-        : subClasses;
-    
-    // In case there are no sub classes count() will throw an Error.
-    try {
-        g.emit(filteredSubClasses.count());
-    } catch (error) {
-        g.emit(0);
-    }
-    
-    filteredSubClasses
-    .saveOpt(g.IRI("rdfs:label"), "label")
-    .skip(${skip})
-    .getLimit(${pageSize});
+var q = ${JSON.stringify(q)};
+if (q) {
+  var matched = g.V().filter(like("%" + q + "%"))
+  entities = matched.union(matched.in(g.IRI("rdfs:label")));
+}
+
+var subClasses = entities.hasR(g.IRI("rdfs:subClassOf"), "<${classID}>");
+
+// Gizmo crashes if calling except with a non-existing IRI.
+// To avoid it except is only called if graphHasRestrictions.
+var filteredSubClasses = graphHasRestrictions
+    ? filteredSubClasses = (
+        subClasses
+        .out(g.IRI("rdf:type"))
+        .except(g.V(Restriction))
+        .back()
+    )
+    : subClasses;
+
+// In case there are no sub classes count() will throw an Error.
+try {
+    g.emit(filteredSubClasses.count());
+} catch (error) {
+    g.emit(0);
+}
+
+filteredSubClasses
+.saveOpt(g.IRI("rdfs:label"), "label")
+.skip(${skip})
+.getLimit(${pageSize});
     `;
   const response = await runQuery(serverURL, "gizmo", query);
   const result = getResult(response);
