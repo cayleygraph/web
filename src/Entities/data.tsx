@@ -290,6 +290,41 @@ classes.toArray().forEach(function (cls) {
   return normalizeID(result) || [];
 }
 
+type ClassInstanceRecord = {
+  id: jsonLd.Reference;
+  label: jsonLd.Value;
+  range: jsonLd.Reference;
+};
+
+export type ClassInstanceProperty = Labeled & {
+  /** Use range label */
+  range: jsonLd.Reference;
+};
+
+export async function getClassInstanceProperties(
+  serverURL: string,
+  classID: string
+): Promise<ClassInstanceProperty[]> {
+  const query = `
+g.addDefaultNamespaces();
+g.addNamespace("owl", "http://www.w3.org/2002/07/owl#");
+
+g.V("<${classID}>")
+.in(g.IRI("rdfs:domain"))
+.saveOpt(g.IRI("rdfs:label"), "label")
+.save(g.IRI("rdfs:range"), "range")
+.all()
+  `;
+  const response: GizmoQueryResponse<ClassInstanceRecord> = await runQuery(
+    serverURL,
+    "gizmo",
+    query
+  );
+  const result = getResult(response);
+  // @ts-ignore
+  return normalizeID(result) || [];
+}
+
 export type Page<T> = { total: number; data: T[] };
 
 export async function getInstancesPage(

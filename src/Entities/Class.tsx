@@ -11,6 +11,7 @@ import EntityComment from "./EntityComment";
 import EntityID from "./EntityID";
 import Properties from "./Properties";
 import EntityList from "./EntityList";
+import InstanceProperties from "./InstanceProperties";
 
 type Props = {
   serverURL: string;
@@ -49,12 +50,14 @@ const Class = ({ serverURL, onError, id, data }: Props) => {
     },
     [serverURL, id]
   );
+
   return (
     <div className="Entity">
       <EntityTitle id={id} data={data} type="Class" />
       <EntityComment data={data} />
       <EntityID id={id} />
       <Properties data={data} noSingleType excluding={EXCLUDED_PROPERTIES} />
+      <InstanceProperties serverURL={serverURL} id={id} onError={onError} />
       <EntityList
         title="Super Classes"
         query={superClassesQuery}
