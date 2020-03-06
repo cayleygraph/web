@@ -27,7 +27,6 @@ const INSTANCES_PAGE_SIZE = 5;
 const EXCLUDED_PROPERTIES = new Set([subClassOfPropertyID]);
 
 /**
- * @todo show properties with domain of class
  * @todo show restrictions
  */
 
