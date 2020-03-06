@@ -1,0 +1,22 @@
+.Dashboard {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  padding-bottom: 16px;
+}
+
+.Dashboard .mdc-card {
+  background: rgb(32, 33, 36);
+  margin: 16px 16px 0 0;
+  padding: 16px;
+  width: calc((100% - 16px - 16px) / 2);
+}
+
+.Dashboard a,
+.Dashboard a:link,
+.Dashboard a:visited {
+  color: inherit;
+  font: inherit;
+  text-decoration: inherit;
+  opacity: 0.6;
+}

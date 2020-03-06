@@ -12,6 +12,7 @@ import EntityPage from "./EntityPage";
 import Classes from "./Classes";
 import { entityLink } from "./navigation";
 import "./EntitiesPage.css";
+import Dashboard from "./Dashboard";
 
 type Props = {
   serverURL: string;
@@ -45,7 +46,7 @@ const EntitiesPage = ({ serverURL }: Props) => {
       </Drawer>
       <div className="EntitiesPage">
         <Route exact path="/entities">
-          Write an entity's IRI in the text box to view the entity
+          <Dashboard serverURL={serverURL} />
         </Route>
         <Route path="/entities/:entity">
           <EntityPage serverURL={serverURL} setError={setError} error={error} />

@@ -244,6 +244,52 @@ g.V(g.IRI("rdfs:Class"))
   return normalizeID(result) || [];
 }
 
+type ClassStatisticsRecord = {
+  id: jsonLd.Reference;
+  label: jsonLd.Value;
+  entitiesCount: number;
+};
+
+export type ClassStatistics = Labeled & {
+  entitiesCount: number;
+};
+
+export async function getClassesStatistics(
+  serverURL: string
+): Promise<ClassStatistics[]> {
+  const query = `
+g.addDefaultNamespaces();
+g.addNamespace("owl", "http://www.w3.org/2002/07/owl#");
+
+var classes = g.V().has(g.IRI("rdf:type"), g.IRI("rdfs:Class")).union(g.V().has(g.IRI("rdf:type"), g.IRI("owl:Class")));
+
+classes.toArray().forEach(function (cls) {
+    var classID = "<" + cls["@id"] + ">";
+
+    var label = g.V(classID).out(g.IRI("rdfs:label")).toValue();
+
+    var entitiesCount = g.V()
+        .has(g.IRI("rdf:type"), classID)
+        .count();
+
+    g.emit(
+        {
+            "id": cls,
+            "label": label,
+            "entitiesCount": entitiesCount
+        }
+    )
+});`;
+  const response: GizmoQueryResponse<ClassStatisticsRecord> = await runQuery(
+    serverURL,
+    "gizmo",
+    query
+  );
+  const result = getResult(response);
+  // @ts-ignore
+  return normalizeID(result) || [];
+}
+
 export type Page<T> = { total: number; data: T[] };
 
 export async function getInstancesPage(
