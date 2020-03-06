@@ -46,8 +46,8 @@ const Dashboard = ({ serverURL }: Props) => {
       {error && <Snackbar open message={String(error)} />}
       {sortedClassesStatistics.map(stats => {
         return (
-          <Link to={entityLink(stats["@id"])}>
-            <Card key={stats["@id"]}>
+          <Link key={stats["@id"]} to={entityLink(stats["@id"])}>
+            <Card>
               <Typography use="subtitle1">
                 <EntityValue value={stats} label={stats.label} />
               </Typography>
