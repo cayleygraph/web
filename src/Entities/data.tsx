@@ -314,6 +314,7 @@ export async function getInstancesPage(
     
     instances
     .saveOpt(g.IRI("rdfs:label"), "label")
+    .unique()
     .skip(${skip})
     .getLimit(${pageSize});
     `;
