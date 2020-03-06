@@ -58,13 +58,14 @@ const EntityPage = ({ serverURL, setError, error }: Props) => {
   if (result === null) {
     return <NotFound id={entityID} />;
   }
-  if (hasPropertyType(result)) {
+  const typeIDs = getTypeIDs(result);
+  if (isProperty(typeIDs)) {
     return <Property id={entityID} data={result} />;
   }
-  if (hasDatatypeType(result)) {
+  if (isDatatype(typeIDs)) {
     return <Datatype id={entityID} data={result} />;
   }
-  if (hasClassType(result)) {
+  if (isClass(typeIDs)) {
     return (
       <Class
         serverURL={serverURL}
@@ -88,16 +89,4 @@ function getTypeIDs(result: EntityData): Set<string> {
       .filter(jsonLd.isReference)
       .map(value => value["@id"])
   );
-}
-
-function hasClassType(result: EntityData): boolean {
-  return isClass(getTypeIDs(result));
-}
-
-function hasPropertyType(result: EntityData): boolean {
-  return isProperty(getTypeIDs(result));
-}
-
-function hasDatatypeType(result: EntityData): boolean {
-  return isDatatype(getTypeIDs(result));
 }
