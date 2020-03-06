@@ -7,8 +7,10 @@ import { Typography } from "@rmwc/typography";
 import "@material/typography/dist/mdc.typography.css";
 import sortBy from "lodash.sortby";
 import { getClassesStatistics, ClassStatistics } from "./data";
+import { entityLink } from "./navigation";
 import EntityValue from "./EntityValue";
 import "./Dashboard.css";
+import { Link } from "react-router-dom";
 
 function formatNumber(number: number): string {
   const numberFormat = new Intl.NumberFormat(undefined, {
@@ -44,14 +46,16 @@ const Dashboard = ({ serverURL }: Props) => {
       {error && <Snackbar open message={String(error)} />}
       {sortedClassesStatistics.map(stats => {
         return (
-          <Card key={stats["@id"]}>
-            <Typography use="subtitle1">
-              <EntityValue value={stats} label={stats.label} />
-            </Typography>
-            <Typography use="headline5">
-              {formatNumber(stats.entitiesCount)}
-            </Typography>
-          </Card>
+          <Link to={entityLink(stats["@id"])}>
+            <Card key={stats["@id"]}>
+              <Typography use="subtitle1">
+                <EntityValue value={stats} label={stats.label} />
+              </Typography>
+              <Typography use="headline5">
+                {formatNumber(stats.entitiesCount)}
+              </Typography>
+            </Card>
+          </Link>
         );
       })}
     </div>

@@ -5,20 +5,29 @@
   padding-bottom: 16px;
 }
 
-.Dashboard .mdc-card {
-  background: rgb(32, 33, 36);
-  margin: 16px 16px 0 0;
-  padding: 16px;
-  width: calc((100% - 16px - 16px) / 2);
-  max-width: 30em;
-}
-
 .Dashboard a,
 .Dashboard a:link,
 .Dashboard a:visited {
   color: inherit;
   font: inherit;
   text-decoration: inherit;
+}
+
+.Dashboard > a {
+  margin: 16px 16px 0 0;
+  width: calc((100% - 16px - 16px) / 2);
+  max-width: 30em;
+  cursor: pointer;
+}
+
+.Dashboard .mdc-card {
+  background: rgb(32, 33, 36);
+  padding: 16px;
+}
+
+.Dashboard .mdc-card a,
+.Dashboard .mdc-card a:link,
+.Dashboard .mdc-card a:visited {
   opacity: 0.6;
   word-break: break-all;
 }
