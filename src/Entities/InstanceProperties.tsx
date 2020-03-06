@@ -8,6 +8,10 @@ type Props = {
   onError: (error: Error) => void;
 };
 
+/**
+ * @todo display restrictions
+ * @todo order properties by title
+ */
 const InstanceProperties = ({ serverURL, id, onError }: Props) => {
   const [instanceProperties, setInstanceProperties] = useState<
     ClassInstanceProperty[]
