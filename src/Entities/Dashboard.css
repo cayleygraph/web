@@ -21,8 +21,11 @@
 }
 
 .Dashboard .mdc-card {
-  background: rgb(32, 33, 36);
   padding: 16px;
+}
+
+.dark-mode .Dashboard .mdc-card {
+  background: rgb(32, 33, 36);
 }
 
 .Dashboard .mdc-card a,
