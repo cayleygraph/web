@@ -77,6 +77,13 @@
   color: var(--mdc-theme-on-background);
 }
 
+:not(.mdc-list--non-interactive)
+  > :not(.mdc-list-item--disabled).mdc-list-item::before,
+:not(.mdc-list--non-interactive)
+  > :not(.mdc-list-item--disabled).mdc-list-item::after {
+  background: var(--mdc-theme-on-background);
+}
+
 .mdc-tab:not(.mdc-tab--active) .mdc-tab__text-label {
   color: var(--theme-dimmed-text-color);
 }
