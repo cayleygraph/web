@@ -13,7 +13,6 @@ import { useEditor, DEFAULT_OPTIONS, theme } from "../monaco-util";
 import * as mime from "../mime";
 import { write, runDelete, read, ContentType } from "./data";
 import "../Query/QueryPage.css";
-import "./DataPage.css";
 import { ModeSelect, Mode } from "./ModeSelect";
 import { ContentTypeSelect } from "./ContentTypeSelect";
 import { useFileMenu } from "./use-file-menu";
@@ -74,19 +73,19 @@ const DataPage = ({ serverURL }: Props) => {
       return;
     }
     const value = editor.getValue();
-    run(serverURL, mode, contentType, value).catch(error => {
+    run(serverURL, mode, contentType, value).catch((error) => {
       setSnackbarMessage(error.toString());
     });
   }, [serverURL, editor, mode, contentType]);
 
   const handleFilesChange = useCallback(
-    files => {
+    (files) => {
       for (const file of files) {
         write(serverURL, contentType, file)
           .then(() => {
             setSnackbarMessage(`Uploaded ${file.name}`);
           })
-          .catch(error => {
+          .catch((error) => {
             setSnackbarMessage(error.toString());
           });
       }
@@ -98,11 +97,11 @@ const DataPage = ({ serverURL }: Props) => {
 
   const downloadDump = useCallback(() => {
     read(serverURL, contentType)
-      .then(res => res.blob())
-      .then(blob => {
+      .then((res) => res.blob())
+      .then((blob) => {
         download(blob, "data.nq", mime.N_QUADS);
       })
-      .catch(error => {
+      .catch((error) => {
         setSnackbarMessage(error.toString());
       });
   }, [serverURL, contentType]);
@@ -115,7 +114,7 @@ const DataPage = ({ serverURL }: Props) => {
         message={snackbarMessage}
       />
       {fileInput}
-      <main className="QueryPage DataPage">
+      <main className="QueryPage">
         <Typography use="headline6">Data</Typography>
         <MonacoEditor
           loading={null}

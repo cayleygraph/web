@@ -1,6 +1,6 @@
 .QueryHistory {
   flex: 1;
-  overflow-y: auto;
+  overflow: auto;
 }
 
 .QueryHistory .mdc-list-item {

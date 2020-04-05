@@ -63,6 +63,11 @@
   flex-wrap: wrap;
 }
 
+.QueryPage .actions:last-child {
+  padding-bottom: 8em;
+  border-bottom: 0;
+}
+
 .QueryPage .actions .timer {
   margin-left: 16px;
 }
