@@ -10,7 +10,7 @@ import "./EntityList.css";
 
 type Props = {
   title: string;
-  query: (
+  searchEntities: (
     query: string,
     page: number,
     pageSize: number
@@ -19,30 +19,30 @@ type Props = {
   pageSize: number;
 };
 
-const EntityList = ({ title, query, pageSize, onError }: Props) => {
-  const [q, setQ] = useState("");
+const EntityList = ({ title, searchEntities, pageSize, onError }: Props) => {
+  const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<Page<Labeled> | null>(null);
-  const [page, setPage] = useState<number>(0);
+  const [page, setPage] = useState<Page<Labeled> | null>(null);
+  const [pageNumber, setPageNumber] = useState<number>(0);
 
   const handleQueryChange = useCallback(
-    event => {
-      setQ(event.target.value);
+    (event) => {
+      setQuery(event.target.value);
     },
-    [setQ]
+    [setQuery]
   );
 
   useEffect(() => {
     setLoading(true);
-    query(q, page, pageSize)
-      .then(setData)
+    searchEntities(query, pageNumber, pageSize)
+      .then(setPage)
       .catch(onError)
       .finally(() => {
         setLoading(false);
       });
-  }, [query, q, setData, onError, page, pageSize]);
+  }, [searchEntities, query, setPage, onError, pageNumber, pageSize]);
 
-  const hasItems = data && data.data.length !== 0;
+  const hasItems = page && page.data.length !== 0;
   let content;
 
   if (loading) {
@@ -51,8 +51,8 @@ const EntityList = ({ title, query, pageSize, onError }: Props) => {
     content = `No ${title} found`;
   } else {
     content =
-      data &&
-      data.data.map(record => {
+      page &&
+      page.data.map((record) => {
         return (
           <ID
             key={record["@id"]}
@@ -70,8 +70,8 @@ const EntityList = ({ title, query, pageSize, onError }: Props) => {
         <h3>{title}</h3>
         <TextField
           onChange={handleQueryChange}
-          value={q}
-          disabled={!hasItems && !q}
+          value={query}
+          disabled={!hasItems && !query}
           label="Search"
           trailingIcon="search"
         />
@@ -80,9 +80,9 @@ const EntityList = ({ title, query, pageSize, onError }: Props) => {
       {hasItems && (
         <Paginator
           pageSize={pageSize}
-          value={page}
-          length={data ? data.total : undefined}
-          onChange={setPage}
+          value={pageNumber}
+          length={page ? page.total : undefined}
+          onChange={setPageNumber}
         />
       )}
     </div>

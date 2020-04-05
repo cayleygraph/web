@@ -4,7 +4,7 @@ import {
   getSubClassesPage,
   getInstancesPage,
   getSuperClassesPage,
-  subClassOfPropertyID
+  subClassOfPropertyID,
 } from "./data";
 import EntityTitle from "./EntityTitle";
 import EntityComment from "./EntityComment";
@@ -59,19 +59,19 @@ const Class = ({ serverURL, onError, id, data }: Props) => {
       <InstanceProperties serverURL={serverURL} id={id} onError={onError} />
       <EntityList
         title="Super Classes"
-        query={superClassesQuery}
+        searchEntities={superClassesQuery}
         onError={onError}
         pageSize={SUPER_CLASSES_PAGE_SIZE}
       />
       <EntityList
         title="Sub Classes"
-        query={subClassesQuery}
+        searchEntities={subClassesQuery}
         onError={onError}
         pageSize={SUB_CLASSES_PAGE_SIZE}
       />
       <EntityList
         title="Instances"
-        query={instancesQuery}
+        searchEntities={instancesQuery}
         onError={onError}
         pageSize={INSTANCES_PAGE_SIZE}
       />
