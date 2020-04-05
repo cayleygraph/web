@@ -23,8 +23,8 @@ const EntitiesPage = ({ serverURL }: Props) => {
   const [error, setError] = useState<Error | null>(null);
 
   const goToEntity = useCallback(
-    reference => {
-      history.push(entityLink(reference["@id"]));
+    (entityID) => {
+      history.push(entityLink(entityID));
     },
     [history]
   );

@@ -10,7 +10,7 @@ import {
   OWL_ANNOTATION_PROPERTY,
   RDFS_LABEL,
   RDFS_SUB_CLASS_OF,
-  RDFS_DATATYPE
+  RDFS_DATATYPE,
 } from "./constants";
 import * as jsonLd from "./json-ld";
 import { GizmoQueryResponse, getResult, normalizeID, escapeID } from "./gizmo";
@@ -20,14 +20,8 @@ export {
   RDF_PROPERTY as propertyTypeID,
   RDFS_LABEL as labelPropertyID,
   JSON_LD_TYPE as typePropertyID,
-  RDFS_SUB_CLASS_OF as subClassOfPropertyID
+  RDFS_SUB_CLASS_OF as subClassOfPropertyID,
 } from "./constants";
-
-/** @todo normalize to Labeled */
-export type Suggestion = {
-  value: jsonLd.Reference;
-  label: Label;
-};
 
 /** Supported label value, represents allowed value for the rdfs:label property */
 export type Label = jsonLd.PrimitiveValue;
@@ -119,7 +113,7 @@ function normalizeGetEntityQueryResult(
       } else {
         property.values.push({
           value: record.value,
-          label: record.label
+          label: record.label,
         });
       }
       properties[propertyID] = property;
@@ -183,26 +177,34 @@ export async function getAutoCompletionSuggestions(
   serverURL: string,
   entityIDPrefix: string,
   limit: number
-): Promise<Suggestion[]> {
+): Promise<Labeled[]> {
   const result = await runQuery(
     serverURL,
     "gizmo",
     `
   g.addDefaultNamespaces();
+
+  var exactMatchResults = g.V()
+    .has(g.IRI("rdfs:label"), "${entityIDPrefix}")
+    .save(g.IRI("rdfs:label"), "label")
+    .back()
+    .limit(${limit});
   
   var labelResults = g.V()
-    .tag("entity")
     .out(g.IRI("rdfs:label"))
-    .tag("label")
     .filter(like("${entityIDPrefix}%"))
+    .tag("label")
+    .back()
     .limit(${limit});
   
   var iriResults = g.V()
-    .tag("entity")
     .filter(like("${entityIDPrefix}%"))
+    .tag("label")
+    .in()
     .limit(${limit});
   
-  labelResults
+  exactMatchResults
+    .union(labelResults)
     .union(iriResults)
     .unique()
     .getLimit(${limit});
@@ -212,18 +214,9 @@ export async function getAutoCompletionSuggestions(
     throw new Error(result.error);
   }
   const results = result.result || [];
-  return results
-    .filter(
-      result => typeof result.entity === "object" && "@id" in result.entity
-    )
-    .map(
-      (result): Suggestion => {
-        return {
-          label: result.label,
-          value: result.entity
-        };
-      }
-    );
+  console.log(normalizeID(results));
+  // @ts-ignore
+  return normalizeID(results);
 }
 
 export async function getClasses(serverURL: string): Promise<Labeled[]> {
@@ -363,7 +356,7 @@ instances
   return {
     total,
     // @ts-ignore
-    data: normalizeID(items) || []
+    data: normalizeID(items) || [],
   };
 }
 
@@ -402,7 +395,7 @@ subClasses
   return {
     total,
     // @ts-ignore
-    data: normalizeID(items) || []
+    data: normalizeID(items) || [],
   };
 }
 
@@ -460,7 +453,7 @@ export async function getSuperClassesPage(
   return {
     total,
     // @ts-ignore
-    data: normalizeID(items) || []
+    data: normalizeID(items) || [],
   };
 }
 
@@ -489,24 +482,24 @@ type NativeIDDescriptor = {
 const nativeIDDescriptors: { [id: string]: NativeIDDescriptor } = {
   [RDFS_CLASS]: {
     label: "Class",
-    link: "https://www.w3.org/TR/rdf-schema/#ch_class"
+    link: "https://www.w3.org/TR/rdf-schema/#ch_class",
   },
   [RDF_PROPERTY]: {
     label: "Property",
-    link: "https://www.w3.org/TR/rdf-schema/#ch_property"
+    link: "https://www.w3.org/TR/rdf-schema/#ch_property",
   },
   [RDFS_LABEL]: {
     label: "Label",
-    link: "https://www.w3.org/TR/rdf-schema/#ch_label"
+    link: "https://www.w3.org/TR/rdf-schema/#ch_label",
   },
   [RDFS_SUB_CLASS_OF]: {
     label: "Sub Class Of",
-    link: "https://www.w3.org/TR/rdf-schema/#ch_subclassof"
+    link: "https://www.w3.org/TR/rdf-schema/#ch_subclassof",
   },
   [JSON_LD_TYPE]: {
     label: "Type",
-    link: "https://w3c.github.io/json-ld-syntax/#specifying-the-type"
-  }
+    link: "https://w3c.github.io/json-ld-syntax/#specifying-the-type",
+  },
 };
 
 export function getNativeIDDescriptor(

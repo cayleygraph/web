@@ -2,10 +2,10 @@ import React, { useCallback } from "react";
 import AsyncSelect from "react-select/async";
 import "./Search.css";
 
-import { getAutoCompletionSuggestions, Label } from "./data";
+import { getAutoCompletionSuggestions, Label, Labeled } from "./data";
 import * as jsonLd from "./json-ld";
 import { useSelectTheme } from "../colors";
-import EntityValue from "./EntityValue";
+import ID from "./ID";
 
 const OPTIONS_LIMIT = 10;
 
@@ -15,21 +15,24 @@ type Props = {
   serverURL: string;
 };
 
+type Option = {
+  value: string;
+  label: Label;
+};
+
 const Search = ({ onError, serverURL, onSelect }: Props) => {
   const selectTheme = useSelectTheme();
   const loadOptions = useCallback(
     (query: string) => {
-      return getAutoCompletionSuggestions(
-        serverURL,
-        query,
-        OPTIONS_LIMIT
-      ).catch(onError);
+      return getAutoCompletionSuggestions(serverURL, query, OPTIONS_LIMIT)
+        .then((results) => results.map(toOption))
+        .catch(onError);
     },
     [serverURL, onError]
   );
 
   const handleChange = useCallback(
-    selection => {
+    (selection) => {
       const { value } = selection;
       onSelect(value);
     },
@@ -52,6 +55,11 @@ const Search = ({ onError, serverURL, onSelect }: Props) => {
 
 export default Search;
 
-const formatOptionLabel = (option: { value: jsonLd.Value; label: Label }) => (
-  <EntityValue value={option.value} label={option.label} />
+const formatOptionLabel = (option: Option) => (
+  <ID id={option.value} label={option.label} />
 );
+
+const toOption = (labeled: Labeled): Option => ({
+  value: labeled["@id"],
+  label: labeled.label,
+});
