@@ -2,7 +2,6 @@ import React, { useCallback } from "react";
 import {
   Entity as EntityData,
   getSubClasses,
-  getInstancesPage,
   getSuperClasses,
   subClassOfPropertyID,
 } from "./data";
