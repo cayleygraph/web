@@ -13,10 +13,12 @@ const ClassList = ({ title, query, onError }: Props) => {
   useEffect(() => {
     query().then(setClasses).catch(onError);
   }, [query, setClasses, onError]);
+  if (classes.length === 0) {
+    return null;
+  }
   return (
     <>
       <h3>{title}</h3>
-      {classes.length === 0 && `No ${title.toLowerCase()} found`}
       {classes.map((labeled) => {
         return (
           <div key={labeled["@id"]}>
