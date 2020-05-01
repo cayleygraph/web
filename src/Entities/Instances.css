@@ -1,18 +1,18 @@
-.EntityList {
+.Instances {
   max-width: 800px;
 }
 
-.EntityList header {
+.Instances header {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-.EntityList h3 {
+.Instances h3 {
   margin-right: auto;
 }
 
-.EntityList a {
+.Instances a {
   color: inherit;
   text-decoration: none;
 }

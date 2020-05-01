@@ -10,7 +10,7 @@ import EntityTitle from "./EntityTitle";
 import EntityComment from "./EntityComment";
 import EntityID from "./EntityID";
 import Properties from "./Properties";
-import EntityList from "./EntityList";
+import Instances from "./Instances";
 import InstanceProperties from "./InstanceProperties";
 import ClassList from "./ClassList";
 
@@ -36,12 +36,6 @@ const Class = ({ serverURL, onError, id, data }: Props) => {
   const superClassesQuery = useCallback(() => {
     return getSuperClasses(serverURL, id);
   }, [serverURL, id]);
-  const instancesQuery = useCallback(
-    (query: string, pageNumber: number, pageSize: number) => {
-      return getInstancesPage(serverURL, id, query, pageNumber, pageSize);
-    },
-    [serverURL, id]
-  );
 
   return (
     <div className="Entity">
@@ -60,9 +54,9 @@ const Class = ({ serverURL, onError, id, data }: Props) => {
         query={subClassesQuery}
         onError={onError}
       />
-      <EntityList
-        title="Instances"
-        searchEntities={instancesQuery}
+      <Instances
+        serverURL={serverURL}
+        id={id}
         onError={onError}
         pageSize={INSTANCES_PAGE_SIZE}
       />

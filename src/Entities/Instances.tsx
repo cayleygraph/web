@@ -1,25 +1,21 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Labeled, Page } from "./data";
+import { Labeled, Page, getInstancesPage } from "./data";
 import { List, ListItem } from "@rmwc/list";
 import "@material/list/dist/mdc.list.css";
 import { TextField } from "@rmwc/textfield";
 import "@material/textfield/dist/mdc.textfield.css";
 import Paginator from "./Paginator";
 import ID from "./ID";
-import "./EntityList.css";
+import "./Instances.css";
 
 type Props = {
-  title: string;
-  searchEntities: (
-    query: string,
-    page: number,
-    pageSize: number
-  ) => Promise<Page<Labeled>>;
+  serverURL: string;
+  id: string;
   onError: (error: Error) => void;
   pageSize: number;
 };
 
-const EntityList = ({ title, searchEntities, pageSize, onError }: Props) => {
+const Instances = ({ serverURL, id, pageSize, onError }: Props) => {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState<Page<Labeled> | null>(null);
@@ -34,13 +30,13 @@ const EntityList = ({ title, searchEntities, pageSize, onError }: Props) => {
 
   useEffect(() => {
     setLoading(true);
-    searchEntities(query, pageNumber, pageSize)
+    getInstancesPage(serverURL, id, query, pageNumber, pageSize)
       .then(setPage)
       .catch(onError)
       .finally(() => {
         setLoading(false);
       });
-  }, [searchEntities, query, setPage, onError, pageNumber, pageSize]);
+  }, [serverURL, id, query, setPage, onError, pageNumber, pageSize]);
 
   const hasItems = page && page.data.length !== 0;
   let content;
@@ -48,7 +44,7 @@ const EntityList = ({ title, searchEntities, pageSize, onError }: Props) => {
   if (loading) {
     content = new Array(pageSize).fill(1).map((_, i) => <ListItem key={i} />);
   } else if (!hasItems) {
-    content = `No ${title} found`;
+    content = `No instances found`;
   } else {
     content =
       page &&
@@ -65,9 +61,9 @@ const EntityList = ({ title, searchEntities, pageSize, onError }: Props) => {
   }
 
   return (
-    <div className="EntityList">
+    <div className="Instances">
       <header>
-        <h3>{title}</h3>
+        <h3>Instances</h3>
         <TextField
           onChange={handleQueryChange}
           value={query}
@@ -89,4 +85,4 @@ const EntityList = ({ title, searchEntities, pageSize, onError }: Props) => {
   );
 };
 
-export default EntityList;
+export default Instances;
