@@ -28,10 +28,6 @@ const Properties = ({ data, excluding }: Props) => {
     ] => {
       if (excluding && propertyId in excluding) {
         const excludedIDs = excluding[propertyId];
-        console.log(
-          excludedIDs,
-          property.values.map((value) => value)
-        );
         const values =
           excludedIDs.size === 0
             ? []

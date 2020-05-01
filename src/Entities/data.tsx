@@ -216,28 +216,33 @@ export async function getAutoCompletionSuggestions(
     throw new Error(result.error);
   }
   const results = result.result || [];
-  console.log(normalizeID(results));
   // @ts-ignore
   return normalizeID(results);
 }
 
 export async function getClasses(serverURL: string): Promise<Labeled[]> {
-  const response: GizmoQueryResponse<Labeled> = await runQuery(
+  const response: GizmoQueryResponse<{
+    id: { "@id": string };
+    label: Label;
+  }> = await runQuery(
     serverURL,
     "gizmo",
     `
 g.addDefaultNamespaces();
+g.addNamespace("owl", "http://www.w3.org/2002/07/owl#");
 
-g.V(g.IRI("rdfs:Class"))
-.in(g.IRI("rdf:type"))
+g.V().has(g.IRI("rdf:type"), g.IRI("rdfs:Class")).union(
+  g.V().has(g.IRI("rdf:type"), g.IRI("owl:Class"))
+)
 .saveOpt(g.IRI("rdfs:label"), "label")
 .unique()
 .getLimit(-1);
   `
   );
   const result = getResult(response);
+  const filtered = result?.filter((value) => !value.id["@id"].startsWith("_:"));
   // @ts-ignore
-  return normalizeID(result) || [];
+  return normalizeID(filtered) || [];
 }
 
 type ClassStatisticsRecord = {
