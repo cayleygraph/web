@@ -21,7 +21,7 @@ type Props = {
   data: EntityData;
 };
 
-const INSTANCES_PAGE_SIZE = 5;
+const INSTANCES_PAGE_SIZE = 15;
 
 const EXCLUDED_PROPERTIES = new Set([subClassOfPropertyID]);
 

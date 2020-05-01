@@ -46,7 +46,7 @@ const EntityList = ({ title, searchEntities, pageSize, onError }: Props) => {
   let content;
 
   if (loading) {
-    content = <span>Loading...</span>;
+    content = new Array(pageSize).fill(1).map((_, i) => <ListItem key={i} />);
   } else if (!hasItems) {
     content = `No ${title} found`;
   } else {
