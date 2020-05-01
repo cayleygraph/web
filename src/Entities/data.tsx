@@ -360,56 +360,34 @@ instances
   };
 }
 
-export async function getSubClassesPage(
+export async function getSubClasses(
   serverURL: string,
-  classID: string,
-  q: string,
-  pageNumber: number,
-  pageSize: number
-): Promise<Page<Labeled>> {
-  const skip = pageNumber * pageSize;
+  classID: string
+): Promise<Labeled[]> {
   const query = `
 g.addDefaultNamespaces();
 
 var entities = g.V();
 
-var q = ${JSON.stringify(q)};
-
-if (q) {
-  var matched = g.V().filter(like("%" + q + "%"))
-  entities = matched.union(matched.in(g.IRI("rdfs:label")));
-}
-
-var subClasses = entities.has(g.IRI("rdfs:subClassOf"), "${escapeID(classID)}")
-
-g.emit(subClasses.count());
+var subClasses = entities.has(g.IRI("rdfs:subClassOf"), "${escapeID(classID)}");
 
 subClasses
 .saveOpt(g.IRI("rdfs:label"), "label")
-.skip(${skip})
-.getLimit(${pageSize});
+.getLimit(-1);
     `;
   const response = await runQuery(serverURL, "gizmo", query);
   const result = getResult(response);
-  const [total, ...items] = result || [];
-  return {
-    total,
-    // @ts-ignore
-    data: normalizeID(items) || [],
-  };
+  // @ts-ignore
+  return normalizeID(result || []);
 }
 
 /**
  * Get super classes of given class, excluding restrictions.
  */
-export async function getSuperClassesPage(
+export async function getSuperClasses(
   serverURL: string,
-  classID: string,
-  q: string,
-  pageNumber: number,
-  pageSize: number
-): Promise<Page<Labeled>> {
-  const skip = pageNumber * pageSize;
+  classID: string
+): Promise<Labeled[]> {
   const query = `
   g.addDefaultNamespaces();
   g.addNamespace("owl", "http://www.w3.org/2002/07/owl#");
@@ -418,12 +396,6 @@ export async function getSuperClassesPage(
   var graphHasRestrictions = g.V(Restriction).count() !== 0;
   
   var entities = g.V();
-  
-  var q = ${JSON.stringify(q)};
-  if (q) {
-    var matched = g.V().filter(like("%" + q + "%"))
-    entities = matched.union(matched.in(g.IRI("rdfs:label")));
-  }
   
   var superClasses = g.V("${escapeID(classID)}").out(g.IRI("rdfs:subClassOf"));
   
@@ -435,26 +407,14 @@ export async function getSuperClassesPage(
       )
       : superClasses;
   
-  // In case there are no sub classes count() will throw an Error.
-  try {
-      g.emit(filteredSuperClasses.count());
-  } catch (error) {
-      g.emit(0);
-  }
-  
   filteredSuperClasses
   .saveOpt(g.IRI("rdfs:label"), "label")
-  .skip(${skip})
-  .getLimit(${pageSize});
+  .getLimit(-1);
     `;
   const response = await runQuery(serverURL, "gizmo", query);
   const result = getResult(response);
-  const [total, ...items] = result || [];
-  return {
-    total,
-    // @ts-ignore
-    data: normalizeID(items) || [],
-  };
+  // @ts-ignore
+  return normalizeID(result || []) || [];
 }
 
 export function isClass(types: Set<string>): boolean {
