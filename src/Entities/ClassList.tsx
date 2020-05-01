@@ -16,7 +16,7 @@ const ClassList = ({ title, query, onError }: Props) => {
   return (
     <>
       <h3>{title}</h3>
-      {classes.length === 0 && `No ${title} found`}
+      {classes.length === 0 && `No ${title.toLowerCase()} found`}
       {classes.map((labeled) => {
         return (
           <div key={labeled["@id"]}>
