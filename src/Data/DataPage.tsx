@@ -114,30 +114,32 @@ const DataPage = ({ serverURL }: Props) => {
         message={snackbarMessage}
       />
       {fileInput}
-      <main className="QueryPage">
-        <Typography use="headline6">Data</Typography>
-        <MonacoEditor
-          loading={null}
-          value={null}
-          editorDidMount={handleEditorMount}
-          language={contentTypeToLanguage(contentType)}
-          theme={theme}
-          options={DEFAULT_OPTIONS}
-        />
-        <div className="actions">
-          <RunButton onClick={handleRunButtonClick} />
-          <ModeSelect value={mode} onChange={setMode} />
-          <ContentTypeSelect value={contentType} onChange={setContentType} />
-          <Button
-            icon="cloud_upload"
-            label="Upload file"
-            onClick={openFileMenu}
+      <main className="QueryPage vertical">
+        <div className="query-editor-group">
+          <Typography use="headline6">Data</Typography>
+          <MonacoEditor
+            loading={null}
+            value={null}
+            editorDidMount={handleEditorMount}
+            language={contentTypeToLanguage(contentType)}
+            theme={theme}
+            options={DEFAULT_OPTIONS}
           />
-          <Button
-            icon="cloud_download"
-            label="Download dump"
-            onClick={downloadDump}
-          />
+          <div className="actions">
+            <RunButton onClick={handleRunButtonClick} />
+            <ModeSelect value={mode} onChange={setMode} />
+            <ContentTypeSelect value={contentType} onChange={setContentType} />
+            <Button
+              icon="cloud_upload"
+              label="Upload file"
+              onClick={openFileMenu}
+            />
+            <Button
+              icon="cloud_download"
+              label="Download dump"
+              onClick={downloadDump}
+            />
+          </div>
         </div>
       </main>
     </>

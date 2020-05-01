@@ -63,7 +63,7 @@
   flex-wrap: wrap;
 }
 
-.QueryPage .actions:last-child {
+.QueryPage.vertical .actions {
   padding-bottom: 8em;
   border-bottom: 0;
 }
