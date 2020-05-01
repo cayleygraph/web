@@ -220,7 +220,11 @@ export async function getAutoCompletionSuggestions(
   return normalizeID(results);
 }
 
-export async function getClasses(serverURL: string): Promise<Labeled[]> {
+export type ClassDescriptor = Labeled & { subClassOf: jsonLd.Reference };
+
+export async function getClasses(
+  serverURL: string
+): Promise<ClassDescriptor[]> {
   const response: GizmoQueryResponse<{
     id: { "@id": string };
     label: Label;
@@ -235,6 +239,7 @@ g.V().has(g.IRI("rdf:type"), g.IRI("rdfs:Class")).union(
   g.V().has(g.IRI("rdf:type"), g.IRI("owl:Class"))
 )
 .saveOpt(g.IRI("rdfs:label"), "label")
+.saveOpt(g.IRI("rdfs:subClassOf"), "subClassOf")
 .unique()
 .getLimit(-1);
   `

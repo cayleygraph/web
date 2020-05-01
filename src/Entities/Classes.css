@@ -2,3 +2,7 @@
   text-decoration: none;
   color: inherit;
 }
+
+.Classes .mdc-list-group .mdc-list-item {
+  padding-left: 32px;
+}
