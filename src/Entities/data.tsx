@@ -59,11 +59,13 @@ type GetEntityResultRecord =
   | PropertyRecord
   | ListItemRecord;
 
+export type EntityProperty = {
+  label?: Label;
+  values: Array<LabeledEntityValue | LabeledEntityValue[]>;
+};
+
 export type Entity = {
-  [id: string]: {
-    label?: Label;
-    values: Array<LabeledEntityValue | LabeledEntityValue[]>;
-  };
+  [id: string]: EntityProperty;
 };
 
 function isEntityValueRecord(

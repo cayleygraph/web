@@ -2,37 +2,67 @@ import React, { Fragment } from "react";
 import {
   Entity as EntityData,
   labelPropertyID,
-  commentPropertyID
+  commentPropertyID,
+  EntityProperty,
 } from "./data";
 import EntityValue from "./EntityValue";
 import ID, { getRenderInfo } from "./ID";
 import sortBy from "lodash.sortby";
 
+/**
+ * Empty set of values will match to all values
+ */
+export type Excluded = { [property: string]: Set<string> };
+
 type Props = {
   data: EntityData;
-  noSingleType?: boolean;
-  excluding?: Set<string>;
+  excluding?: Excluded;
 };
 
-/**
- * @todo allow excluding property value pairs instead of noSingleType
- */
-const Properties = ({ data, noSingleType, excluding }: Props) => {
+const Properties = ({ data, excluding }: Props) => {
   const entries = Object.entries(data);
-  const filtered = entries.filter(
+  const mapped = entries.map(
+    ([propertyId, property]: [string, EntityProperty]): [
+      string,
+      EntityProperty
+    ] => {
+      if (excluding && propertyId in excluding) {
+        const excludedIDs = excluding[propertyId];
+        console.log(
+          excludedIDs,
+          property.values.map((value) => value)
+        );
+        const values =
+          excludedIDs.size === 0
+            ? []
+            : property.values.filter(
+                (record) =>
+                  Array.isArray(record) ||
+                  typeof record.value !== "object" ||
+                  !("@id" in record.value) ||
+                  !excludedIDs.has(record.value["@id"])
+              );
+        return [
+          propertyId,
+          {
+            ...property,
+            values,
+          },
+        ];
+      }
+      return [propertyId, property];
+    }
+  );
+  const filtered = mapped.filter(
     ([propertyID, property]) =>
       !(
         // Skip excluded properties
         (
-          (excluding && excluding.has(propertyID)) ||
+          property.values.length === 0 ||
           // For single labels there's no need to render as they are visible in EntityTitle
           (propertyID === labelPropertyID && property.values.length === 1) ||
           // Comments are rendered separately
-          propertyID === commentPropertyID ||
-          // If noSingleType is set to true hide single Type properties
-          (noSingleType &&
-            propertyID === "@type" &&
-            property.values.length === 1)
+          propertyID === commentPropertyID
         )
       )
   );
@@ -48,7 +78,7 @@ const Properties = ({ data, noSingleType, excluding }: Props) => {
           if (Array.isArray(record)) {
             return (
               <ol>
-                {record.map(item => {
+                {record.map((item) => {
                   return (
                     <li>
                       <EntityValue

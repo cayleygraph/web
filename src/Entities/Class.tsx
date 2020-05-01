@@ -8,10 +8,11 @@ import {
 import EntityTitle from "./EntityTitle";
 import EntityComment from "./EntityComment";
 import EntityID from "./EntityID";
-import Properties from "./Properties";
+import Properties, { Excluded } from "./Properties";
 import Instances from "./Instances";
 import InstanceProperties from "./InstanceProperties";
 import ClassList from "./ClassList";
+import { RDFS_CLASS, OWL_CLASS } from "./constants";
 
 type Props = {
   serverURL: string;
@@ -22,7 +23,10 @@ type Props = {
 
 const INSTANCES_PAGE_SIZE = 15;
 
-const EXCLUDED_PROPERTIES = new Set([subClassOfPropertyID]);
+const EXCLUDED: Excluded = {
+  [subClassOfPropertyID]: new Set(),
+  "@type": new Set([RDFS_CLASS, OWL_CLASS]),
+};
 
 /**
  * @todo show restrictions
@@ -41,7 +45,7 @@ const Class = ({ serverURL, onError, id, data }: Props) => {
       <EntityTitle id={id} data={data} type="Class" />
       <EntityComment data={data} />
       <EntityID id={id} />
-      <Properties data={data} noSingleType excluding={EXCLUDED_PROPERTIES} />
+      <Properties data={data} excluding={EXCLUDED} />
       <InstanceProperties serverURL={serverURL} id={id} onError={onError} />
       <ClassList
         title="Super Classes"
