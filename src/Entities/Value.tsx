@@ -2,6 +2,8 @@ import React, { Fragment } from "react";
 import * as jsonLd from "./json-ld";
 import ID from "./ID";
 
+const DEFAULT_LANGUAGE = "en";
+
 type Props = {
   value: jsonLd.PrimitiveValue;
   Component?: React.ComponentType;
@@ -16,6 +18,10 @@ const Value = ({ value, Component = Fragment }: Props) => {
   }
 
   if (jsonLd.isLocalizedText(value)) {
+    const language = value["@language"];
+    if (language === DEFAULT_LANGUAGE) {
+      return <Component>{value["@value"]}</Component>;
+    }
     return (
       <Component>
         {value["@value"]} ({value["@language"]})
