@@ -6,6 +6,7 @@ import "@rmwc/icon/icon.css";
 import { Query, languageOptions } from "../queries";
 import "./QueryHistory.css";
 import { useQueryHistory } from "./query-history-service";
+import RunButton from "../RunButton";
 
 type OnRecovery = (query: Query) => void;
 
@@ -51,6 +52,9 @@ const QueryHistoryItem = ({
       </div>
       <div className="language">{option && option.label}</div>
       <div className="query">{query.text}</div>
+      <div className="actions">
+          <RunButton onClick={run} />
+      </div>    
     </ListItem>
   );
 };
